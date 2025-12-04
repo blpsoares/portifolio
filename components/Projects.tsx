@@ -11,7 +11,7 @@ const Projects: React.FC = () => {
                 <FolderGit2 className="text-slate-900 dark:text-white" size={24} />
             </div>
             <h2 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white tracking-tight">
-            Cases Selecionados
+            Projetos
             </h2>
         </div>
 

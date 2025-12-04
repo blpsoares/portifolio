@@ -16,13 +16,13 @@ const Footer: React.FC = () => {
         </div>
 
         <div className="flex items-center gap-6">
-            <a href="#" className="text-slate-400 hover:text-brand-600 dark:hover:text-brand-400 transition-colors" aria-label="Email">
+            <a href="mailto:bryanluccas@hotmail.com" className="text-slate-400 hover:text-brand-600 dark:hover:text-brand-400 transition-colors" aria-label="Email">
                 <Mail size={20} />
             </a>
-            <a href="#" className="text-slate-400 hover:text-brand-600 dark:hover:text-brand-400 transition-colors" aria-label="GitHub Profile">
+            <a href="https://github.com/blpsoares" target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-brand-600 dark:hover:text-brand-400 transition-colors" aria-label="GitHub Profile">
                 <Github size={20} />
             </a>
-            <a href="#" className="text-slate-400 hover:text-brand-600 dark:hover:text-brand-400 transition-colors" aria-label="LinkedIn Profile">
+            <a href="https://linkedin.com/in/blpsoares" target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-brand-600 dark:hover:text-brand-400 transition-colors" aria-label="LinkedIn Profile">
                 <Linkedin size={20} />
             </a>
         </div>

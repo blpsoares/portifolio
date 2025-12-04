@@ -33,7 +33,7 @@ const Hero: React.FC = () => {
           </h1>
 
           <p className="text-xl md:text-2xl text-slate-600 dark:text-slate-400 max-w-3xl leading-relaxed font-light">
-             Especialista em Backend focado em arquitetura limpa, escalabilidade e no uso estratégico de <strong className="text-slate-900 dark:text-slate-200 font-medium">IA</strong> e <strong className="text-slate-900 dark:text-slate-200 font-medium">Low-Code</strong> para acelerar entregas de alto valor.
+             Especialista em Backend focado em escalabilidade e no uso estratégico de <strong className="text-slate-900 dark:text-slate-200 font-medium">IA</strong> e <strong className="text-slate-900 dark:text-slate-200 font-medium">Low-Code</strong> para acelerar entregas de alto valor.
           </p>
         </div>
         

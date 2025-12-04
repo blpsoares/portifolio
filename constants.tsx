@@ -13,19 +13,19 @@ export const PROFILE = {
 export const SKILLS: SkillCategory[] = [
   {
     title: "Backend Core",
-    skills: ["Node.js", "TypeScript", "Express.js", "MongoDB", "Clean Architecture"]
+    skills: ["Node.js", "TypeScript", "Express.js", "Elysia", "Firebase", "MongoDB", "Clean Architecture"]
   },
   {
     title: "Stack Moderna",
-    skills: ["Bun", "Redis", "Docker", "Zod", "Serverless"]
+    skills: ["Bun", "Redis", "Docker", "Zod", "TypeBox", "Serverless"]
   },
   {
     title: "Inteligência Artificial",
-    skills: ["Multi-agentes", "Document AI", "LLM Integration", "Model Context Protocol"]
+    skills: ["Multi-agentes", "Gemini", "Claude", "OpenAI", "GH Copilot", "Document AI", "MCP"]
   },
   {
     title: "Infra & DevOps",
-    skills: ["GitHub Actions", "Atlas Triggers", "CI/CD Pipelines", "Docker Compose"]
+    skills: ["GitHub Actions", "GCP", "Atlas Triggers", "CI/CD Pipelines", "Docker Compose"]
   }
 ];
 
