@@ -10,7 +10,8 @@ const Footer: React.FC = () => {
 						&gt;_<span className="text-brand-600 dark:text-brand-400">.</span>
 					</div>
 					<p className="text-sm text-slate-500 dark:text-slate-400 mt-2">
-						&gt;_ {new Date().getFullYear()} - Bryan Soares.
+						© {new Date().getFullYear()} - Bryan Soares. Todos os direitos
+						reservados.
 					</p>
 				</div>
 
