@@ -22,6 +22,18 @@
     <meta property="twitter:description" content="Especialista em Backend focado em escalabilidade e no uso estratégico de IA e Low-Code para acelerar entregas de alto valor." />
     <meta property="twitter:image" content="https://blpsoares.dev/bryan.jpg" />
 
+    <!-- Prevent FOUC (Flash of Unstyled Content) for dark mode -->
+    <script>
+      (function() {
+        const savedTheme = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const isDark = savedTheme === 'dark' || (!savedTheme && prefersDark);
+        if (isDark) {
+          document.documentElement.classList.add('dark');
+        }
+      })();
+    </script>
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
