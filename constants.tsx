@@ -21,11 +21,11 @@ export const SKILLS: SkillCategory[] = [
   },
   {
     title: "Inteligência Artificial",
-    skills: ["Multi-agentes", "Gemini", "Claude", "OpenAI", "GH Copilot", "Document AI", "MCP"]
+    skills: ["Multi-agentes", "Gemini", "Claude", "OpenAI", "Google AI Studio", "Lovable", "Bolt.new", "GH Copilot", "Document AI", "MCP"]
   },
   {
     title: "Infra & DevOps",
-    skills: ["GitHub Actions", "GCP", "Atlas Triggers", "CI/CD Pipelines", "Docker Compose"]
+    skills: ["GitHub Actions", "GCP", "Cloudflare", "Atlas Triggers", "CI/CD Pipelines", "Docker Compose"]
   }
 ];
 
