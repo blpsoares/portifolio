@@ -17,13 +17,6 @@ const Footer: React.FC = () => {
 
 				<div className="flex items-center gap-6">
 					<a
-						href="mailto:bryanluccas@hotmail.com"
-						className="text-slate-400 hover:text-brand-600 dark:hover:text-brand-400 transition-colors"
-						aria-label="Email"
-					>
-						<Mail size={20} />
-					</a>
-					<a
 						href="https://github.com/blpsoares"
 						target="_blank"
 						rel="noopener noreferrer"
@@ -40,6 +33,13 @@ const Footer: React.FC = () => {
 						aria-label="LinkedIn Profile"
 					>
 						<Linkedin size={20} />
+					</a>
+					<a
+						href="mailto:bryanluccas@hotmail.com"
+						className="text-slate-400 hover:text-brand-600 dark:hover:text-brand-400 transition-colors"
+						aria-label="Email"
+					>
+						<Mail size={20} />
 					</a>
 				</div>
 			</div>
