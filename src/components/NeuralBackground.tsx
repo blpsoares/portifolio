@@ -19,6 +19,9 @@ const NeuralBackground: React.FC = () => {
 		// Tech keywords
 		const KEYWORDS = [
 			"Node.js",
+			"Buffers",
+			"HashSet",
+			"Cryptography",
 			"Stream",
 			"Async",
 			"Await",
