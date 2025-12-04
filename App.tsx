@@ -7,6 +7,7 @@ import McpSection from './components/McpSection';
 import Projects from './components/Projects';
 import About from './components/About';
 import Footer from './components/Footer';
+import NeuralBackground from './components/NeuralBackground';
 
 function App() {
   // Theme management
@@ -33,17 +34,23 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-white dark:bg-slate-950 transition-colors duration-300">
-      <Navbar isDarkMode={isDarkMode} toggleTheme={toggleTheme} />
-      <main>
-        <Hero />
-        <TechStack />
-        <LowCode />
-        <McpSection />
-        <Projects />
-        <About />
-      </main>
-      <Footer />
+    <div className="min-h-screen bg-white dark:bg-slate-950 transition-colors duration-300 relative">
+      {/* Global Animated Background */}
+      <NeuralBackground />
+      
+      {/* Content Layer - Z-Index 10 ensures it sits above background */}
+      <div className="relative z-10">
+        <Navbar isDarkMode={isDarkMode} toggleTheme={toggleTheme} />
+        <main>
+          <Hero />
+          <TechStack />
+          <LowCode />
+          <McpSection />
+          <Projects />
+          <About />
+        </main>
+        <Footer />
+      </div>
     </div>
   );
 }
