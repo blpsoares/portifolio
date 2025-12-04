@@ -93,7 +93,7 @@ export const MCP_WORKFLOWS: MCPItem[] = [
 	{
 		tool: "Playwright via MCP",
 		description:
-			"Execução de testes automatizados de interface em segundo plano enquanto desenvolvo novas funcionalidades, garantindo feedback imediato sem troca de contexto.",
+			"Execução de testes automatizados de interface em segundo plano enquanto consigo focar em outras tarefas em paralelo, garantindo um ganho de tempo significativo.",
 		icon: "terminal",
 	},
 	{
@@ -105,7 +105,7 @@ export const MCP_WORKFLOWS: MCPItem[] = [
 	{
 		tool: "MongoDB via MCP",
 		description:
-			"Análise de dados, inspeção de inconsistências e execução de queries complexas diretamente do ambiente de desenvolvimento, eliminando a fricção de ferramentas externas.",
+			"Análise de dados, inspeção de inconsistências e execução de queries complexas diretamente do ambiente de desenvolvimento sem a dificuldade de inferir o contexto para o modelo de IA.",
 		icon: "database",
 	},
 ];
