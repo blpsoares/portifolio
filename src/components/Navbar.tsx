@@ -27,6 +27,7 @@ const Navbar: React.FC<NavbarProps> = ({ isDarkMode, toggleTheme }) => {
     { name: t.nav.lowcode, href: '#lowcode' },
     { name: t.nav.mcps, href: '#mcp' },
     { name: t.nav.projects, href: '#projects' },
+    { name: t.nav.career, href: '#career' },
   ];
 
   const handleNavClick = (href: string) => {

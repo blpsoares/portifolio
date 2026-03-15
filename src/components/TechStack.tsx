@@ -63,36 +63,6 @@ const TechStack: React.FC = () => {
           })}
         </div>
 
-        {/* Identity Section */}
-        <ScrollReveal delay={200}>
-          <div className="relative bg-white dark:bg-slate-900 rounded-3xl p-8 md:p-12 overflow-hidden shadow-2xl group">
-              {/* Animated Blob */}
-              <div className="absolute top-0 right-0 w-96 h-96 bg-brand-500/20 rounded-full blur-[100px] translate-x-1/2 -translate-y-1/2 group-hover:bg-brand-500/30 transition-colors duration-700"></div>
-
-              <div className="relative z-10 flex flex-col md:flex-row gap-8 items-center">
-                  <div className="flex-1">
-                      <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-500/20 text-brand-700 dark:text-brand-300 text-xs font-bold uppercase tracking-wider mb-4 border border-brand-500/20">
-                          <Zap size={12} />
-                          <span>{t.techstack.performanceBadge}</span>
-                      </div>
-                      <h3 className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white mb-4">
-                          {t.techstack.performanceTitle}
-                      </h3>
-                      <p className="text-slate-600 dark:text-slate-300 leading-relaxed text-lg">
-                          {t.techstack.performanceText} <strong className="text-slate-900 dark:text-white">{t.techstack.performanceBunHighlight}</strong>{t.techstack.performanceSuffix}
-                      </p>
-                  </div>
-
-                  <div className="shrink-0 p-6 bg-slate-100 dark:bg-white/10 rounded-2xl border border-slate-200 dark:border-white/10 backdrop-blur-sm hover:scale-105 transition-transform duration-300">
-                      <div className="text-center">
-                          <span className="block text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mb-1">3x</span>
-                          <span className="text-sm text-slate-500 dark:text-slate-400 font-mono">Faster Startup</span>
-                      </div>
-                  </div>
-              </div>
-          </div>
-        </ScrollReveal>
-
       </div>
     </section>
   );

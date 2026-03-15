@@ -7,6 +7,7 @@ import TechStack from './components/TechStack';
 import LowCode from './components/LowCode';
 import McpSection from './components/McpSection';
 import Projects from './components/Projects';
+import Career from './components/Career';
 import VibeProjects from './components/VibeProjects';
 import About from './components/About';
 import Footer from './components/Footer';
@@ -73,6 +74,7 @@ function App() {
                 <LowCode />
                 <McpSection />
                 <Projects />
+                <Career />
                 <VibeProjects />
                 <About />
               </main>
