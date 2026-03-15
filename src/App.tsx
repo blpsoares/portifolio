@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
+import WhoIAm from './components/WhoIAm';
 import TechStack from './components/TechStack';
 import LowCode from './components/LowCode';
 import McpSection from './components/McpSection';
@@ -43,6 +44,7 @@ function App() {
         <Navbar isDarkMode={isDarkMode} toggleTheme={toggleTheme} />
         <main>
           <Hero />
+          <WhoIAm />
           <TechStack />
           <LowCode />
           <McpSection />

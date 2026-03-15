@@ -40,16 +40,16 @@ export const SKILLS: SkillCategory[] = [
 	{
 		title: "Inteligência Artificial",
 		skills: [
-			"Multi-agentes",
-			"Gemini",
-			"Claude",
-			"OpenAI",
-			"Google AI Studio",
-			"Lovable",
-			"Bolt.new",
-			"GH Copilot",
+			"RAG Pipelines",
+			"Multi-agent Systems",
+			"Amazon Bedrock",
+			"LLM APIs (OpenAI · Claude · Gemini)",
+			"Prompt Engineering",
+			"Dialogflow CX",
 			"Document AI",
 			"MCP",
+			"Google AI Studio",
+			"LangGraph",
 		],
 	},
 	{
@@ -112,31 +112,38 @@ export const MCP_WORKFLOWS: MCPItem[] = [
 
 export const PROJECTS: Project[] = [
 	{
+		title: "Pharmaceutical RAG Chatbot",
+		category: "RAG & ENTERPRISE AI",
+		description:
+			"Arquitetura e entrega de um chatbot conversacional para um cliente da área farmacêutica utilizando Dialogflow CX integrado a uma base de conhecimento de 100+ documentos PDF internos. O sistema substituiu um processo manual de consulta de documentos por uma interface de linguagem natural, aplicando RAG para recuperação semântica de informações não estruturadas.",
+		technologies: ["Dialogflow CX", "RAG", "Node.js", "TypeScript", "GCP", "NLP"],
+	},
+	{
+		title: "Intelligent Filters — NLP to Database Query Agent",
+		category: "AI AGENT · TOOL USE",
+		description:
+			"Desenvolvimento de um agente de IA capaz de interpretar entradas de texto livre do usuário e convertê-las em queries estruturadas de MongoDB. O sistema entende a intenção do usuário, aplica a lógica de negócio e retorna os resultados filtrados — eliminando a necessidade de preenchimento manual de filtros. Integrado a produto interno em produção.",
+		technologies: ["OpenAI", "MongoDB", "Node.js", "TypeScript", "Windmill", "AI Agent"],
+	},
+	{
 		title: "Document AI Custom Extractor",
 		category: "IA & Automação",
 		description:
-			"Implementação de um pipeline de extração de dados utilizando Document AI. Substituí um processo manual de validação operacional por um fluxo automatizado que identifica, extrai e valida campos específicos de documentos não estruturados com alta precisão.",
+			"Arquitetura e implementação de um pipeline de extração de dados com Google Document AI para um cliente enterprise. Substituiu um processo 100% manual de validação operacional por um fluxo automatizado que identifica, extrai e valida campos específicos de documentos não estruturados com alta precisão. Solução projetada para reuso em outros clientes com a mesma necessidade.",
 		technologies: ["Node.js", "Google Document AI", "TypeScript"],
-	},
-	{
-		title: "Filtros Inteligentes",
-		category: "IA Generativa & Features",
-		description:
-			"Desenvolvimento de um agente capaz de interpretar inputs de texto livre do usuário e convertê-los em queries estruturadas de banco de dados. O sistema entende a intenção, aplica a lógica de negócio e retorna os resultados filtrados sem necessidade de preencher filtros manualmente.",
-		technologies: ["MongoDB", "OpenAI", "Windmill"],
 	},
 	{
 		title: "Migração Massiva com Node Streams",
 		category: "Performance & Data",
 		description:
-			"Arquitetura para migração de mais de 20k documentos de múltiplas origens (Drive, OneDrive, S3, Local) para Docusign. Utilização intensiva de Streams para controle de backpressure, evitando memory leaks e garantindo a integridade dos metadados durante a transferência.",
-		technologies: ["Node.js Streams", "API Integrations", "File Systems"],
+			"Arquitetura e execução de pipeline de migração de 20.000+ documentos de múltiplas origens (Drive, OneDrive, S3, Local) para DocuSign. Utilização intensiva de Node.js Streams para controle de backpressure, evitando memory leaks. Implementação de observabilidade com Winston para retomada granular em caso de falha — tolerância a falhas sem reprocessamento do início. Solução construída para ser reutilizável em outros clientes com a mesma necessidade.",
+		technologies: ["Node.js Streams", "API Integrations", "File Systems", "Winston"],
 	},
 	{
 		title: "Otimização com Redis",
 		category: "Performance",
 		description:
-			"Implementação estratégica de cache utilizando Hashsets e Sorted Lists para armazenar resultados de computações complexas. Redução drástica na latência e custos de banco de dados em endpoints de alta concorrência.",
+			"Implementação estratégica de cache utilizando Hashsets e Sorted Lists para armazenar resultados de computações complexas. Redução drástica na latência e custos de banco de dados em endpoints de alta concorrência. Queries complexas com tempo de resposta reduzido de ~10s para ~2s (em alguns casos abaixo de 900ms).",
 		technologies: ["Redis", "Caching Strategy", "Backend Optimization"],
 	},
 	{
