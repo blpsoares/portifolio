@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { I18nProvider } from './i18n';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import WhoIAm from './components/WhoIAm';
@@ -35,25 +36,27 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-white dark:bg-slate-950 transition-colors duration-300 relative">
-      {/* Global Animated Background */}
-      <NeuralBackground />
-      
-      {/* Content Layer - Z-Index 10 ensures it sits above background */}
-      <div className="relative z-10">
-        <Navbar isDarkMode={isDarkMode} toggleTheme={toggleTheme} />
-        <main>
-          <Hero />
-          <WhoIAm />
-          <TechStack />
-          <LowCode />
-          <McpSection />
-          <Projects />
-          <About />
-        </main>
-        <Footer />
+    <I18nProvider>
+      <div className="min-h-screen bg-white dark:bg-slate-950 transition-colors duration-300 relative">
+        {/* Global Animated Background */}
+        <NeuralBackground />
+
+        {/* Content Layer - Z-Index 10 ensures it sits above background */}
+        <div className="relative z-10">
+          <Navbar isDarkMode={isDarkMode} toggleTheme={toggleTheme} />
+          <main>
+            <Hero />
+            <WhoIAm />
+            <TechStack />
+            <LowCode />
+            <McpSection />
+            <Projects />
+            <About />
+          </main>
+          <Footer />
+        </div>
       </div>
-    </div>
+    </I18nProvider>
   );
 }
 
