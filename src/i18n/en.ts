@@ -6,7 +6,9 @@ const en = {
     lowcode: "Low Code",
     mcps: "MCPs",
     projects: "Projects",
+    vibeProjects: "Vibe Projects",
     career: "Career",
+    aiUsage: "Vibe Coding",
   },
   hero: {
     badge: "Senior Backend Engineer",
@@ -138,8 +140,13 @@ const en = {
         type: "Full-time",
         location: "São Paulo · Hybrid",
         current: true,
-        description:
-          "Leading backend architecture decisions and AI integration initiatives. Working with Model Context Protocol (MCP) for LLM-connected workflows and Windmill for internal tooling automation. Responsible for technical direction in high-impact features.",
+        bullets: [
+          "Leading backend architecture decisions for high-scale OOH (Out-of-Home) media systems",
+          "Integrated Model Context Protocol (MCP) to connect LLMs directly to the development environment, eliminating repetitive tasks",
+          "Automated internal operational processes with Windmill, reducing manual intervention in critical flows",
+          "Technical mentorship: established code quality standards and conducted knowledge-sharing sessions with the team",
+          "Stack: Node.js · TypeScript · MCP · Windmill · MongoDB · Redis",
+        ],
       },
       {
         role: "Mid-level Backend Developer",
@@ -149,8 +156,15 @@ const en = {
         type: "Full-time",
         location: "São Paulo · Hybrid",
         current: false,
-        description:
-          "Developed AI agents and intelligent filter systems using OpenAI APIs — converting free-text inputs into structured MongoDB queries. Built geospatial data processing pipelines with GeoJSON and delivered scalable backend solutions integrated into production products.",
+        bullets: [
+          "Built AI agent (OpenAI + tool use) converting free-text inputs into structured MongoDB queries — shipped to production as an internal product feature",
+          "Implemented strategic Redis cache (Hashsets + Sorted Lists) reducing endpoint latency from ~10s to ~900ms",
+          "Architected a 20,000+ document migration pipeline (Drive · OneDrive · S3 · Local → DocuSign) using Node.js Streams with backpressure control and Winston observability",
+          "Created proprietary MongoDB Atlas Triggers versioning system for safe CI/CD deploys",
+          "Processed geospatial data (GeoJSON) for OOH media location segmentation",
+          "Developed an intern training project simulating real backend challenges, raising the team's technical bar",
+          "Stack: Node.js · TypeScript · OpenAI · MongoDB · Redis · GeoJSON · Winston · Docker",
+        ],
       },
       {
         role: "Software Developer",
@@ -160,8 +174,13 @@ const en = {
         type: "Full-time",
         location: "São Paulo · On-site",
         current: false,
-        description:
-          "Full-stack development with focus on GCP infrastructure. Implemented data extraction pipelines with Google Document AI, led architectural discussions directly with clients, and delivered end-to-end solutions across multiple enterprise projects.",
+        bullets: [
+          "Architected and delivered a corporate RAG chatbot (Dialogflow CX) integrated with a knowledge base of 10,000+ documents (JSONs, spreadsheets, PDFs) — replaced a fully manual consultation process",
+          "Built a Google Document AI extraction pipeline that automated 100% manual operational validation for enterprise clients",
+          "Led architectural discussions and technical decisions directly with clients — even as a mid-level developer",
+          "Delivered solutions designed for reuse across multiple clients with the same need",
+          "Stack: Node.js · TypeScript · Google Document AI · Dialogflow CX · GCP · RAG · Firebase",
+        ],
       },
       {
         role: "Developer Intern",
@@ -171,8 +190,13 @@ const en = {
         type: "Internship",
         location: "São Paulo",
         current: false,
-        description:
-          "First contact with applied AI in production. Worked on fine-tuning OpenAI models for domain-specific tasks and developed JavaScript features for internal systems. Quickly assumed responsibilities beyond the internship scope.",
+        bullets: [
+          "First production experience with applied GenAI — fine-tuned OpenAI models for domain-specific business classification tasks",
+          "Developed JavaScript features for internal platforms and client-facing systems",
+          "Quickly took on responsibilities beyond the internship scope, including direct client communication",
+          "Foundation for rapid growth into a full-time developer role within the same company",
+          "Stack: JavaScript · OpenAI Fine-tuning · Node.js · GCP",
+        ],
       },
       {
         role: "Frontend Developer",
@@ -182,8 +206,12 @@ const en = {
         type: "Freelance",
         location: "São Paulo · Remote",
         current: false,
-        description:
-          "Freelance frontend development for web applications. Built responsive interfaces with JavaScript and SASS, collaborating remotely with the team on feature delivery and UI quality.",
+        bullets: [
+          "Built responsive web interfaces for client projects working fully remotely",
+          "Delivered complete UI features — from design handoff to production deploy",
+          "First professional experience with agile delivery in a commercial context",
+          "Stack: JavaScript · SASS · HTML · React",
+        ],
       },
     ],
   },

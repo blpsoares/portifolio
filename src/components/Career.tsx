@@ -35,7 +35,7 @@ const Career: React.FC = () => {
               return (
                 <ScrollReveal key={index} delay={index * 80}>
                   <div className="flex gap-8">
-                    {/* Timeline dot centered on line (left-[1.9375rem] = 31px, dot w-4=16px so left offset = 31 - 8 = 23px... container is w-[3.875rem]) */}
+                    {/* Timeline dot */}
                     <div className="hidden md:flex flex-col items-center flex-shrink-0 w-[3.875rem] pt-6">
                       {item.current ? (
                         <div className="relative flex items-center justify-center w-4 h-4 z-10">
@@ -97,11 +97,11 @@ const Career: React.FC = () => {
                       {/* Accordion body */}
                       <div
                         className={`transition-all duration-300 ease-in-out overflow-hidden ${
-                          isOpen ? 'max-h-96' : 'max-h-0'
+                          isOpen ? 'max-h-[32rem]' : 'max-h-0'
                         }`}
                       >
                         <div className="px-6 pb-6 border-t border-slate-100 dark:border-slate-800">
-                          <div className="flex flex-wrap gap-2 mt-4 mb-4">
+                          <div className="flex flex-wrap gap-2 mt-4 mb-5">
                             <span className="px-2.5 py-1 bg-slate-50 dark:bg-slate-800 rounded-md text-xs font-medium text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
                               {item.type}
                             </span>
@@ -109,9 +109,14 @@ const Career: React.FC = () => {
                               {item.location}
                             </span>
                           </div>
-                          <p className="text-slate-600 dark:text-slate-400 leading-relaxed text-sm">
-                            {item.description}
-                          </p>
+                          <ul className="space-y-2">
+                            {item.bullets.map((bullet, bIdx) => (
+                              <li key={bIdx} className="flex items-start gap-2 text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                                <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-brand-500 flex-shrink-0" />
+                                {bullet}
+                              </li>
+                            ))}
+                          </ul>
                         </div>
                       </div>
                     </div>

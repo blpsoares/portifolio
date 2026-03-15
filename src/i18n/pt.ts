@@ -6,7 +6,9 @@ const pt = {
     lowcode: "Low Code",
     mcps: "MCPs",
     projects: "Projetos",
+    vibeProjects: "Vibe Projects",
     career: "Trajet\u00f3ria",
+    aiUsage: "Vibe Coding",
   },
   hero: {
     badge: "Senior Backend Engineer",
@@ -138,8 +140,13 @@ const pt = {
         type: "Tempo integral",
         location: "S\u00e3o Paulo \u00b7 H\u00edbrido",
         current: true,
-        description:
-          "Liderando decis\u00f5es de arquitetura backend e iniciativas de integra\u00e7\u00e3o com IA. Trabalhando com Model Context Protocol (MCP) para fluxos conectados a LLMs e Windmill para automa\u00e7\u00e3o de ferramentas internas. Respons\u00e1vel pela dire\u00e7\u00e3o t\u00e9cnica em features de alto impacto.",
+        bullets: [
+          "Liderando decis\u00f5es de arquitetura backend em sistemas de m\u00eddia OOH (Out-of-Home) de alta escala",
+          "Integrei Model Context Protocol (MCP) conectando LLMs diretamente ao ambiente de desenvolvimento, eliminando tarefas repetitivas",
+          "Automatizei processos operacionais internos com Windmill, reduzindo interven\u00e7\u00e3o manual em fluxos cr\u00edticos",
+          "Mentoria t\u00e9cnica: estabeleci padr\u00f5es de qualidade de c\u00f3digo e conduzi sess\u00f5es de compartilhamento de conhecimento com o time",
+          "Stack: Node.js \u00b7 TypeScript \u00b7 MCP \u00b7 Windmill \u00b7 MongoDB \u00b7 Redis",
+        ],
       },
       {
         role: "Desenvolvedor Backend Pleno",
@@ -149,8 +156,15 @@ const pt = {
         type: "Tempo integral",
         location: "S\u00e3o Paulo \u00b7 H\u00edbrido",
         current: false,
-        description:
-          "Desenvolveu agentes de IA e sistemas de filtros inteligentes utilizando APIs da OpenAI \u2014 convertendo entradas de texto livre em queries estruturadas de MongoDB. Construiu pipelines de processamento de dados geoespaciais com GeoJSON e entregou solu\u00e7\u00f5es backend escal\u00e1veis integradas a produtos em produ\u00e7\u00e3o.",
+        bullets: [
+          "Desenvolvi agente de IA (OpenAI + tool use) que converte texto livre em queries MongoDB estruturadas \u2014 entregue em produ\u00e7\u00e3o como feature de produto interno",
+          "Implementei cache estrat\u00e9gico com Redis (Hashsets + Sorted Lists) reduzindo lat\u00eancia de endpoints de ~10s para ~900ms",
+          "Arquitetei pipeline de migra\u00e7\u00e3o de 20.000+ documentos (Drive \u00b7 OneDrive \u00b7 S3 \u00b7 Local \u2192 DocuSign) com Node.js Streams, controle de backpressure e observabilidade com Winston",
+          "Criei sistema propriet\u00e1rio de versionamento de MongoDB Atlas Triggers para deploys seguros via CI/CD",
+          "Processei dados geoespaciais (GeoJSON) para segmenta\u00e7\u00e3o de localiza\u00e7\u00e3o de m\u00eddia OOH",
+          "Desenvolvi projeto de treinamento para estagi\u00e1rios simulando desafios reais de backend, elevando a barra t\u00e9cnica do time",
+          "Stack: Node.js \u00b7 TypeScript \u00b7 OpenAI \u00b7 MongoDB \u00b7 Redis \u00b7 GeoJSON \u00b7 Winston \u00b7 Docker",
+        ],
       },
       {
         role: "Desenvolvedor de Software",
@@ -160,8 +174,13 @@ const pt = {
         type: "Tempo integral",
         location: "S\u00e3o Paulo \u00b7 Presencial",
         current: false,
-        description:
-          "Desenvolvimento full-stack com foco em infraestrutura GCP. Implementou pipelines de extra\u00e7\u00e3o de dados com Google Document AI, conduziu discuss\u00f5es arquiteturais diretamente com clientes e entregou solu\u00e7\u00f5es completas em m\u00faltiplos projetos enterprise.",
+        bullets: [
+          "Arquitetei e entreguei chatbot RAG corporativo (Dialogflow CX) integrado a base de conhecimento com 10.000+ documentos (JSONs, planilhas e PDFs) \u2014 substituiu processo 100% manual de consulta",
+          "Constru\u00ed pipeline de extra\u00e7\u00e3o com Google Document AI que automatizou valida\u00e7\u00e3o operacional manual de clientes enterprise",
+          "Conduzi discuss\u00f5es arquiteturais e decis\u00f5es t\u00e9cnicas diretamente com clientes \u2014 mesmo como desenvolvedor pleno",
+          "Entreguei solu\u00e7\u00f5es projetadas para reuso em m\u00faltiplos clientes com a mesma necessidade",
+          "Stack: Node.js \u00b7 TypeScript \u00b7 Google Document AI \u00b7 Dialogflow CX \u00b7 GCP \u00b7 RAG \u00b7 Firebase",
+        ],
       },
       {
         role: "Desenvolvedor Estagi\u00e1rio",
@@ -171,8 +190,13 @@ const pt = {
         type: "Est\u00e1gio",
         location: "S\u00e3o Paulo",
         current: false,
-        description:
-          "Primeiro contato com IA aplicada em produ\u00e7\u00e3o. Trabalhou com fine-tuning de modelos OpenAI para tarefas de dom\u00ednio espec\u00edfico e desenvolveu features em JavaScript para sistemas internos. Rapidamente assumiu responsabilidades al\u00e9m do escopo do est\u00e1gio.",
+        bullets: [
+          "Primeiro contato com GenAI aplicada em produ\u00e7\u00e3o \u2014 fine-tuning de modelos OpenAI para classifica\u00e7\u00e3o de dom\u00ednio espec\u00edfico de neg\u00f3cio",
+          "Desenvolveu features em JavaScript para plataformas internas e sistemas voltados ao cliente",
+          "Rapidamente assumiu responsabilidades al\u00e9m do escopo do est\u00e1gio, incluindo comunica\u00e7\u00e3o direta com clientes",
+          "Base para evolu\u00e7\u00e3o r\u00e1pida para desenvolvedor full-time na mesma empresa",
+          "Stack: JavaScript \u00b7 OpenAI Fine-tuning \u00b7 Node.js \u00b7 GCP",
+        ],
       },
       {
         role: "Desenvolvedor Frontend",
@@ -182,8 +206,12 @@ const pt = {
         type: "Freelance",
         location: "S\u00e3o Paulo \u00b7 Remoto",
         current: false,
-        description:
-          "Desenvolvimento frontend freelance para aplica\u00e7\u00f5es web. Construiu interfaces responsivas com JavaScript e SASS, colaborando remotamente com o time na entrega de features e qualidade de UI.",
+        bullets: [
+          "Construiu interfaces web responsivas para projetos de clientes trabalhando 100% remoto",
+          "Entregou features completas de UI \u2014 do handoff de design ao deploy em produ\u00e7\u00e3o",
+          "Primeira experi\u00eancia profissional com entrega \u00e1gil em contexto comercial",
+          "Stack: JavaScript \u00b7 SASS \u00b7 HTML \u00b7 React",
+        ],
       },
     ],
   },
