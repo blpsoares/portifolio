@@ -13,6 +13,8 @@ const APPS_URL =
   'https://raw.githubusercontent.com/opvibes/openvibes-embark/refs/heads/main/apps.jsonc';
 const DOMAIN = 'openvibes.tech';
 
+const PRIORITY_SUBDOMAINS = ['duckflux', 'embark'];
+
 export function getAppUrl(app: VibeApp): string {
   return `https://${app.subdomain}.${DOMAIN}`;
 }
@@ -33,7 +35,10 @@ export function useVibeApps() {
         const json = text
           .replace(/\/\/.*$/gm, '')
           .replace(/\/\*[\s\S]*?\*\//g, '');
-        setApps(JSON.parse(json));
+        const parsed: VibeApp[] = JSON.parse(json);
+        const priority = PRIORITY_SUBDOMAINS.map((s) => parsed.find((a) => a.subdomain === s)).filter(Boolean) as VibeApp[];
+        const rest = parsed.filter((a) => !PRIORITY_SUBDOMAINS.includes(a.subdomain));
+        setApps([...priority, ...rest]);
       })
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false));
