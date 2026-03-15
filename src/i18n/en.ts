@@ -124,6 +124,19 @@ const en = {
     philosophy:
       "Copilots accelerate, but technical responsibility remains. I believe in automation that eliminates the repetitive, allowing full focus on architecture and bottleneck resolution. AI helps build; I review, optimize, and ensure quality.",
   },
+  vibeProjects: {
+    badge: "Vibe Coded · Open Source",
+    title: "Open Source Vibe Projects",
+    subtitle:
+      "Side projects built with AI-assisted development — from idea to deploy, fully vibe coded and open source.",
+    viewAll: "View all",
+    visitSite: "Visit site",
+    backHome: "Back to home",
+    pageTitle: "All Vibe Coded Projects",
+    pageSubtitle:
+      "Every project listed here was built with AI-assisted development and is open source. Click on any preview to visit the live site.",
+    errorLoading: "Failed to load projects. Please try again later.",
+  },
   footer: {
     rights: "All rights reserved.",
     downloadCv: "Download CV",

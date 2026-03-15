@@ -124,6 +124,19 @@ const pt = {
     philosophy:
       "Copilotos aceleram, mas a responsabilidade t\u00e9cnica permanece. Acredito na automa\u00e7\u00e3o que elimina o repetitivo, permitindo foco total na arquitetura e na corre\u00e7\u00e3o de gargalos. A IA ajuda a construir; eu reviso, otimizo e garanto a qualidade.",
   },
+  vibeProjects: {
+    badge: "Vibe Coded \u00b7 Open Source",
+    title: "Projetos Open Source Vibe Coded",
+    subtitle:
+      "Side projects constru\u00eddos com desenvolvimento assistido por IA \u2014 da ideia ao deploy, totalmente vibe coded e open source.",
+    viewAll: "Ver todos",
+    visitSite: "Visitar site",
+    backHome: "Voltar ao in\u00edcio",
+    pageTitle: "Todos os Projetos Vibe Coded",
+    pageSubtitle:
+      "Todos os projetos listados aqui foram constru\u00eddos com desenvolvimento assistido por IA e s\u00e3o open source. Clique em qualquer preview para visitar o site ao vivo.",
+    errorLoading: "Falha ao carregar projetos. Tente novamente mais tarde.",
+  },
   footer: {
     rights: "Todos os direitos reservados.",
     downloadCv: "Download CV",
