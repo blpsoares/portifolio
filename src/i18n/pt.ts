@@ -138,6 +138,8 @@ const pt = {
         type: "Tempo integral",
         location: "S\u00e3o Paulo \u00b7 H\u00edbrido",
         current: true,
+        description:
+          "Liderando decis\u00f5es de arquitetura backend e iniciativas de integra\u00e7\u00e3o com IA. Trabalhando com Model Context Protocol (MCP) para fluxos conectados a LLMs e Windmill para automa\u00e7\u00e3o de ferramentas internas. Respons\u00e1vel pela dire\u00e7\u00e3o t\u00e9cnica em features de alto impacto.",
       },
       {
         role: "Desenvolvedor Backend Pleno",
@@ -147,6 +149,8 @@ const pt = {
         type: "Tempo integral",
         location: "S\u00e3o Paulo \u00b7 H\u00edbrido",
         current: false,
+        description:
+          "Desenvolveu agentes de IA e sistemas de filtros inteligentes utilizando APIs da OpenAI \u2014 convertendo entradas de texto livre em queries estruturadas de MongoDB. Construiu pipelines de processamento de dados geoespaciais com GeoJSON e entregou solu\u00e7\u00f5es backend escal\u00e1veis integradas a produtos em produ\u00e7\u00e3o.",
       },
       {
         role: "Desenvolvedor de Software",
@@ -156,6 +160,8 @@ const pt = {
         type: "Tempo integral",
         location: "S\u00e3o Paulo \u00b7 Presencial",
         current: false,
+        description:
+          "Desenvolvimento full-stack com foco em infraestrutura GCP. Implementou pipelines de extra\u00e7\u00e3o de dados com Google Document AI, conduziu discuss\u00f5es arquiteturais diretamente com clientes e entregou solu\u00e7\u00f5es completas em m\u00faltiplos projetos enterprise.",
       },
       {
         role: "Desenvolvedor Estagi\u00e1rio",
@@ -165,6 +171,8 @@ const pt = {
         type: "Est\u00e1gio",
         location: "S\u00e3o Paulo",
         current: false,
+        description:
+          "Primeiro contato com IA aplicada em produ\u00e7\u00e3o. Trabalhou com fine-tuning de modelos OpenAI para tarefas de dom\u00ednio espec\u00edfico e desenvolveu features em JavaScript para sistemas internos. Rapidamente assumiu responsabilidades al\u00e9m do escopo do est\u00e1gio.",
       },
       {
         role: "Desenvolvedor Frontend",
@@ -174,6 +182,8 @@ const pt = {
         type: "Freelance",
         location: "S\u00e3o Paulo \u00b7 Remoto",
         current: false,
+        description:
+          "Desenvolvimento frontend freelance para aplica\u00e7\u00f5es web. Construiu interfaces responsivas com JavaScript e SASS, colaborando remotamente com o time na entrega de features e qualidade de UI.",
       },
     ],
   },

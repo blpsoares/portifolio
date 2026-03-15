@@ -138,6 +138,8 @@ const en = {
         type: "Full-time",
         location: "São Paulo · Hybrid",
         current: true,
+        description:
+          "Leading backend architecture decisions and AI integration initiatives. Working with Model Context Protocol (MCP) for LLM-connected workflows and Windmill for internal tooling automation. Responsible for technical direction in high-impact features.",
       },
       {
         role: "Mid-level Backend Developer",
@@ -147,6 +149,8 @@ const en = {
         type: "Full-time",
         location: "São Paulo · Hybrid",
         current: false,
+        description:
+          "Developed AI agents and intelligent filter systems using OpenAI APIs — converting free-text inputs into structured MongoDB queries. Built geospatial data processing pipelines with GeoJSON and delivered scalable backend solutions integrated into production products.",
       },
       {
         role: "Software Developer",
@@ -156,6 +160,8 @@ const en = {
         type: "Full-time",
         location: "São Paulo · On-site",
         current: false,
+        description:
+          "Full-stack development with focus on GCP infrastructure. Implemented data extraction pipelines with Google Document AI, led architectural discussions directly with clients, and delivered end-to-end solutions across multiple enterprise projects.",
       },
       {
         role: "Developer Intern",
@@ -165,6 +171,8 @@ const en = {
         type: "Internship",
         location: "São Paulo",
         current: false,
+        description:
+          "First contact with applied AI in production. Worked on fine-tuning OpenAI models for domain-specific tasks and developed JavaScript features for internal systems. Quickly assumed responsibilities beyond the internship scope.",
       },
       {
         role: "Frontend Developer",
@@ -174,6 +182,8 @@ const en = {
         type: "Freelance",
         location: "São Paulo · Remote",
         current: false,
+        description:
+          "Freelance frontend development for web applications. Built responsive interfaces with JavaScript and SASS, collaborating remotely with the team on feature delivery and UI quality.",
       },
     ],
   },
