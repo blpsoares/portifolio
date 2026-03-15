@@ -25,7 +25,7 @@ const Hero: React.FC = () => {
           </h1>
 
           <p className="text-xl md:text-2xl text-slate-600 dark:text-slate-400 max-w-3xl leading-relaxed font-light backdrop-blur-sm dark:backdrop-blur-none bg-white/30 dark:bg-transparent rounded-lg">
-             Especialista em Backend focado em escalabilidade e no uso estratégico de <strong className="text-slate-900 dark:text-slate-200 font-medium">IA</strong> e <strong className="text-slate-900 dark:text-slate-200 font-medium">Low-Code</strong> para acelerar entregas de alto valor.
+             Backend Engineer com foco em <strong className="text-slate-900 dark:text-slate-200 font-medium">Generative AI</strong> — construo sistemas escaláveis, pipelines de IA e soluções de orquestração de agentes para problemas reais de negócio.
           </p>
         </div>
         
@@ -69,8 +69,8 @@ const Hero: React.FC = () => {
 
         <div className="pt-12 border-t border-slate-200/60 dark:border-slate-800/60 flex flex-wrap gap-8 text-sm text-slate-500 dark:text-slate-500 font-mono">
             <span className="hover:text-brand-600 dark:hover:text-brand-400 transition-colors cursor-default">// Node.js & Bun</span>
+            <span className="hover:text-brand-600 dark:hover:text-brand-400 transition-colors cursor-default">// GenAI & Agents</span>
             <span className="hover:text-brand-600 dark:hover:text-brand-400 transition-colors cursor-default">// Integrations</span>
-            <span className="hover:text-brand-600 dark:hover:text-brand-400 transition-colors cursor-default">// AI Agents</span>
             <span className="hover:text-brand-600 dark:hover:text-brand-400 transition-colors cursor-default">// Low Code</span>
         </div>
       </div>
