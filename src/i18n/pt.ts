@@ -83,36 +83,43 @@ const pt = {
     title: "Projetos",
     items: [
       {
+        title: "Chatbot RAG Corporativo",
         category: "RAG & ENTERPRISE AI",
         description:
-          "Arquitetura e entrega de um chatbot conversacional para um cliente da \u00e1rea farmac\u00eautica utilizando Dialogflow CX integrado a uma base de conhecimento de 100+ documentos PDF internos. O sistema substituiu um processo manual de consulta de documentos por uma interface de linguagem natural, aplicando RAG para recupera\u00e7\u00e3o sem\u00e2ntica de informa\u00e7\u00f5es n\u00e3o estruturadas.",
+          "Arquitetura e entrega de um chatbot conversacional corporativo interno utilizando Dialogflow CX integrado a uma base de conhecimento de 10.000+ documentos (JSONs, planilhas e PDFs). O sistema substituiu um processo manual de consulta de documentos por uma interface de linguagem natural, aplicando RAG para recupera\u00e7\u00e3o sem\u00e2ntica de informa\u00e7\u00f5es n\u00e3o estruturadas.",
       },
       {
+        title: "Filtros Inteligentes — Agente NLP para Queries",
         category: "AI AGENT \u00b7 TOOL USE",
         description:
           "Desenvolvimento de um agente de IA capaz de interpretar entradas de texto livre do usu\u00e1rio e convert\u00ea-las em queries estruturadas de MongoDB. O sistema entende a inten\u00e7\u00e3o do usu\u00e1rio, aplica a l\u00f3gica de neg\u00f3cio e retorna os resultados filtrados \u2014 eliminando a necessidade de preenchimento manual de filtros. Integrado a produto interno em produ\u00e7\u00e3o.",
       },
       {
+        title: "Extrator Customizado com Document AI",
         category: "IA & AUTOMA\u00c7\u00c3O",
         description:
           "Arquitetura e implementa\u00e7\u00e3o de um pipeline de extra\u00e7\u00e3o de dados com Google Document AI para um cliente enterprise. Substituiu um processo 100% manual de valida\u00e7\u00e3o operacional por um fluxo automatizado que identifica, extrai e valida campos espec\u00edficos de documentos n\u00e3o estruturados com alta precis\u00e3o. Solu\u00e7\u00e3o projetada para reuso em outros clientes com a mesma necessidade.",
       },
       {
+        title: "Migra\u00e7\u00e3o Massiva com Node Streams",
         category: "PERFORMANCE & DATA",
         description:
           "Arquitetura e execu\u00e7\u00e3o de pipeline de migra\u00e7\u00e3o de 20.000+ documentos de m\u00faltiplas origens (Drive, OneDrive, S3, Local) para DocuSign. Utiliza\u00e7\u00e3o intensiva de Node.js Streams para controle de backpressure, evitando memory leaks. Implementa\u00e7\u00e3o de observabilidade com Winston para retomada granular em caso de falha \u2014 toler\u00e2ncia a falhas sem reprocessamento do in\u00edcio. Solu\u00e7\u00e3o constru\u00edda para ser reutiliz\u00e1vel em outros clientes com a mesma necessidade.",
       },
       {
+        title: "Otimiza\u00e7\u00e3o com Redis",
         category: "PERFORMANCE",
         description:
           "Implementa\u00e7\u00e3o estrat\u00e9gica de cache utilizando Hashsets e Sorted Lists para armazenar resultados de computa\u00e7\u00f5es complexas. Redu\u00e7\u00e3o dr\u00e1stica na lat\u00eancia e custos de banco de dados em endpoints de alta concorr\u00eancia. Queries complexas com tempo de resposta reduzido de ~10s para ~2s (em alguns casos abaixo de 900ms).",
       },
       {
+        title: "Versionamento de Triggers MongoDB",
         category: "DEVOPS & INFRA",
         description:
           "Cria\u00e7\u00e3o de um modelo propriet\u00e1rio para versionamento seguro de MongoDB Atlas Triggers. O sistema garante a sincronia entre o c\u00f3digo da aplica\u00e7\u00e3o e as functions do banco, prevenindo erros de deploy e esquecimento de configura\u00e7\u00f5es cr\u00edticas.",
       },
       {
+        title: "Ensino para Estagi\u00e1rios",
         category: "MENTORIA",
         description:
           "Desenvolvimento de um projeto pr\u00e1tico focado em racioc\u00ednio t\u00e9cnico para treinamento de estagi\u00e1rios. O ambiente simula desafios reais de backend, promovendo aprendizado m\u00fatuo e eleva\u00e7\u00e3o da barra t\u00e9cnica do time.",

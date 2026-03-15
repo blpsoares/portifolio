@@ -1,5 +1,5 @@
 import React from "react";
-import { Mail, Github, Linkedin, FileDown } from "lucide-react";
+import { Mail, Github, Linkedin } from "lucide-react";
 import { useI18n } from "../i18n";
 
 const Footer: React.FC = () => {
@@ -18,14 +18,6 @@ const Footer: React.FC = () => {
 				</div>
 
 				<div className="flex items-center gap-6">
-					<a
-						href="#cv"
-						className="inline-flex items-center gap-2 px-4 py-2 bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-sm font-semibold rounded-lg hover:bg-slate-800 dark:hover:bg-slate-100 transition-all hover:scale-[1.02] active:scale-[0.98]"
-						aria-label="Download CV"
-					>
-						<FileDown size={16} />
-						{t.footer.downloadCv}
-					</a>
 					<a
 						href="https://github.com/blpsoares"
 						target="_blank"

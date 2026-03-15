@@ -42,14 +42,13 @@ export const SKILLS: SkillCategory[] = [
 		skills: [
 			"RAG Pipelines",
 			"Multi-agent Systems",
-			"Amazon Bedrock",
 			"LLM APIs (OpenAI · Claude · Gemini)",
 			"Prompt Engineering",
 			"Dialogflow CX",
 			"Document AI",
 			"MCP",
 			"Google AI Studio",
-			"LangGraph",
+			"TensorFlow",
 		],
 	},
 	{
@@ -112,10 +111,10 @@ export const MCP_WORKFLOWS: MCPItem[] = [
 
 export const PROJECTS: Project[] = [
 	{
-		title: "Pharmaceutical RAG Chatbot",
+		title: "Chatbot RAG Corporativo",
 		category: "RAG & ENTERPRISE AI",
 		description:
-			"Arquitetura e entrega de um chatbot conversacional para um cliente da área farmacêutica utilizando Dialogflow CX integrado a uma base de conhecimento de 100+ documentos PDF internos. O sistema substituiu um processo manual de consulta de documentos por uma interface de linguagem natural, aplicando RAG para recuperação semântica de informações não estruturadas.",
+			"Arquitetura e entrega de um chatbot conversacional corporativo interno utilizando Dialogflow CX integrado a uma base de conhecimento de 10.000+ documentos (JSONs, planilhas e PDFs). O sistema substituiu um processo manual de consulta de documentos por uma interface de linguagem natural, aplicando RAG para recuperação semântica de informações não estruturadas.",
 		technologies: ["Dialogflow CX", "RAG", "Node.js", "TypeScript", "GCP", "NLP"],
 	},
 	{

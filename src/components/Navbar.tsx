@@ -79,7 +79,7 @@ const Navbar: React.FC<NavbarProps> = ({ isDarkMode, toggleTheme }) => {
             aria-label="Toggle Language"
           >
             <Globe size={14} />
-            {locale === 'en' ? 'PT' : 'EN'}
+            {locale.toUpperCase()}
           </button>
           <button
             onClick={toggleTheme}
@@ -98,7 +98,7 @@ const Navbar: React.FC<NavbarProps> = ({ isDarkMode, toggleTheme }) => {
             aria-label="Toggle Language"
           >
             <Globe size={14} />
-            {locale === 'en' ? 'PT' : 'EN'}
+            {locale.toUpperCase()}
           </button>
            <button
             onClick={toggleTheme}

@@ -24,9 +24,10 @@ const Projects: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {PROJECTS.map((project, index) => {
             const translatedProject = t.projects.items[index];
+            const isLastOdd = PROJECTS.length % 2 !== 0 && index === PROJECTS.length - 1;
             return (
-              <ScrollReveal key={index} delay={index % 2 * 100}>
-                <div className="flex flex-col bg-white dark:bg-slate-900 rounded-2xl p-8 border border-slate-200 dark:border-slate-800 hover:shadow-xl hover:shadow-slate-200/50 dark:hover:shadow-black/20 transition-all duration-300 h-full group">
+              <ScrollReveal key={index} delay={index % 2 * 100} className={isLastOdd ? 'md:col-span-2' : ''}>
+                <div className={`flex flex-col bg-white dark:bg-slate-900 rounded-2xl p-8 border border-slate-200 dark:border-slate-800 hover:shadow-xl hover:shadow-slate-200/50 dark:hover:shadow-black/20 transition-all duration-300 h-full group${isLastOdd ? ' md:max-w-xl md:mx-auto' : ''}`}>
                   <div className="flex justify-between items-start mb-6">
                     <span className="text-xs font-bold uppercase tracking-wider text-brand-600 dark:text-brand-400 bg-brand-50 dark:bg-brand-900/20 px-3 py-1 rounded-full border border-brand-100 dark:border-brand-900/30">
                       {translatedProject?.category || project.category}
@@ -34,7 +35,7 @@ const Projects: React.FC = () => {
                   </div>
 
                   <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-4 group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors">
-                    {project.title}
+                    {translatedProject?.title || project.title}
                   </h3>
 
                   <p className="text-slate-600 dark:text-slate-400 leading-relaxed mb-8 flex-grow text-base">

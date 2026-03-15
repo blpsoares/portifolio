@@ -83,36 +83,43 @@ const en = {
     title: "Projects",
     items: [
       {
+        title: "Corporate RAG Chatbot",
         category: "RAG & ENTERPRISE AI",
         description:
-          "Architecture and delivery of a conversational chatbot for a pharmaceutical client using Dialogflow CX integrated with a knowledge base of 100+ internal PDF documents. The system replaced a manual document consultation process with a natural language interface, applying RAG for semantic retrieval of unstructured information.",
+          "Architecture and delivery of an internal corporate conversational chatbot using Dialogflow CX integrated with a knowledge base of 10,000+ documents (JSONs, spreadsheets, and PDFs). The system replaced a manual document consultation process with a natural language interface, applying RAG for semantic retrieval of unstructured information.",
       },
       {
+        title: "Intelligent Filters — NLP to Database Query Agent",
         category: "AI AGENT · TOOL USE",
         description:
           "Development of an AI agent capable of interpreting free-text user inputs and converting them into structured MongoDB queries. The system understands user intent, applies business logic, and returns filtered results — eliminating the need for manual filter input. Integrated into an internal production product.",
       },
       {
+        title: "Document AI Custom Extractor",
         category: "AI & AUTOMATION",
         description:
           "Architecture and implementation of a data extraction pipeline with Google Document AI for an enterprise client. Replaced a 100% manual operational validation process with an automated flow that identifies, extracts, and validates specific fields from unstructured documents with high accuracy. Solution designed for reuse across other clients with the same need.",
       },
       {
+        title: "Massive Migration with Node Streams",
         category: "PERFORMANCE & DATA",
         description:
           "Architecture and execution of a migration pipeline for 20,000+ documents from multiple sources (Drive, OneDrive, S3, Local) to DocuSign. Intensive use of Node.js Streams for backpressure control, preventing memory leaks. Observability implementation with Winston for granular recovery on failure — fault tolerance without reprocessing from scratch. Solution built to be reusable across other clients with the same need.",
       },
       {
+        title: "Redis Optimization",
         category: "PERFORMANCE",
         description:
           "Strategic cache implementation using Hashsets and Sorted Lists to store results of complex computations. Drastic reduction in latency and database costs for high-concurrency endpoints. Complex queries with response time reduced from ~10s to ~2s (in some cases below 900ms).",
       },
       {
+        title: "MongoDB Triggers Versioning",
         category: "DEVOPS & INFRA",
         description:
           "Creation of a proprietary model for secure versioning of MongoDB Atlas Triggers. The system ensures synchronization between application code and database functions, preventing deploy errors and forgotten critical configurations.",
       },
       {
+        title: "Intern Training",
         category: "MENTORSHIP",
         description:
           "Development of a practical project focused on technical reasoning for intern training. The environment simulates real backend challenges, promoting mutual learning and raising the team's technical bar.",
