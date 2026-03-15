@@ -1,7 +1,10 @@
 import React from "react";
 import { Mail, Github, Linkedin, FileDown } from "lucide-react";
+import { useI18n } from "../i18n";
 
 const Footer: React.FC = () => {
+	const { t } = useI18n();
+
 	return (
 		<footer className="py-12 px-6 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950">
 			<div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
@@ -10,8 +13,7 @@ const Footer: React.FC = () => {
 						&gt;_<span className="text-brand-600 dark:text-brand-400">.</span>
 					</div>
 					<p className="text-sm text-slate-500 dark:text-slate-400 mt-2">
-						© {new Date().getFullYear()} - Bryan Soares. Todos os direitos
-						reservados.
+						© {new Date().getFullYear()} - Bryan Soares. {t.footer.rights}
 					</p>
 				</div>
 
@@ -22,7 +24,7 @@ const Footer: React.FC = () => {
 						aria-label="Download CV"
 					>
 						<FileDown size={16} />
-						Download CV
+						{t.footer.downloadCv}
 					</a>
 					<a
 						href="https://github.com/blpsoares"

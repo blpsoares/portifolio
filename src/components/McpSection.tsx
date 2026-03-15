@@ -2,6 +2,7 @@ import React from 'react';
 import { MCP_WORKFLOWS } from '../constants';
 import { Terminal, FileText, Database, Cpu } from 'lucide-react';
 import ScrollReveal from './ScrollReveal';
+import { useI18n } from '../i18n';
 
 const iconMap = {
   terminal: Terminal,
@@ -10,6 +11,8 @@ const iconMap = {
 };
 
 const McpSection: React.FC = () => {
+  const { t } = useI18n();
+
   return (
     <section id="mcp" className="py-32 px-6 relative overflow-hidden">
       {/* Subtle Grid Background */}
@@ -21,13 +24,13 @@ const McpSection: React.FC = () => {
             <div className="max-w-2xl">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-100 dark:bg-brand-900/30 text-brand-700 dark:text-brand-300 text-xs font-bold uppercase tracking-wider mb-4">
                   <Cpu size={12} />
-                  <span>Workflow Intelligence</span>
+                  <span>{t.mcp.badge}</span>
               </div>
               <h2 className="text-3xl md:text-5xl font-bold text-slate-900 dark:text-white mb-6 tracking-tight">
-                Model Context Protocol (MCP)
+                {t.mcp.title}
               </h2>
               <p className="text-lg text-slate-600 dark:text-slate-400 leading-relaxed">
-                O uso de MCPs não é apenas uma ferramenta, é a base da minha produtividade. Conecto LLMs diretamente ao contexto do projeto para eliminar tarefas repetitivas.
+                {t.mcp.subtitle}
               </p>
             </div>
           </div>
@@ -38,7 +41,7 @@ const McpSection: React.FC = () => {
             const Icon = iconMap[item.icon];
             return (
               <ScrollReveal key={index} delay={index * 150}>
-                <div 
+                <div
                   className="bg-white dark:bg-slate-900 p-8 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm hover:border-brand-500/50 dark:hover:border-brand-500/50 transition-all duration-300 group h-full hover:-translate-y-1"
                 >
                   <div className="w-14 h-14 bg-slate-50 dark:bg-slate-800 rounded-xl flex items-center justify-center mb-6 group-hover:bg-brand-500 group-hover:text-white transition-all duration-300">
@@ -48,7 +51,7 @@ const McpSection: React.FC = () => {
                     {item.tool}
                   </h3>
                   <p className="text-slate-600 dark:text-slate-400 leading-relaxed text-sm">
-                    {item.description}
+                    {t.mcp.descriptions[index]}
                   </p>
                 </div>
               </ScrollReveal>
