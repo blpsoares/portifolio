@@ -28,8 +28,8 @@ const Navbar: React.FC<NavbarProps> = ({ isDarkMode, toggleTheme }) => {
     { name: t.nav.mcps, href: '#mcp' },
     { name: t.nav.projects, href: '#projects' },
     { name: t.nav.vibeProjects, href: '#vibe-projects' },
-    { name: t.nav.education, href: '#education' },
     { name: t.nav.career, href: '#career' },
+    { name: t.nav.education, href: '#education' },
     { name: t.nav.aiUsage, href: '#ai-usage' },
   ];
 
