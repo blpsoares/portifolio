@@ -7,6 +7,7 @@ const pt = {
     mcps: "MCPs",
     projects: "Projetos",
     vibeProjects: "Vibe Projects",
+    education: "Forma\u00e7\u00e3o",
     career: "Trajet\u00f3ria",
     aiUsage: "Vibe Coding",
   },
@@ -27,15 +28,38 @@ const pt = {
   whoiam: {
     title: "Quem sou",
     p1_start:
-      "Desenvolvo sistemas backend robustos e solu\u00e7\u00f5es de ",
-    p1_highlight1: "IA generativa",
+      "Backend Engineer com ~8 anos de experi\u00eancia em desenvolvimento de software e 3+ anos focados em ",
+    p1_highlight1: "IA Generativa aplicada",
     p1_mid:
-      " que resolvem problemas reais de neg\u00f3cio. Com 5 anos de experi\u00eancia em engenharia de software e 3 anos focados em ",
-    p1_highlight2: "GenAI aplicada",
+      ". Construo sistemas escal\u00e1veis, pipelines RAG, agentes de IA com tool use e solu\u00e7\u00f5es de ",
+    p1_highlight2: "orquestra\u00e7\u00e3o multi-agente",
     p1_end:
-      ", j\u00e1 atuei desde a implementa\u00e7\u00e3o de pipelines RAG e agentes com tool use at\u00e9 a condu\u00e7\u00e3o de decis\u00f5es arquiteturais diretamente com clientes \u2014 mesmo quando ainda era estagi\u00e1rio.",
+      " para problemas reais de neg\u00f3cio. Experi\u00eancia em arquitetar produtos com GenAI em produ\u00e7\u00e3o \u2014 de chatbots corporativos sobre bases de 10.000+ documentos a agentes de NLP-to-database. Atualmente cursando P\u00f3s-Gradua\u00e7\u00e3o em Engenharia de IA Aplicada.",
     p2: "Minha diferen\u00e7a n\u00e3o \u00e9 s\u00f3 t\u00e9cnica: tenho a comunica\u00e7\u00e3o de quem vende e a profundidade de quem constr\u00f3i. Prefiro arquitetar sistemas que durem do que entregar features que precisem ser reescritas.",
     cta: "Ver projetos",
+  },
+  education: {
+    title: "Forma\u00e7\u00e3o Acad\u00eamica",
+    items: [
+      {
+        institution: "UNIPDS",
+        degree: "P\u00f3s-Gradua\u00e7\u00e3o",
+        field: "Engenharia de IA Aplicada",
+        period: "fev 2026 \u2013 mar 2027",
+        logo: "/unipds-logo.jpg",
+        current: true,
+        status: "Em andamento",
+      },
+      {
+        institution: "Pontif\u00edcia Universidade Cat\u00f3lica do Paran\u00e1",
+        degree: "Tecn\u00f3logo",
+        field: "An\u00e1lise e Desenvolvimento de Sistemas",
+        period: "jul 2022 \u2013 jan 2025",
+        logo: "/pucpr-logo.jpg",
+        current: false,
+        status: "",
+      },
+    ],
   },
   techstack: {
     title: "Arsenal Tecnol\u00f3gico",

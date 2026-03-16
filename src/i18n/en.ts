@@ -7,6 +7,7 @@ const en = {
     mcps: "MCPs",
     projects: "Projects",
     vibeProjects: "Vibe Projects",
+    education: "Education",
     career: "Career",
     aiUsage: "Vibe Coding",
   },
@@ -27,15 +28,38 @@ const en = {
   whoiam: {
     title: "Who I am",
     p1_start:
-      "I build robust backend systems and ",
-    p1_highlight1: "generative AI",
+      "Backend Engineer with ~8 years of experience in software development and 3+ years focused on ",
+    p1_highlight1: "applied Generative AI",
     p1_mid:
-      " solutions that solve real business problems. With 5 years of software engineering experience and 3 years focused on ",
-    p1_highlight2: "applied GenAI",
+      ". I build scalable systems, RAG pipelines, AI agents with tool use, and ",
+    p1_highlight2: "multi-agent orchestration",
     p1_end:
-      ", I've worked on everything from implementing RAG pipelines and agents with tool use to leading architectural decisions directly with clients — even when I was still an intern.",
+      " solutions for real business problems. Experienced in architecting GenAI-powered products in production — from corporate chatbots over 10,000+ document knowledge bases to NLP-to-database query agents. Currently pursuing a Postgraduate degree in Applied AI Engineering.",
     p2: "My edge isn't just technical: I have the communication skills of someone who sells and the depth of someone who builds. I'd rather architect systems that last than ship features that need to be rewritten.",
     cta: "View projects",
+  },
+  education: {
+    title: "Education",
+    items: [
+      {
+        institution: "UNIPDS",
+        degree: "Postgraduate",
+        field: "Applied AI Engineering",
+        period: "Feb 2026 – Mar 2027",
+        logo: "/unipds-logo.jpg",
+        current: true,
+        status: "In progress",
+      },
+      {
+        institution: "Pontif\u00edcia Universidade Cat\u00f3lica do Paran\u00e1",
+        degree: "Technologist",
+        field: "Systems Analysis and Development",
+        period: "Jul 2022 – Jan 2025",
+        logo: "/pucpr-logo.jpg",
+        current: false,
+        status: "",
+      },
+    ],
   },
   techstack: {
     title: "Tech Stack",
