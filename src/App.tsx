@@ -13,6 +13,7 @@ import VibeProjects from './components/VibeProjects';
 import About from './components/About';
 import Footer from './components/Footer';
 import NeuralBackground from './components/NeuralBackground';
+import LearningSection from './components/LearningSection';
 import VibeProjectsPage from './components/VibeProjectsPage';
 
 function App() {
@@ -77,6 +78,7 @@ function App() {
                 <Projects />
                 <Career />
                 <Education />
+                <LearningSection />
                 <VibeProjects />
                 <About />
               </main>

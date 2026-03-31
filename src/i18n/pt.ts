@@ -28,7 +28,7 @@ const pt = {
   whoiam: {
     title: "Quem sou",
     p1_start:
-      "Backend Engineer com ~8 anos de experi\u00eancia em desenvolvimento de software e 3+ anos focados em ",
+      "Backend Engineer com ~6 anos de experi\u00eancia em desenvolvimento de software, com os \u00faltimos 3 anos focados em ",
     p1_highlight1: "IA Generativa aplicada",
     p1_mid:
       ". Construo sistemas escal\u00e1veis, pipelines RAG, agentes de IA com tool use e solu\u00e7\u00f5es de ",
@@ -223,8 +223,8 @@ const pt = {
       {
         role: "Desenvolvedor Frontend",
         company: "Next Fusion",
-        period: "2018 \u2013 jun 2023",
-        duration: "~5 anos",
+        period: "2020 \u2013 2023",
+        duration: "~3 anos",
         type: "S\u00f3cio",
         location: "S\u00e3o Paulo",
         current: false,
@@ -244,6 +244,18 @@ const pt = {
     title: "Vibe Coding & Automa\u00e7\u00e3o",
     philosophy:
       "Copilotos aceleram, mas a responsabilidade t\u00e9cnica permanece. Acredito na automa\u00e7\u00e3o que elimina o repetitivo, permitindo foco total na arquitetura e na corre\u00e7\u00e3o de gargalos. A IA ajuda a construir; eu reviso, otimizo e garanto a qualidade.",
+  },
+  learning: {
+    badge: "Open Source \u00b7 Sistema de Estudos",
+    title: "Como me mantenho aprendendo",
+    subtitle:
+      "Um app web open source que constru\u00ed para estudar de forma consistente \u2014 transformando conte\u00fado em quizzes e acompanhando meu pr\u00f3prio progresso.",
+    p1: "Em vez de leitura passiva, transformo tudo que estudo em pr\u00e1tica ativa. Constru\u00ed o learning.blpsoares.dev como meu sistema pessoal de estudos: insiro conte\u00fado, ele gera perguntas, e eu respondo para refor\u00e7ar o que realmente ficou.",
+    p2: "O projeto \u00e9 open source e totalmente vibe coded \u2014 desenvolvido com assist\u00eancia de IA da ideia ao deploy. N\u00e3o \u00e9 apenas um side project; faz parte do meu fluxo di\u00e1rio.",
+    visitSite: "Visitar site",
+    viewSource: "Ver c\u00f3digo",
+    readArticle: "Ler o artigo",
+    badgeType: "Ferramenta de Estudo",
   },
   vibeProjects: {
     badge: "Vibe Coded \u00b7 Open Source",

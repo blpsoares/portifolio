@@ -28,7 +28,7 @@ const en = {
   whoiam: {
     title: "Who I am",
     p1_start:
-      "Backend Engineer with ~8 years of experience in software development and 3+ years focused on ",
+      "Backend Engineer with ~6 years of experience in software development, with the last 3 years focused on ",
     p1_highlight1: "applied Generative AI",
     p1_mid:
       ". I build scalable systems, RAG pipelines, AI agents with tool use, and ",
@@ -223,8 +223,8 @@ const en = {
       {
         role: "Frontend Developer",
         company: "Next Fusion",
-        period: "2018 – Jun 2023",
-        duration: "~5 years",
+        period: "2020 – 2023",
+        duration: "~3 years",
         type: "Co-founder",
         location: "São Paulo",
         current: false,
@@ -244,6 +244,18 @@ const en = {
     title: "Vibe Coding & Automation",
     philosophy:
       "Copilots accelerate, but technical responsibility remains. I believe in automation that eliminates the repetitive, allowing full focus on architecture and bottleneck resolution. AI helps build; I review, optimize, and ensure quality.",
+  },
+  learning: {
+    badge: "Open Source · Study System",
+    title: "How I Keep Learning",
+    subtitle:
+      "An open source web app I built to study consistently — turning content into quizzes and tracking my own progress.",
+    p1: "Instead of passive reading, I turn everything I study into active practice. I built learning.blpsoares.dev as my personal study system: I feed in content, it generates questions, and I answer them to reinforce what actually stuck.",
+    p2: "The project is open source and fully vibe coded — built with AI assistance from idea to deploy. It's not just a side project; it's part of my daily workflow.",
+    visitSite: "Visit site",
+    viewSource: "View source",
+    readArticle: "Read the article",
+    badgeType: "Study Tool",
   },
   vibeProjects: {
     badge: "Vibe Coded · Open Source",
