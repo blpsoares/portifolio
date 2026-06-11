@@ -108,8 +108,8 @@ const BinaryGlobe: React.FC = () => {
             // Light Mode: Darker Green (brand-700) for contrast against white
             // Dark Mode: Bright Green (brand-400) for contrast against black
             const color = isDark 
-                ? `rgba(74, 222, 128, ${alpha})` // Brand 400
-                : `rgba(21, 128, 61, ${alpha * 0.8})`; // Brand 700 with slight transp fix
+                ? `rgba(45, 212, 191, ${alpha})` // Brand Teal 400
+                : `rgba(15, 118, 110, ${alpha * 0.8})`; // Brand Teal 700
 
             ctx.fillStyle = color;
             ctx.font = `${Math.max(8, DOT_SIZE * scale)}px monospace`;

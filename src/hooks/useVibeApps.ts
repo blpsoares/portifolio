@@ -13,7 +13,7 @@ const APPS_URL =
   'https://raw.githubusercontent.com/opvibes/openvibes-embark/refs/heads/main/apps.jsonc';
 const DOMAIN = 'openvibes.tech';
 
-const PRIORITY_SUBDOMAINS = ['duckflux', 'embark'];
+const PRIORITY_SUBDOMAINS = ['agentistics', 'embark'];
 
 export function getAppUrl(app: VibeApp): string {
   return `https://${app.subdomain}.${DOMAIN}`;
