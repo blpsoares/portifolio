@@ -1,11 +1,23 @@
 import React, { useState, useEffect } from 'react';
-import { Moon, Sun, Menu, X, Globe } from 'lucide-react';
+import { Moon, Sun, Menu, X, Globe, ChevronDown } from 'lucide-react';
 import { useI18n } from '../i18n';
 
 interface NavbarProps {
   isDarkMode: boolean;
   toggleTheme: () => void;
 }
+
+interface NavLeaf {
+  name: string;
+  href: string;
+}
+
+interface NavGroup {
+  name: string;
+  children: NavLeaf[];
+}
+
+type NavItem = NavLeaf | NavGroup;
 
 const Navbar: React.FC<NavbarProps> = ({ isDarkMode, toggleTheme }) => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -20,17 +32,30 @@ const Navbar: React.FC<NavbarProps> = ({ isDarkMode, toggleTheme }) => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const navLinks = [
+  // Order mirrors the on-page section order so menu jumps feel natural.
+  // Sections that belong together are grouped into dropdowns to keep the bar compact.
+  const navItems: NavItem[] = [
     { name: t.nav.profile, href: '#profile' },
     { name: t.nav.about, href: '#about' },
-    { name: t.nav.stacks, href: '#stack' },
-    { name: t.nav.lowcode, href: '#lowcode' },
-    { name: t.nav.mcps, href: '#mcp' },
+    {
+      name: t.nav.expertise,
+      children: [
+        { name: t.nav.stacks, href: '#stack' },
+        { name: t.nav.lowcode, href: '#lowcode' },
+        { name: t.nav.mcps, href: '#mcp' },
+      ],
+    },
     { name: t.nav.projects, href: '#projects' },
-    { name: t.nav.vibeProjects, href: '#vibe-projects' },
     { name: t.nav.career, href: '#career' },
     { name: t.nav.education, href: '#education' },
-    { name: t.nav.aiUsage, href: '#ai-usage' },
+    {
+      name: t.nav.vibe,
+      children: [
+        { name: t.nav.learning, href: '#learning' },
+        { name: t.nav.vibeProjects, href: '#vibe-projects' },
+        { name: t.nav.aiUsage, href: '#ai-usage' },
+      ],
+    },
   ];
 
   const handleNavClick = (href: string) => {
@@ -52,6 +77,9 @@ const Navbar: React.FC<NavbarProps> = ({ isDarkMode, toggleTheme }) => {
     setLocale(locale === 'en' ? 'pt' : 'en');
   };
 
+  const linkClass =
+    'text-xs font-medium text-slate-600 dark:text-slate-400 hover:text-brand-600 dark:hover:text-brand-400 transition-colors whitespace-nowrap';
+
   return (
     <nav
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
@@ -67,15 +95,44 @@ const Navbar: React.FC<NavbarProps> = ({ isDarkMode, toggleTheme }) => {
 
         {/* Desktop Nav */}
         <div className="hidden md:flex items-center gap-4 lg:gap-6">
-          {navLinks.map((link) => (
-            <button
-              key={link.href}
-              onClick={() => handleNavClick(link.href)}
-              className="text-xs font-medium text-slate-600 dark:text-slate-400 hover:text-brand-600 dark:hover:text-brand-400 transition-colors whitespace-nowrap"
-            >
-              {link.name}
-            </button>
-          ))}
+          {navItems.map((item) =>
+            'children' in item ? (
+              <div key={item.name} className="relative group">
+                <button
+                  className={`${linkClass} flex items-center gap-1`}
+                  aria-haspopup="true"
+                >
+                  {item.name}
+                  <ChevronDown
+                    size={12}
+                    className="transition-transform duration-200 group-hover:rotate-180"
+                  />
+                </button>
+                {/* Dropdown panel (pt-3 bridges the gap so hover doesn't drop) */}
+                <div className="absolute left-1/2 -translate-x-1/2 top-full pt-3 hidden group-hover:block">
+                  <div className="min-w-[180px] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-lg shadow-slate-900/5 py-2">
+                    {item.children.map((child) => (
+                      <button
+                        key={child.href}
+                        onClick={() => handleNavClick(child.href)}
+                        className="w-full text-left px-4 py-2 text-xs font-medium text-slate-600 dark:text-slate-400 hover:text-brand-600 dark:hover:text-brand-400 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors whitespace-nowrap"
+                      >
+                        {child.name}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <button
+                key={item.href}
+                onClick={() => handleNavClick(item.href)}
+                className={linkClass}
+              >
+                {item.name}
+              </button>
+            ),
+          )}
           <div className="w-px h-6 bg-slate-200 dark:bg-slate-800"></div>
           <button
             onClick={toggleLocale}
@@ -121,17 +178,39 @@ const Navbar: React.FC<NavbarProps> = ({ isDarkMode, toggleTheme }) => {
 
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
-        <div className="md:hidden absolute top-full left-0 right-0 bg-white dark:bg-slate-950 border-b border-slate-200 dark:border-slate-800 px-6 py-4 shadow-xl">
+        <div className="md:hidden absolute top-full left-0 right-0 bg-white dark:bg-slate-950 border-b border-slate-200 dark:border-slate-800 px-6 py-4 shadow-xl max-h-[80vh] overflow-y-auto">
           <div className="flex flex-col space-y-4">
-            {navLinks.map((link) => (
-              <button
-                key={link.href}
-                onClick={() => handleNavClick(link.href)}
-                className="text-left text-base font-medium text-slate-600 dark:text-slate-400 hover:text-brand-600 dark:hover:text-brand-400 py-2 border-b border-slate-100 dark:border-slate-900 last:border-0"
-              >
-                {link.name}
-              </button>
-            ))}
+            {navItems.map((item) =>
+              'children' in item ? (
+                <div
+                  key={item.name}
+                  className="py-2 border-b border-slate-100 dark:border-slate-900 last:border-0"
+                >
+                  <p className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-2">
+                    {item.name}
+                  </p>
+                  <div className="flex flex-col space-y-2 pl-3 border-l border-slate-200 dark:border-slate-800">
+                    {item.children.map((child) => (
+                      <button
+                        key={child.href}
+                        onClick={() => handleNavClick(child.href)}
+                        className="text-left text-base font-medium text-slate-600 dark:text-slate-400 hover:text-brand-600 dark:hover:text-brand-400"
+                      >
+                        {child.name}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                <button
+                  key={item.href}
+                  onClick={() => handleNavClick(item.href)}
+                  className="text-left text-base font-medium text-slate-600 dark:text-slate-400 hover:text-brand-600 dark:hover:text-brand-400 py-2 border-b border-slate-100 dark:border-slate-900 last:border-0"
+                >
+                  {item.name}
+                </button>
+              ),
+            )}
           </div>
         </div>
       )}

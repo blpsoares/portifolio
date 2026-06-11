@@ -70,6 +70,10 @@
       body {
         font-family: 'Inter', sans-serif;
       }
+      /* Keep anchored sections clear of the fixed navbar when navigating via the menu */
+      section[id] {
+        scroll-margin-top: 6rem;
+      }
       .hide-scrollbar::-webkit-scrollbar {
         display: none;
       }

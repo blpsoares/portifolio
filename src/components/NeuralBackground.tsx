@@ -144,9 +144,9 @@ const NeuralBackground: React.FC = () => {
 				? "rgba(255, 255, 255, 0.8)"
 				: "rgba(51, 65, 85, 0.8)";
 			const wordColor = isDark
-				? "rgba(74, 222, 128, 0.6)"
-				: "rgba(21, 128, 61, 0.6)"; // Brand Green for words
-			const lineColorBase = isDark ? "74, 222, 128" : "21, 128, 61"; // RGB components for line
+				? "rgba(45, 212, 191, 0.6)"
+				: "rgba(15, 118, 110, 0.6)"; // Brand Teal for words
+			const lineColorBase = isDark ? "45, 212, 191" : "15, 118, 110"; // RGB components for line
 
 			// Calculate speed
 			const scrollSpeed = (targetScrollY - scrollY) * SCROLL_SPEED_MULTIPLIER;
