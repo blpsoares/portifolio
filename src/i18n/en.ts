@@ -33,7 +33,7 @@ const en = {
     online: "online",
     badge: "local · 0 tokens · $0.00",
     placeholder: "Ask me anything about Bryan…",
-    hint: "← talk to my AI",
+    hint: "← talk to the AI",
     thinking: "reasoning",
     toolRunning: "executing…",
     disclaimer: "Deterministic agent, runs 100% in your browser.",
@@ -50,7 +50,7 @@ const en = {
       "tools ready: scroll · highlight · download_cv · contact",
       "agent online.",
     ],
-    cta: "Ask my AI",
+    cta: "AI Assistant",
     close: "Close",
     viewing: "viewing",
     contextSuggestions: {

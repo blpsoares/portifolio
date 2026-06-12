@@ -68,7 +68,7 @@ const AiOrb: React.FC<AiOrbProps> = ({ size = 120, className = '', pulse = true 
       </svg>
 
       {/* glowing core */}
-      <div className="absolute inset-0 flex items-center justify-center animate-orb-bob">
+      <div className="absolute inset-0 flex items-center justify-center">
         <div
           className="rounded-full bg-gradient-to-br from-brand-300 via-brand-500 to-emerald-600"
           style={{

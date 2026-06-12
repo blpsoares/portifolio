@@ -33,7 +33,7 @@ const pt = {
     online: "online",
     badge: "local · 0 tokens · $0.00",
     placeholder: "Pergunte algo sobre o Bryan…",
-    hint: "← converse com minha IA",
+    hint: "← converse com a IA",
     thinking: "raciocinando",
     toolRunning: "executando…",
     disclaimer: "Agente determinístico, roda 100% no seu navegador.",
@@ -50,7 +50,7 @@ const pt = {
       "ferramentas prontas: scroll · highlight · download_cv · contato",
       "agente online.",
     ],
-    cta: "Pergunte à minha IA",
+    cta: "Assistente IA",
     close: "Fechar",
     viewing: "vendo",
     contextSuggestions: {

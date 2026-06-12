@@ -10,8 +10,7 @@ import {
 import { ArrowRight, Github, Linkedin, Mail, ChevronDown, Download, Loader2, Circle } from 'lucide-react';
 import { useI18n } from '../i18n';
 import { useCvDownload } from '../hooks/useCvDownload';
-import AgentConsole from './AgentConsole';
-import AiOrb from './ui/AiOrb';
+import NeuralViz from './ui/NeuralViz';
 
 const Hero: React.FC = () => {
   const { t } = useI18n();
@@ -19,7 +18,7 @@ const Hero: React.FC = () => {
   const reduce = useReducedMotion();
   const ref = useRef<HTMLElement>(null);
 
-  // Scroll-driven parallax: layers drift at different speeds as you leave the hero.
+  // Scroll-driven parallax.
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ['start start', 'end start'],
@@ -28,7 +27,7 @@ const Hero: React.FC = () => {
   const contentScrollY = useTransform(scrollYProgress, [0, 1], [0, reduce ? 0 : -50]);
   const heroFade = useTransform(scrollYProgress, [0, 0.75], [1, reduce ? 1 : 0]);
 
-  // Mouse-driven parallax: spring-smoothed pointer position in [-1, 1].
+  // Mouse-driven parallax.
   const mx = useMotionValue(0);
   const my = useMotionValue(0);
   const spring = { stiffness: 45, damping: 18, mass: 0.6 };
@@ -42,15 +41,12 @@ const Hero: React.FC = () => {
     my.set(((e.clientY - r.top) / r.height - 0.5) * 2);
   };
 
-  // Layer offsets (further layers move more = depth).
-  const orbX = useTransform(px, [-1, 1], [50, -50]);
-  const orbY = useTransform(py, [-1, 1], [40, -40]);
-  const haloX = useTransform(px, [-1, 1], [26, -26]);
-  const haloY = useTransform(py, [-1, 1], [22, -22]);
-  const consoleX = useTransform(px, [-1, 1], [-14, 14]);
-  const consoleY = useTransform(py, [-1, 1], [-10, 10]);
-  const consoleRotX = useTransform(py, [-1, 1], [4, -4]);
-  const consoleRotY = useTransform(px, [-1, 1], [-5, 5]);
+  const haloX = useTransform(px, [-1, 1], [30, -30]);
+  const haloY = useTransform(py, [-1, 1], [24, -24]);
+  const vizX = useTransform(px, [-1, 1], [-18, 18]);
+  const vizY = useTransform(py, [-1, 1], [-14, 14]);
+  const vizRotX = useTransform(py, [-1, 1], [6, -6]);
+  const vizRotY = useTransform(px, [-1, 1], [-8, 8]);
 
   return (
     <section
@@ -61,31 +57,27 @@ const Hero: React.FC = () => {
       onMouseMove={handleMove}
       className="relative min-h-[100svh] flex items-center pt-28 pb-20 px-6 overflow-hidden"
     >
-      {/* ===== BACKGROUND PARALLAX LAYERS (decorative, behind everything) ===== */}
+      {/* ===== BACKGROUND PARALLAX LAYERS ===== */}
       <motion.div
         aria-hidden="true"
         style={{ y: bgScrollY, opacity: heroFade }}
         className="pointer-events-none absolute inset-0 z-0"
       >
         <div className="hero-aurora absolute inset-0" />
-        {/* the AI orb now lives quietly in the back-right, as ambient depth */}
-        <motion.div
-          style={{ x: orbX, y: orbY }}
-          className="absolute right-[-6%] top-[8%] opacity-[0.22] dark:opacity-30 hidden md:block"
-        >
-          <AiOrb size={360} pulse={false} />
-        </motion.div>
-        {/* soft counter-halo on the left for balance */}
         <motion.div
           style={{ x: haloX, y: haloY }}
-          className="absolute left-[-10%] bottom-[6%] w-[420px] h-[420px] rounded-full bg-brand-500/10 blur-3xl"
+          className="absolute right-[6%] top-[14%] w-[360px] h-[360px] rounded-full bg-brand-500/10 blur-3xl"
+        />
+        <motion.div
+          style={{ x: haloX, y: haloY }}
+          className="absolute left-[-8%] bottom-[8%] w-[380px] h-[380px] rounded-full bg-emerald-500/10 blur-3xl"
         />
       </motion.div>
 
       {/* ===== FOREGROUND CONTENT ===== */}
       <motion.div
         style={{ y: contentScrollY }}
-        className="relative z-10 max-w-6xl mx-auto w-full grid grid-cols-1 lg:grid-cols-[1.05fr_0.95fr] gap-x-10 gap-y-14 items-center"
+        className="relative z-10 max-w-6xl mx-auto w-full grid grid-cols-1 lg:grid-cols-[1.05fr_0.95fr] gap-x-10 gap-y-12 items-center"
       >
         {/* LEFT COLUMN */}
         <motion.div
@@ -174,24 +166,21 @@ const Hero: React.FC = () => {
           </div>
         </motion.div>
 
-        {/* RIGHT COLUMN — the AI agent console (with 3D parallax tilt) */}
+        {/* RIGHT COLUMN — meaningful AI visual (neural network) with parallax */}
         <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
+          initial={{ opacity: 0, scale: 0.92 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.8, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
           style={{
-            x: consoleX,
-            y: consoleY,
-            rotateX: consoleRotX,
-            rotateY: consoleRotY,
+            x: vizX,
+            y: vizY,
+            rotateX: vizRotX,
+            rotateY: vizRotY,
             transformPerspective: 1200,
           }}
-          className="relative w-full max-w-md mx-auto lg:mx-0 lg:ml-auto [transform-style:preserve-3d]"
+          className="relative hidden lg:block w-full max-w-md mx-auto [transform-style:preserve-3d]"
         >
-          <div className="hidden lg:flex items-center justify-end gap-2 mb-3 text-sm font-medium text-brand-600 dark:text-brand-400">
-            <span className="animate-float">{t.agent.hint}</span>
-          </div>
-          <AgentConsole />
+          <NeuralViz />
         </motion.div>
       </motion.div>
 

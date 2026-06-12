@@ -233,7 +233,7 @@
         -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 30%, transparent 75%);
       }
 
-      /* Animated gradient stroke — wrap any rounded element */
+      /* Crisp, even gradient stroke — wrap any rounded element */
       .gradient-border {
         position: relative;
         isolation: isolate;
@@ -244,20 +244,38 @@
         inset: 0;
         border-radius: inherit;
         padding: 1px;
-        background: linear-gradient(130deg,
-          rgba(45, 212, 191, 0.7),
-          rgba(16, 185, 129, 0.05) 40%,
-          rgba(16, 185, 129, 0.05) 60%,
-          rgba(45, 212, 191, 0.7));
-        background-size: 220% 220%;
-        animation: gradient-shift 7s ease infinite;
+        background: linear-gradient(140deg,
+          rgba(45, 212, 191, 0.45),
+          rgba(94, 234, 212, 0.14) 48%,
+          rgba(16, 185, 129, 0.4));
         -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
         -webkit-mask-composite: xor;
         mask-composite: exclude;
         pointer-events: none;
         z-index: -1;
       }
-      .gradient-border:hover::before { background-size: 160% 160%; }
+      .gradient-border:hover::before {
+        background: linear-gradient(140deg,
+          rgba(45, 212, 191, 0.7),
+          rgba(94, 234, 212, 0.25) 48%,
+          rgba(16, 185, 129, 0.6));
+      }
+
+      /* Living neural-network visualization (hero) */
+      @keyframes signal-flow { to { stroke-dashoffset: -24; } }
+      @keyframes node-pulse {
+        0%, 100% { opacity: 0.45; transform: scale(1); }
+        50% { opacity: 1; transform: scale(1.35); }
+      }
+      .neural-edge {
+        stroke-dasharray: 3 7;
+        animation: signal-flow 1.6s linear infinite;
+      }
+      .neural-node {
+        transform-box: fill-box;
+        transform-origin: center;
+        animation: node-pulse 3.2s ease-in-out infinite;
+      }
 
       /* Mouse-tracking spotlight glow (vars set via JS in GlowCard) */
       .spotlight::after {
@@ -303,7 +321,7 @@
 
       @media (prefers-reduced-motion: reduce) {
         .gradient-animate, .agent-highlight, .holo-text, .gradient-border::before,
-        .shimmer-bar, .bg-grid { animation: none !important; }
+        .shimmer-bar, .bg-grid, .neural-edge, .neural-node { animation: none !important; }
         *, *::before, *::after { scroll-behavior: auto !important; }
       }
     </style>
