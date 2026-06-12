@@ -31,18 +31,17 @@ interface ChatBody {
 
 /**
  * Ordered list of free models. OpenRouter routes through them with automatic
- * fallback (route: "fallback"): if one is down / busy / rate-limited it tries
- * the next. Only when ALL fail does the request error and the frontend drops to
- * the local deterministic agent. Override via the OPENROUTER_MODELS env var
- * (comma-separated) — free model ids rotate over time, so keep it fresh from
+ * fallback: if one is down / busy / rate-limited it tries the next. Only when
+ * ALL fail does the request error and the frontend drops to the local
+ * deterministic agent. Override via the OPENROUTER_MODELS env var
+ * (comma-separated). NOTE: OpenRouter caps the fallback list at 3 models, so
+ * only the first 3 are used. Free model ids rotate — keep fresh from
  * https://openrouter.ai/models?max_price=0
  */
 const DEFAULT_MODELS = [
   'openai/gpt-oss-120b:free',
   'meta-llama/llama-3.3-70b-instruct:free',
   'qwen/qwen3-next-80b-a3b-instruct:free',
-  'nvidia/nemotron-3-super-120b-a12b:free',
-  'google/gemma-4-31b-it:free',
 ];
 
 const resolveModels = (env: Env): string[] => {
@@ -126,7 +125,8 @@ export async function onRequestPost(context: {
         // responds. Providing `model` (primary) + `models` (full list) is the
         // most compatible form across API versions.
         model: modelList[0],
-        models: modelList,
+        // OpenRouter caps the fallback array at 3 models.
+        models: modelList.slice(0, 3),
         stream: true,
         temperature: 0.4,
         max_tokens: MAX_TOKENS,

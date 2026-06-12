@@ -8,9 +8,10 @@
 OPENROUTER_API_KEY=sk-or-your-key-here
 
 # Optional — ordered, comma-separated list of FREE models. OpenRouter tries them
-# in order with automatic fallback (route: "fallback"): when one is down / busy /
-# rate-limited it moves to the next. Only when ALL fail does the site drop to the
-# local deterministic agent. Free model ids rotate — refresh from
+# in order with automatic fallback: when one is down / busy / rate-limited it
+# moves to the next. Only when ALL fail does the site drop to the local
+# deterministic agent. NOTE: OpenRouter allows at most 3 models in the fallback
+# list, so only the first 3 are used. Free model ids rotate — refresh from
 # https://openrouter.ai/models?max_price=0
 # If unset, the function uses a sensible built-in default list.
-OPENROUTER_MODELS=openai/gpt-oss-120b:free,meta-llama/llama-3.3-70b-instruct:free,qwen/qwen3-next-80b-a3b-instruct:free,nvidia/nemotron-3-super-120b-a12b:free,google/gemma-4-31b-it:free
+OPENROUTER_MODELS=openai/gpt-oss-120b:free,meta-llama/llama-3.3-70b-instruct:free,qwen/qwen3-next-80b-a3b-instruct:free
