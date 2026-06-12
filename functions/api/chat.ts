@@ -64,11 +64,40 @@ const json = (data: unknown, status = 200): Response =>
     headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
   });
 
+/**
+ * Reject requests that don't originate from the site itself. Browsers always
+ * send `Origin` on a POST (same-origin and cross-origin), so this blocks casual
+ * scripted abuse from other origins and no-origin tools (curl without a header).
+ * It's a cheap filter, NOT strong auth — Origin can be spoofed by a determined
+ * caller. Allows the prod domain, its subdomains, Pages previews, and localhost.
+ */
+function originAllowed(request: Request): boolean {
+  const ref = request.headers.get('Origin') || request.headers.get('Referer') || '';
+  if (!ref) return false;
+  try {
+    const host = new URL(ref).hostname;
+    return (
+      host === 'blpsoares.dev' ||
+      host.endsWith('.blpsoares.dev') ||
+      host.endsWith('.pages.dev') ||
+      host === 'localhost' ||
+      host === '127.0.0.1'
+    );
+  } catch {
+    return false;
+  }
+}
+
 export async function onRequestPost(context: {
   request: Request;
   env: Env;
 }): Promise<Response> {
   const { request, env } = context;
+
+  // Block requests that aren't coming from the site itself.
+  if (!originAllowed(request)) {
+    return json({ error: 'forbidden' }, 403);
+  }
 
   // No key configured yet → tell the client to use the local fallback.
   if (!env.OPENROUTER_API_KEY) {

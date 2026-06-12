@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build && bun run build:worker",
+    "build:worker": "bun build worker/index.ts --outfile dist/_worker.js --target browser --format esm --minify",
     "preview": "vite preview",
     "preview:ai": "bun run build && npx wrangler pages dev dist"
   },

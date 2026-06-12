@@ -69,6 +69,7 @@ const en = {
     sourceLocal: "Local · deterministic",
     sourceAiHint: "Answer from a real LLM via OpenRouter",
     sourceLocalHint: "Rule-based engine in your browser — no LLM, no cost",
+    unavailable: "The assistant is unavailable right now — please try again shortly.",
     contextSuggestions: {
       profile: ["Why hire Bryan?", "Summarize his career", "Download CV"],
       about: ["Who is Bryan?", "What's his edge?", "AI focus?"],
