@@ -13,6 +13,8 @@ import VibeProjects from './components/VibeProjects';
 import About from './components/About';
 import Footer from './components/Footer';
 import NeuralBackground from './components/NeuralBackground';
+import AmbientBackground from './components/AmbientBackground';
+import AgentDock from './components/AgentDock';
 import LearningSection from './components/LearningSection';
 import VibeProjectsPage from './components/VibeProjectsPage';
 
@@ -55,6 +57,7 @@ function App() {
   return (
     <I18nProvider>
       <div className="min-h-screen bg-white dark:bg-slate-950 transition-colors duration-300 relative">
+        <AmbientBackground />
         <NeuralBackground />
 
         <div className="relative z-10">
@@ -86,6 +89,8 @@ function App() {
             </>
           )}
         </div>
+
+        <AgentDock />
       </div>
     </I18nProvider>
   );
