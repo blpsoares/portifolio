@@ -24,13 +24,13 @@ const pt = {
     aiUsage: "Automa\u00e7\u00e3o",
   },
   hero: {
-    badge: "Senior Backend Engineer",
+    badge: "AI Engineer \u00b7 Software Developer",
     title1: "Sistemas Robustos.",
     title2: "Intelig\u00eancia Aplicada.",
-    subtitle_prefix: "Backend Engineer com foco em ",
-    subtitle_highlight: "Generative AI",
+    subtitle_prefix: "",
+    subtitle_highlight: "AI Engineer e Software Developer.",
     subtitle_suffix:
-      " \u2014 construo sistemas escal\u00e1veis, pipelines de IA e solu\u00e7\u00f5es de orquestra\u00e7\u00e3o de agentes para problemas reais de neg\u00f3cio.",
+      " Construo sistemas escal\u00e1veis, pipelines de IA e orquestra\u00e7\u00e3o de agentes para problemas reais de neg\u00f3cio.",
     cta: "Alguns projetos",
     tag1: "// Node.js & Bun",
     tag2: "// GenAI & Agents",
@@ -38,7 +38,7 @@ const pt = {
     tag4: "// Low Code",
   },
   agent: {
-    title: "bryan.ai — agent session",
+    title: "bryan.ai · agent session",
     online: "online",
     badge: "local · 0 tokens · $0.00",
     placeholder: "Pergunte algo sobre o Bryan…",
@@ -47,8 +47,8 @@ const pt = {
     toolRunning: "executando…",
     disclaimer: "Sugestões respondem na hora; perguntas livres usam IA.",
     limitReached:
-      "Limite de uso da IA atingido. Tente de novo em instantes — ou use as sugestões abaixo.",
-    inputBlocked: "IA indisponível no momento — use as sugestões",
+      "Limite de uso da IA atingido. Tente de novo em instantes, ou use as sugestões abaixo.",
+    inputBlocked: "IA indisponível no momento, use as sugestões",
     suggestions: [
       "Por que contratar o Bryan?",
       "Mostre os projetos de IA",
@@ -67,11 +67,11 @@ const pt = {
     viewing: "vendo",
     welcomeTitle: "Como posso ajudar?",
     welcomeText:
-      "Pergunte sobre a carreira, projetos e skills do Bryan — eu respondo na hora.",
+      "Pergunte sobre a carreira, projetos e skills do Bryan, eu respondo na hora.",
     sourceAi: "OpenRouter",
     sourceLocal: "Local · determinístico",
     sourceAiHint: "Resposta de um LLM real via OpenRouter",
-    sourceLocalHint: "Motor de regras no navegador — sem LLM, sem custo",
+    sourceLocalHint: "Motor de regras no navegador, sem LLM, sem custo",
     unavailable:
       "O assistente está indisponível no momento. Tente novamente em instantes.",
     contextSuggestions: {
@@ -91,13 +91,13 @@ const pt = {
   whoiam: {
     title: "Quem sou",
     p1_start:
-      "Backend Engineer com +5 anos de experi\u00eancia em desenvolvimento de software, com os \u00faltimos 2 anos focados em ",
+      "AI Engineer e Software Developer com +5 anos de experi\u00eancia em desenvolvimento de software, com os \u00faltimos 2 anos focados em ",
     p1_highlight1: "IA Generativa aplicada",
     p1_mid:
       ". Construo sistemas escal\u00e1veis, pipelines RAG, agentes de IA com tool use e solu\u00e7\u00f5es de ",
     p1_highlight2: "orquestra\u00e7\u00e3o multi-agente",
     p1_end:
-      " para problemas reais de neg\u00f3cio. Experi\u00eancia em arquitetar produtos com GenAI em produ\u00e7\u00e3o \u2014 de chatbots corporativos sobre bases de 10.000+ documentos a agentes de NLP-to-database. Atualmente cursando P\u00f3s-Gradua\u00e7\u00e3o em Engenharia de IA Aplicada.",
+      " para problemas reais de neg\u00f3cio. Experi\u00eancia em arquitetar produtos com GenAI em produ\u00e7\u00e3o, de chatbots corporativos sobre bases de 10.000+ documentos a agentes de NLP-to-database. Atualmente cursando P\u00f3s-Gradua\u00e7\u00e3o em Engenharia de IA Aplicada.",
     p2: "Minha diferen\u00e7a n\u00e3o \u00e9 s\u00f3 t\u00e9cnica: tenho a comunica\u00e7\u00e3o de quem vende e a profundidade de quem constr\u00f3i. Prefiro arquitetar sistemas que durem do que entregar features que precisem ser reescritas.",
     cta: "Ver projetos",
   },
@@ -160,9 +160,9 @@ const pt = {
     badge: "Open Source \u00b7 Sistema de Estudos",
     title: "Como me mantenho aprendendo",
     subtitle:
-      "Um app web open source que constru\u00ed para estudar de forma consistente \u2014 transformando conte\u00fado em quizzes e acompanhando meu pr\u00f3prio progresso.",
+      "Um app web open source que constru\u00ed para estudar de forma consistente, transformando conte\u00fado em quizzes e acompanhando meu pr\u00f3prio progresso.",
     p1: "Em vez de leitura passiva, transformo tudo que estudo em pr\u00e1tica ativa. Constru\u00ed o learning.blpsoares.dev como meu sistema pessoal de estudos: insiro conte\u00fado, ele gera perguntas, e eu respondo para refor\u00e7ar o que realmente ficou.",
-    p2: "O projeto \u00e9 open source e totalmente vibe coded \u2014 desenvolvido com assist\u00eancia de IA da ideia ao deploy. N\u00e3o \u00e9 apenas um side project; faz parte do meu fluxo di\u00e1rio.",
+    p2: "O projeto \u00e9 open source e totalmente vibe coded, desenvolvido com assist\u00eancia de IA da ideia ao deploy. N\u00e3o \u00e9 apenas um side project; faz parte do meu fluxo di\u00e1rio.",
     visitSite: "Visitar site",
     viewSource: "Ver c\u00f3digo",
     readArticle: "Ler o artigo",
@@ -172,7 +172,7 @@ const pt = {
     badge: "Vibe Coded \u00b7 Open Source",
     title: "Projetos Open Source Vibe Coded",
     subtitle:
-      "Side projects constru\u00eddos com desenvolvimento assistido por IA \u2014 da ideia ao deploy, totalmente vibe coded e open source.",
+      "Side projects constru\u00eddos com desenvolvimento assistido por IA, da ideia ao deploy, totalmente vibe coded e open source.",
     viewAll: "Ver todos",
     visitSite: "Visitar site",
     backHome: "Voltar ao in\u00edcio",
