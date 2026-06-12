@@ -28,18 +28,22 @@ const GlowCard: React.FC<GlowCardProps> = ({
     el.style.setProperty('--my', `${e.clientY - rect.top}px`);
   };
 
+  // @react-three/fiber augments the global JSX.IntrinsicElements with the
+  // entire three.js element set. Resolving a dynamic JSX tag against that
+  // augmented interface produces a "union too complex" error, so we render via
+  // a typed React.createElement that bypasses IntrinsicElements lookup.
   const Tag = as as React.ElementType;
 
-  return (
-    <Tag
-      ref={ref}
-      onMouseMove={handleMove}
-      className={`group relative overflow-hidden rounded-2xl glass spotlight transition-all duration-300 hover:-translate-y-1 ${
+  return React.createElement(
+    Tag,
+    {
+      ref,
+      onMouseMove: handleMove,
+      className: `group relative overflow-hidden rounded-2xl glass spotlight transition-all duration-300 hover:-translate-y-1 ${
         bordered ? 'gradient-border' : 'border border-slate-200/70 dark:border-slate-700/50'
-      } shadow-lg shadow-slate-900/5 dark:shadow-black/30 ${className}`}
-    >
-      {children}
-    </Tag>
+      } shadow-lg shadow-slate-900/5 dark:shadow-black/30 ${className}`,
+    },
+    children
   );
 };
 

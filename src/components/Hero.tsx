@@ -1,8 +1,18 @@
-import React, { useRef } from 'react';
+import React, { useRef, Suspense, lazy } from 'react';
 import { motion, useMotionValue, useSpring, useTransform, useScroll, useReducedMotion } from 'framer-motion';
 import { ArrowRight, Github, Linkedin, Mail, ChevronDown, Download, Loader2, Circle } from 'lucide-react';
 import { useI18n } from '../i18n';
 import { useCvDownload } from '../hooks/useCvDownload';
+
+// Heavy three.js visual — code-split so it never blocks first paint.
+const NeuralGlobe = lazy(() => import('./hero/NeuralGlobe'));
+
+/** Soft teal glow shown while the 3D bundle loads (and as a graceful base layer). */
+const GlobeFallback: React.FC = () => (
+  <div aria-hidden="true" className="absolute inset-0 flex items-center justify-center">
+    <div className="h-[60%] w-[60%] rounded-full bg-brand-500/20 blur-[80px] animate-glow-pulse" />
+  </div>
+);
 
 const Hero: React.FC = () => {
   const { t } = useI18n();
@@ -64,13 +74,13 @@ const Hero: React.FC = () => {
       {/* ===== CONTENT ===== */}
       <motion.div
         style={{ y: contentScrollY }}
-        className="relative z-10 max-w-5xl mx-auto w-full"
+        className="relative z-10 max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 lg:items-center gap-10"
       >
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-          className="max-w-3xl space-y-8"
+          className="lg:col-span-7 max-w-3xl space-y-8"
         >
           <div className="flex flex-wrap items-center gap-3">
             <span className="inline-flex items-center gap-2 rounded-full glass gradient-border px-3.5 py-1.5 text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-200">
@@ -150,6 +160,19 @@ const Hero: React.FC = () => {
               </span>
             ))}
           </div>
+        </motion.div>
+
+        {/* ===== INTERACTIVE 3D NEURAL GLOBE (desktop-only, lazy) ===== */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.92 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 1, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
+          className="hidden lg:block lg:col-span-5 relative h-[520px] xl:h-[600px]"
+          aria-hidden="true"
+        >
+          <Suspense fallback={<GlobeFallback />}>
+            <NeuralGlobe reducedMotion={!!reduce} />
+          </Suspense>
         </motion.div>
       </motion.div>
 
