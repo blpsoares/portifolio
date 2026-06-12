@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useI18n } from '../i18n';
 import { useCvDownload } from '../hooks/useCvDownload';
 import { matchIntent, type AgentAction } from './engine';
+import { cannedReply } from './canned';
 import { streamAiReply, AiUnavailable } from './chatClient';
 
 /** Small awaitable delay used to pace the "agent" output. */
@@ -131,7 +132,31 @@ export function useAgentChat(options: { autoBoot?: boolean } = {}) {
         { id: agentId, role: 'agent', text: '', reasoning: [], streaming: true },
       ]);
 
-      // ===== 1) Try the real AI =====
+      // ===== 0) Pre-fixed suggestion chips → instant canned answer (no LLM) =====
+      const canned = cannedReply(query, locale);
+      if (canned) {
+        if (canned.tool) {
+          await sleep(220);
+          if (!aliveRef.current) return;
+          const tool = canned.tool;
+          patch(agentId, (m) => ({ ...m, tool: { name: tool.name, arg: tool.arg } }));
+          await sleep(420);
+          if (!aliveRef.current) return;
+          runAction(canned.tool.action);
+        }
+        await sleep(160);
+        const cwords = canned.answer.split(' ');
+        for (let i = 0; i < cwords.length; i++) {
+          await sleep(20);
+          if (!aliveRef.current) return;
+          patch(agentId, (m) => ({ ...m, text: cwords.slice(0, i + 1).join(' ') }));
+        }
+        patch(agentId, (m) => ({ ...m, streaming: false }));
+        if (aliveRef.current) setBusy(false);
+        return;
+      }
+
+      // ===== 1) Free-typed questions → real AI =====
       try {
         const thinking = [
           L('conectando ao modelo…', 'connecting to the model…'),
@@ -167,40 +192,21 @@ export function useAgentChat(options: { autoBoot?: boolean } = {}) {
         if (aliveRef.current) setBusy(false);
         return;
       } catch (err) {
+        // OpenRouter unavailable (no key / quota exhausted / offline / local dev
+        // without the function). We intentionally no longer fall back to a
+        // deterministic agent — show a clean "unavailable" message instead.
         if (!(err instanceof AiUnavailable)) console.error('agent error', err);
         if (!aliveRef.current) return;
-        patch(agentId, (m) => ({ ...m, reasoning: [], text: '', source: 'local' }));
+        patch(agentId, (m) => ({
+          ...m,
+          reasoning: [],
+          tool: undefined,
+          text: t.agent.unavailable,
+          streaming: false,
+          source: undefined,
+        }));
+        if (aliveRef.current) setBusy(false);
       }
-
-      // ===== 2) Deterministic fallback =====
-      const reply = matchIntent(query, t, locale);
-
-      for (const line of reply.reasoning) {
-        await sleep(440);
-        if (!aliveRef.current) return;
-        patch(agentId, (m) => ({ ...m, reasoning: [...(m.reasoning ?? []), line] }));
-      }
-
-      if (reply.tool) {
-        await sleep(380);
-        if (!aliveRef.current) return;
-        const tool = reply.tool;
-        patch(agentId, (m) => ({ ...m, tool: { name: tool.name, arg: tool.arg } }));
-        await sleep(660);
-        if (!aliveRef.current) return;
-        runAction(reply.tool.action);
-      }
-
-      await sleep(280);
-      const words = reply.answer.split(' ');
-      for (let i = 0; i < words.length; i++) {
-        await sleep(24);
-        if (!aliveRef.current) return;
-        patch(agentId, (m) => ({ ...m, text: words.slice(0, i + 1).join(' ') }));
-      }
-
-      patch(agentId, (m) => ({ ...m, streaming: false }));
-      if (aliveRef.current) setBusy(false);
     },
     [busy, locale, t, runAction, patch],
   );

@@ -69,6 +69,8 @@ const pt = {
     sourceLocal: "Local · determinístico",
     sourceAiHint: "Resposta de um LLM real via OpenRouter",
     sourceLocalHint: "Motor de regras no navegador — sem LLM, sem custo",
+    unavailable:
+      "O assistente está indisponível no momento. Tente novamente em instantes.",
     contextSuggestions: {
       profile: ["Por que contratar o Bryan?", "Resuma a carreira", "Baixar CV"],
       about: ["Quem é o Bryan?", "Qual o diferencial dele?", "Foco em IA?"],
