@@ -1,24 +1,11 @@
-import React, { useState } from "react";
+import React from "react";
 import { Mail, Github, Linkedin, Download, Loader2 } from "lucide-react";
 import { useI18n } from "../i18n";
+import { useCvDownload } from "../hooks/useCvDownload";
 
 const Footer: React.FC = () => {
 	const { t } = useI18n();
-	const [generating, setGenerating] = useState(false);
-
-	const handleDownloadCv = async () => {
-		if (generating) return;
-		try {
-			setGenerating(true);
-			// Lazy-load the PDF generator so jsPDF stays out of the main bundle
-			const { generateCvPdf } = await import("../utils/generateCv");
-			generateCvPdf(t);
-		} catch (err) {
-			console.error("Failed to generate CV", err);
-		} finally {
-			setGenerating(false);
-		}
-	};
+	const { generating, downloadCv } = useCvDownload();
 
 	return (
 		<footer className="py-12 px-6 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950">
@@ -34,7 +21,7 @@ const Footer: React.FC = () => {
 
 				<div className="flex items-center gap-6">
 					<button
-						onClick={handleDownloadCv}
+						onClick={downloadCv}
 						disabled={generating}
 						className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-brand-600 hover:bg-brand-700 text-white text-sm font-semibold transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-70 disabled:cursor-wait shadow-sm shadow-brand-600/20"
 						aria-label={t.footer.downloadCv}
