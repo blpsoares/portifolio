@@ -278,7 +278,7 @@ const NeuralGlobe: React.FC<NeuralGlobeProps> = ({ reducedMotion = false, compac
   return (
     <Canvas
       dpr={[1, 1.5]}
-      camera={{ position: [0, 0, 7.8], fov: 45 }}
+      camera={{ position: [0, 0, compact ? 5.6 : 7.8], fov: 45 }}
       gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
       frameloop={reducedMotion ? 'demand' : 'always'}
       style={{ background: 'transparent', touchAction: compact ? 'auto' : 'none' }}

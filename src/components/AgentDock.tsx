@@ -1,6 +1,6 @@
-import React, { useCallback, useEffect, useRef, useState, Suspense, lazy } from 'react';
+import React, { useCallback, useRef, useState, Suspense, lazy } from 'react';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
-import { X, Sparkles, Eye } from 'lucide-react';
+import { X, Eye } from 'lucide-react';
 import { useI18n } from '../i18n';
 import { useAgentChat } from '../agent/useAgentChat';
 import { useActiveSection } from '../hooks/useActiveSection';
@@ -24,18 +24,6 @@ const AgentDock: React.FC = () => {
   const chat = useAgentChat({ autoBoot: false });
   const active = useActiveSection();
   const reduce = useReducedMotion();
-
-  // The neural brain "migrates" into the chat header once the visitor scrolls
-  // away from the hero (where the big globe lives). Tablet+ only, for perf.
-  const [bigScreen, setBigScreen] = useState(false);
-  useEffect(() => {
-    const mq = window.matchMedia('(min-width: 768px)');
-    const update = () => setBigScreen(mq.matches);
-    update();
-    mq.addEventListener('change', update);
-    return () => mq.removeEventListener('change', update);
-  }, []);
-  const showHeaderGlobe = bigScreen && !!active && active.id !== 'profile';
 
   const [size, setSize] = useState(() => {
     if (typeof window !== 'undefined') {
@@ -142,9 +130,12 @@ const AgentDock: React.FC = () => {
 
               {/* HEADER */}
               <div className="shrink-0 flex items-center gap-3 px-4 py-3 pl-5 border-b border-slate-200/70 dark:border-slate-800/70">
-                <div className="relative">
-                  <div className="w-9 h-9 rounded-full bg-gradient-to-br from-brand-400 to-emerald-600 grid place-items-center shadow-sm shadow-brand-500/30">
-                    <Sparkles size={16} className="text-white" />
+                {/* The neural brain IS bra.ia's avatar — animated, reacts to chat */}
+                <div className="relative shrink-0">
+                  <div className="w-10 h-10 rounded-full overflow-hidden bg-slate-900/40 dark:bg-black/40 ring-1 ring-brand-500/40">
+                    <Suspense fallback={<AiOrb size={40} pulse={false} />}>
+                      <NeuralGlobe reducedMotion={!!reduce} compact />
+                    </Suspense>
                   </div>
                   <span
                     className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-emerald-500 ring-2 ring-white dark:ring-slate-900"
@@ -155,21 +146,6 @@ const AgentDock: React.FC = () => {
                   <p className="text-sm font-semibold text-slate-900 dark:text-white truncate">{t.agent.cta}</p>
                   <p className="text-[11px] text-emerald-600 dark:text-emerald-400">{t.agent.online}</p>
                 </div>
-
-                {/* The neural brain, migrated from the hero — keeps reacting to chat */}
-                {showHeaderGlobe && (
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.6 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ type: 'spring', stiffness: 260, damping: 22 }}
-                    className="ml-auto w-[76px] h-11 -my-1 pointer-events-none"
-                    aria-hidden="true"
-                  >
-                    <Suspense fallback={null}>
-                      <NeuralGlobe reducedMotion={!!reduce} compact />
-                    </Suspense>
-                  </motion.div>
-                )}
 
                 <button
                   type="button"

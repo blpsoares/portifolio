@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { Sparkles, Send, Wrench, ArrowDown } from 'lucide-react';
+import { Send, Wrench, ArrowDown } from 'lucide-react';
 import { useI18n } from '../i18n';
 import type { useAgentChat } from '../agent/useAgentChat';
 import AiOrb from './ui/AiOrb';
@@ -15,15 +15,6 @@ interface AgentChatProps {
 
 /** "openai/gpt-oss-120b:free" -> "gpt-oss-120b" */
 const prettyModel = (id: string) => id.split('/').pop()?.replace(':free', '') ?? id;
-
-const Avatar: React.FC = () => (
-  <div
-    className="shrink-0 w-7 h-7 rounded-full bg-gradient-to-br from-brand-400 to-emerald-600 grid place-items-center shadow-sm shadow-brand-500/30"
-    aria-hidden="true"
-  >
-    <Sparkles size={13} className="text-white" />
-  </div>
-);
 
 const TypingDots: React.FC = () => (
   <span className="inline-flex items-center gap-1 py-1" aria-hidden="true">
@@ -114,9 +105,7 @@ const AgentChat: React.FC<AgentChatProps> = ({ chat, suggestions, contextNote })
                   </div>
                 </div>
               ) : (
-                <div key={m.id} className="flex gap-2.5">
-                  <Avatar />
-                  <div className="flex-1 min-w-0 space-y-1.5">
+                <div key={m.id} className="min-w-0 space-y-1.5">
                     {m.reasoning && m.reasoning.length > 0 && m.streaming && !m.text && (
                       <div className="space-y-1 pt-0.5">
                         {m.reasoning.map((line, i) => (
@@ -175,7 +164,6 @@ const AgentChat: React.FC<AgentChatProps> = ({ chat, suggestions, contextNote })
                           : t.agent.sourceLocal}
                       </div>
                     )}
-                  </div>
                 </div>
               ),
             )}
@@ -230,7 +218,7 @@ const AgentChat: React.FC<AgentChatProps> = ({ chat, suggestions, contextNote })
             placeholder={t.agent.placeholder}
             aria-label={t.agent.placeholder}
             disabled={!booted}
-            className="flex-1 min-w-0 bg-transparent text-sm text-slate-800 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none disabled:opacity-50"
+            className="flex-1 min-w-0 bg-transparent text-base sm:text-sm text-slate-800 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none disabled:opacity-50"
           />
           <button
             type="submit"
