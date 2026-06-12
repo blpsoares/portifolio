@@ -62,7 +62,6 @@ const Network: React.FC<{ reduced: boolean }> = ({ reduced }) => {
   const linesMat = useRef<THREE.LineBasicMaterial>(null);
   const pointsMat = useRef<THREE.PointsMaterial>(null);
   const pulseMat = useRef<THREE.PointsMaterial>(null);
-  const coreMat = useRef<THREE.MeshBasicMaterial>(null);
   const { gl } = useThree();
 
   // Drag + inertia state.
@@ -199,14 +198,13 @@ const Network: React.FC<{ reduced: boolean }> = ({ reduced }) => {
     g.rotation.x = rotX.current;
     g.rotation.y = rotY.current;
 
-    // Breathing — stronger while thinking.
-    const breathe = 1 + Math.sin(state.clock.elapsedTime * (0.6 + p * 1.4)) * (0.012 + p * 0.03);
+    // Gentle breathing — small enough to never clip against the canvas.
+    const breathe = 1 + Math.sin(state.clock.elapsedTime * (0.6 + p * 1.4)) * (0.006 + p * 0.012);
     g.scale.setScalar(breathe);
 
     // Materials light up while thinking.
     if (linesMat.current) linesMat.current.opacity = 0.22 + p * 0.4;
     if (pointsMat.current) pointsMat.current.size = 0.085 + p * 0.05;
-    if (coreMat.current) coreMat.current.opacity = 0.05 + p * 0.32;
     if (pulseMat.current) pulseMat.current.size = 0.16 + p * 0.16;
 
     // Travelling pulses — zoom along the links while thinking.
@@ -266,18 +264,6 @@ const Network: React.FC<{ reduced: boolean }> = ({ reduced }) => {
           />
         </points>
       )}
-
-      <mesh>
-        <sphereGeometry args={[RADIUS * 0.55, 24, 24]} />
-        <meshBasicMaterial
-          ref={coreMat}
-          color={TEAL}
-          transparent
-          opacity={0.05}
-          blending={THREE.AdditiveBlending}
-          depthWrite={false}
-        />
-      </mesh>
     </group>
   );
 };
@@ -290,7 +276,7 @@ const NeuralGlobe: React.FC<NeuralGlobeProps> = ({ reducedMotion = false }) => {
   return (
     <Canvas
       dpr={[1, 1.5]}
-      camera={{ position: [0, 0, 6.2], fov: 45 }}
+      camera={{ position: [0, 0, 7.8], fov: 45 }}
       gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
       frameloop={reducedMotion ? 'demand' : 'always'}
       style={{ background: 'transparent', touchAction: 'none' }}
