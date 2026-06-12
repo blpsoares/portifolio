@@ -106,7 +106,7 @@ const Hero: React.FC = () => {
             </span>
           </div>
 
-          <h1 className="font-display text-4xl sm:text-6xl lg:text-7xl xl:text-8xl font-bold tracking-tight text-slate-900 dark:text-white leading-[1.02] sm:leading-[0.95]">
+          <h1 className="font-display text-[clamp(2.25rem,5.5vw,4.25rem)] font-bold tracking-tight text-slate-900 dark:text-white leading-[1.03]">
             {t.hero.title1}
             <br />
             <span className="holo-text">{t.hero.title2}</span>

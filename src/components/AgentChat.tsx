@@ -35,7 +35,7 @@ const TypingDots: React.FC = () => (
  */
 const AgentChat: React.FC<AgentChatProps> = ({ chat, suggestions, contextNote }) => {
   const { t } = useI18n();
-  const { booted, messages, input, setInput, busy, send } = chat;
+  const { booted, messages, input, setInput, busy, limited, send } = chat;
   const scrollRef = useRef<HTMLDivElement>(null);
   const autoFollow = useRef(true);
   const lastTop = useRef(0);
@@ -229,21 +229,23 @@ const AgentChat: React.FC<AgentChatProps> = ({ chat, suggestions, contextNote })
           <input
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder={t.agent.placeholder}
-            aria-label={t.agent.placeholder}
-            disabled={!booted}
-            className="flex-1 min-w-0 bg-transparent text-base sm:text-sm text-slate-800 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none disabled:opacity-50"
+            placeholder={limited ? t.agent.inputBlocked : t.agent.placeholder}
+            aria-label={limited ? t.agent.inputBlocked : t.agent.placeholder}
+            disabled={!booted || limited}
+            className="flex-1 min-w-0 bg-transparent text-base sm:text-sm text-slate-800 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
           />
           <button
             type="submit"
-            disabled={busy || !booted || !input.trim()}
+            disabled={busy || !booted || limited || !input.trim()}
             aria-label="Send"
             className="shrink-0 w-8 h-8 grid place-items-center rounded-full bg-brand-600 hover:bg-brand-700 text-white transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
           >
             <Send size={15} />
           </button>
         </form>
-        <p className="mt-2 text-center text-[10px] text-slate-400 dark:text-slate-500">{t.agent.disclaimer}</p>
+        <p className="mt-2 text-center text-[10px] text-slate-400 dark:text-slate-500">
+          {limited ? t.agent.inputBlocked : t.agent.disclaimer}
+        </p>
       </div>
     </div>
   );
