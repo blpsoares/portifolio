@@ -1,11 +1,14 @@
-import React, { useCallback, useRef, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useCallback, useEffect, useRef, useState, Suspense, lazy } from 'react';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { X, Sparkles, Eye } from 'lucide-react';
 import { useI18n } from '../i18n';
 import { useAgentChat } from '../agent/useAgentChat';
 import { useActiveSection } from '../hooks/useActiveSection';
 import AgentChat from './AgentChat';
 import AiOrb from './ui/AiOrb';
+
+// Same lazy chunk as the hero globe — reused, no extra download.
+const NeuralGlobe = lazy(() => import('./hero/NeuralGlobe'));
 
 const DEFAULT_SIZE = { w: 420, h: 640 };
 const clamp = (v: number, min: number, max: number) => Math.min(Math.max(v, min), max);
@@ -20,6 +23,19 @@ const AgentDock: React.FC = () => {
   const [open, setOpen] = useState(false);
   const chat = useAgentChat({ autoBoot: false });
   const active = useActiveSection();
+  const reduce = useReducedMotion();
+
+  // The neural brain "migrates" into the chat header once the visitor scrolls
+  // away from the hero (where the big globe lives). Tablet+ only, for perf.
+  const [bigScreen, setBigScreen] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia('(min-width: 768px)');
+    const update = () => setBigScreen(mq.matches);
+    update();
+    mq.addEventListener('change', update);
+    return () => mq.removeEventListener('change', update);
+  }, []);
+  const showHeaderGlobe = bigScreen && !!active && active.id !== 'profile';
 
   const [size, setSize] = useState(() => {
     if (typeof window !== 'undefined') {
@@ -139,6 +155,22 @@ const AgentDock: React.FC = () => {
                   <p className="text-sm font-semibold text-slate-900 dark:text-white truncate">{t.agent.cta}</p>
                   <p className="text-[11px] text-emerald-600 dark:text-emerald-400">{t.agent.online}</p>
                 </div>
+
+                {/* The neural brain, migrated from the hero — keeps reacting to chat */}
+                {showHeaderGlobe && (
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.6 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ type: 'spring', stiffness: 260, damping: 22 }}
+                    className="ml-auto w-[76px] h-11 -my-1 pointer-events-none"
+                    aria-hidden="true"
+                  >
+                    <Suspense fallback={null}>
+                      <NeuralGlobe reducedMotion={!!reduce} compact />
+                    </Suspense>
+                  </motion.div>
+                )}
+
                 <button
                   type="button"
                   onClick={() => setOpen(false)}
