@@ -16,7 +16,7 @@ export interface ChatMessage {
   role: Role;
   text: string;
   reasoning?: string[];
-  tool?: { name: string; arg: string };
+  tool?: { name: string; arg: string; done?: boolean };
   streaming?: boolean;
   /** which brain produced the answer */
   source?: 'ai' | 'local';
@@ -148,6 +148,7 @@ export function useAgentChat(options: { autoBoot?: boolean } = {}) {
           await sleep(420);
           if (!aliveRef.current) return;
           runAction(canned.tool.action);
+          patch(agentId, (m) => (m.tool ? { ...m, tool: { ...m.tool, done: true } } : m));
         }
         await sleep(160);
         const cwords = canned.answer.split(' ');
