@@ -41,6 +41,9 @@ export function useAgentChat(options: { autoBoot?: boolean } = {}) {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState('');
   const [busy, setBusy] = useState(false);
+  // True while the AI is rate-limited / out of quota — blocks free-typed input
+  // (suggestion chips keep working since they're answered locally).
+  const [limited, setLimited] = useState(false);
 
   const idRef = useRef(0);
   const nextId = () => ++idRef.current;
@@ -196,19 +199,31 @@ export function useAgentChat(options: { autoBoot?: boolean } = {}) {
         if (aliveRef.current) setBusy(false);
         return;
       } catch (err) {
-        // OpenRouter unavailable (no key / quota exhausted / offline / local dev
-        // without the function). We intentionally no longer fall back to a
-        // deterministic agent — show a clean "unavailable" message instead.
+        // OpenRouter unavailable (no key / quota exhausted / rate-limited /
+        // offline / local dev). No deterministic answer fallback — show a clean
+        // message. If it's a usage limit, block the input for a cooldown
+        // (suggestion chips still work, since those are answered locally).
         if (!(err instanceof AiUnavailable)) console.error('agent error', err);
         if (!aliveRef.current) return;
+        const reason = err instanceof AiUnavailable ? err.reason : 'unavailable';
+        const isLimit = reason === 'quota' || reason === 'rate_limited';
         patch(agentId, (m) => ({
           ...m,
           reasoning: [],
           tool: undefined,
-          text: t.agent.unavailable,
+          text: isLimit ? t.agent.limitReached : t.agent.unavailable,
           streaming: false,
           source: undefined,
         }));
+        if (isLimit) {
+          setLimited(true);
+          const cooldown = reason === 'rate_limited' ? 45000 : 5 * 60000;
+          const tm = setTimeout(() => {
+            if (aliveRef.current) setLimited(false);
+            timersRef.current.delete(tm);
+          }, cooldown);
+          timersRef.current.add(tm);
+        }
         setAgentState('idle');
         if (aliveRef.current) setBusy(false);
       }
@@ -223,6 +238,7 @@ export function useAgentChat(options: { autoBoot?: boolean } = {}) {
     input,
     setInput,
     busy,
+    limited,
     send,
     hasStarted: messages.length > 0,
   };
