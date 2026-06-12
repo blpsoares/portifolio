@@ -1,11 +1,13 @@
-import React, { useMemo, useRef } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
+import { onAgentState } from '../../agent/bus';
 
 /* ============================================================
    Neural Globe — a sphere of glowing nodes wired into a thin
-   network, rotating slowly with pulses travelling the links.
-   Teal / emerald palette on dark. Desktop-only, lazy-loaded.
+   network. Click + drag to rotate (with inertia). When bra.ia
+   is processing a question it lights up and accelerates, like a
+   brain thinking. Teal / emerald on dark. Desktop-only, lazy.
    ============================================================ */
 
 const TEAL = new THREE.Color('#2dd4bf');
@@ -14,25 +16,25 @@ const DEEP = new THREE.Color('#0d9488');
 
 const NODE_COUNT = 130;
 const RADIUS = 2.2;
-const MAX_LINK_DIST = 1.15; // links between nodes closer than this
-const MAX_LINKS = 220; // hard cap on rendered edges
+const MAX_LINK_DIST = 1.15;
+const MAX_LINKS = 220;
+
+const clamp = (v: number, min: number, max: number) => Math.min(Math.max(v, min), max);
 
 interface NodeData {
   pos: THREE.Vector3;
   color: THREE.Color;
 }
-
 interface LinkData {
   a: number;
   b: number;
 }
 
-/** Evenly distribute points on a sphere via the Fibonacci spiral. */
 function buildNodes(): NodeData[] {
   const nodes: NodeData[] = [];
   const golden = Math.PI * (3 - Math.sqrt(5));
   for (let i = 0; i < NODE_COUNT; i++) {
-    const y = 1 - (i / (NODE_COUNT - 1)) * 2; // 1 -> -1
+    const y = 1 - (i / (NODE_COUNT - 1)) * 2;
     const r = Math.sqrt(1 - y * y);
     const theta = golden * i;
     const x = Math.cos(theta) * r;
@@ -57,14 +59,28 @@ function buildLinks(nodes: NodeData[]): LinkData[] {
 
 const Network: React.FC<{ reduced: boolean }> = ({ reduced }) => {
   const group = useRef<THREE.Group>(null);
-  const { mouse } = useThree();
+  const linesMat = useRef<THREE.LineBasicMaterial>(null);
+  const pointsMat = useRef<THREE.PointsMaterial>(null);
+  const pulseMat = useRef<THREE.PointsMaterial>(null);
+  const coreMat = useRef<THREE.MeshBasicMaterial>(null);
+  const { gl } = useThree();
+
+  // Drag + inertia state.
+  const dragging = useRef(false);
+  const rotX = useRef(0.15);
+  const rotY = useRef(0);
+  const velX = useRef(0);
+  const velY = useRef(0);
+
+  // "Thinking" intensity (0..1), lerped toward the chat's state.
+  const thinking = useRef(false);
+  const proc = useRef(0);
 
   const { nodes, links } = useMemo(() => {
     const n = buildNodes();
     return { nodes: n, links: buildLinks(n) };
   }, []);
 
-  // Node points geometry.
   const pointsGeo = useMemo(() => {
     const g = new THREE.BufferGeometry();
     const positions = new Float32Array(nodes.length * 3);
@@ -82,7 +98,6 @@ const Network: React.FC<{ reduced: boolean }> = ({ reduced }) => {
     return g;
   }, [nodes]);
 
-  // Static line segments geometry for the network edges.
   const linesGeo = useMemo(() => {
     const g = new THREE.BufferGeometry();
     const positions = new Float32Array(links.length * 6);
@@ -95,7 +110,6 @@ const Network: React.FC<{ reduced: boolean }> = ({ reduced }) => {
     return g;
   }, [links, nodes]);
 
-  // Travelling pulses: a handful of dots that slide along random links.
   const PULSE_COUNT = reduced ? 0 : 18;
   const pulses = useMemo(
     () =>
@@ -104,7 +118,7 @@ const Network: React.FC<{ reduced: boolean }> = ({ reduced }) => {
         t: Math.random(),
         speed: 0.25 + Math.random() * 0.5,
       })),
-    [PULSE_COUNT, links.length]
+    [PULSE_COUNT, links.length],
   );
 
   const pulseGeo = useMemo(() => {
@@ -115,42 +129,98 @@ const Network: React.FC<{ reduced: boolean }> = ({ reduced }) => {
 
   const tmp = useMemo(() => new THREE.Vector3(), []);
 
+  // Subscribe to the chat's thinking state.
+  useEffect(() => onAgentState((s) => (thinking.current = s === 'thinking')), []);
+
+  // Click + drag to rotate (with inertia). DOM-level so the whole canvas drags.
+  useEffect(() => {
+    if (reduced) return;
+    const el = gl.domElement;
+    let lastX = 0;
+    let lastY = 0;
+    const onDown = (e: PointerEvent) => {
+      dragging.current = true;
+      lastX = e.clientX;
+      lastY = e.clientY;
+      velX.current = 0;
+      velY.current = 0;
+      el.style.cursor = 'grabbing';
+      document.body.style.userSelect = 'none';
+    };
+    const onMove = (e: PointerEvent) => {
+      if (!dragging.current) return;
+      const dx = (e.clientX - lastX) * 0.006;
+      const dy = (e.clientY - lastY) * 0.006;
+      lastX = e.clientX;
+      lastY = e.clientY;
+      rotY.current += dx;
+      rotX.current = clamp(rotX.current + dy, -1.25, 1.25);
+      velY.current = dx;
+      velX.current = dy;
+    };
+    const onUp = () => {
+      if (!dragging.current) return;
+      dragging.current = false;
+      el.style.cursor = 'grab';
+      document.body.style.userSelect = '';
+    };
+    el.style.cursor = 'grab';
+    el.addEventListener('pointerdown', onDown);
+    window.addEventListener('pointermove', onMove);
+    window.addEventListener('pointerup', onUp);
+    return () => {
+      el.removeEventListener('pointerdown', onDown);
+      window.removeEventListener('pointermove', onMove);
+      window.removeEventListener('pointerup', onUp);
+      document.body.style.userSelect = '';
+    };
+  }, [gl, reduced]);
+
   useFrame((state, delta) => {
     const g = group.current;
     if (!g) return;
 
     if (reduced) {
-      // Static, faintly tilted presentation — no motion.
       g.rotation.set(0.15, 0.4, 0);
       return;
     }
 
-    // Slow auto-rotation.
-    g.rotation.y += delta * 0.12;
+    // Ease the processing intensity toward the target.
+    proc.current += ((thinking.current ? 1 : 0) - proc.current) * Math.min(1, delta * 3);
+    const p = proc.current;
 
-    // Damped mouse parallax — tilt the globe gently toward the cursor.
-    const k = Math.min(1, delta * 2.5);
-    const targetX = 0.15 + mouse.y * 0.22;
-    const targetZ = mouse.x * 0.18;
-    g.rotation.x += (targetX - g.rotation.x) * k;
-    g.rotation.z += (targetZ - g.rotation.z) * k;
+    // Rotation: auto-spin + inertia when not dragging; faster while thinking.
+    if (!dragging.current) {
+      rotY.current += delta * (0.12 + p * 0.7) + velY.current;
+      rotX.current = clamp(rotX.current + velX.current, -1.25, 1.25);
+      velY.current *= 0.93;
+      velX.current *= 0.93;
+    }
+    g.rotation.x = rotX.current;
+    g.rotation.y = rotY.current;
 
-    // Subtle breathing of the whole globe.
-    const breathe = 1 + Math.sin(state.clock.elapsedTime * 0.6) * 0.012;
+    // Breathing — stronger while thinking.
+    const breathe = 1 + Math.sin(state.clock.elapsedTime * (0.6 + p * 1.4)) * (0.012 + p * 0.03);
     g.scale.setScalar(breathe);
 
-    // Advance pulses and update their positions along their links.
+    // Materials light up while thinking.
+    if (linesMat.current) linesMat.current.opacity = 0.22 + p * 0.4;
+    if (pointsMat.current) pointsMat.current.size = 0.085 + p * 0.05;
+    if (coreMat.current) coreMat.current.opacity = 0.05 + p * 0.32;
+    if (pulseMat.current) pulseMat.current.size = 0.16 + p * 0.16;
+
+    // Travelling pulses — zoom along the links while thinking.
     const arr = pulseGeo.getAttribute('position') as THREE.BufferAttribute;
     for (let i = 0; i < pulses.length; i++) {
-      const p = pulses[i];
-      p.t += delta * p.speed;
-      if (p.t > 1) {
-        p.t = 0;
-        p.link = Math.floor(Math.random() * links.length);
-        p.speed = 0.25 + Math.random() * 0.5;
+      const pu = pulses[i];
+      pu.t += delta * pu.speed * (1 + p * 3);
+      if (pu.t > 1) {
+        pu.t = 0;
+        pu.link = Math.floor(Math.random() * links.length);
+        pu.speed = 0.25 + Math.random() * 0.5;
       }
-      const l = links[p.link];
-      tmp.copy(nodes[l.a].pos).lerp(nodes[l.b].pos, p.t);
+      const l = links[pu.link];
+      tmp.copy(nodes[l.a].pos).lerp(nodes[l.b].pos, pu.t);
       arr.setXYZ(i, tmp.x, tmp.y, tmp.z);
     }
     arr.needsUpdate = true;
@@ -158,9 +228,9 @@ const Network: React.FC<{ reduced: boolean }> = ({ reduced }) => {
 
   return (
     <group ref={group} rotation={[0.15, 0, 0]}>
-      {/* Network edges */}
       <lineSegments geometry={linesGeo}>
         <lineBasicMaterial
+          ref={linesMat}
           color={DEEP}
           transparent
           opacity={0.22}
@@ -169,9 +239,9 @@ const Network: React.FC<{ reduced: boolean }> = ({ reduced }) => {
         />
       </lineSegments>
 
-      {/* Nodes */}
       <points geometry={pointsGeo}>
         <pointsMaterial
+          ref={pointsMat}
           size={0.085}
           sizeAttenuation
           vertexColors
@@ -182,10 +252,10 @@ const Network: React.FC<{ reduced: boolean }> = ({ reduced }) => {
         />
       </points>
 
-      {/* Travelling pulses */}
       {PULSE_COUNT > 0 && (
         <points geometry={pulseGeo}>
           <pointsMaterial
+            ref={pulseMat}
             color={EMERALD}
             size={0.16}
             sizeAttenuation
@@ -197,17 +267,22 @@ const Network: React.FC<{ reduced: boolean }> = ({ reduced }) => {
         </points>
       )}
 
-      {/* Faint inner core glow */}
       <mesh>
         <sphereGeometry args={[RADIUS * 0.55, 24, 24]} />
-        <meshBasicMaterial color={TEAL} transparent opacity={0.05} blending={THREE.AdditiveBlending} depthWrite={false} />
+        <meshBasicMaterial
+          ref={coreMat}
+          color={TEAL}
+          transparent
+          opacity={0.05}
+          blending={THREE.AdditiveBlending}
+          depthWrite={false}
+        />
       </mesh>
     </group>
   );
 };
 
 interface NeuralGlobeProps {
-  /** Skip all animation for prefers-reduced-motion users. */
   reducedMotion?: boolean;
 }
 
@@ -218,7 +293,7 @@ const NeuralGlobe: React.FC<NeuralGlobeProps> = ({ reducedMotion = false }) => {
       camera={{ position: [0, 0, 6.2], fov: 45 }}
       gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
       frameloop={reducedMotion ? 'demand' : 'always'}
-      style={{ background: 'transparent' }}
+      style={{ background: 'transparent', touchAction: 'none' }}
     >
       <ambientLight intensity={0.6} />
       <Network reduced={reducedMotion} />

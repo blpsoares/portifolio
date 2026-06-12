@@ -3,6 +3,7 @@ import { useI18n } from '../i18n';
 import { useCvDownload } from '../hooks/useCvDownload';
 import { matchIntent, type AgentAction } from './engine';
 import { cannedReply } from './canned';
+import { setAgentState } from './bus';
 import { streamAiReply, AiUnavailable } from './chatClient';
 
 /** Small awaitable delay used to pace the "agent" output. */
@@ -120,6 +121,7 @@ export function useAgentChat(options: { autoBoot?: boolean } = {}) {
       const L = (pt: string, en: string) => (locale === 'pt' ? pt : en);
 
       setBusy(true);
+      setAgentState('thinking');
       setInput('');
 
       setMessages((prev) => [...prev, { id: nextId(), role: 'user', text: query }]);
@@ -152,6 +154,7 @@ export function useAgentChat(options: { autoBoot?: boolean } = {}) {
           patch(agentId, (m) => ({ ...m, text: cwords.slice(0, i + 1).join(' ') }));
         }
         patch(agentId, (m) => ({ ...m, streaming: false }));
+        setAgentState('idle');
         if (aliveRef.current) setBusy(false);
         return;
       }
@@ -189,6 +192,7 @@ export function useAgentChat(options: { autoBoot?: boolean } = {}) {
           runAction(det.tool.action);
         }
         patch(agentId, (m) => ({ ...m, streaming: false, source: 'ai' }));
+        setAgentState('idle');
         if (aliveRef.current) setBusy(false);
         return;
       } catch (err) {
@@ -205,6 +209,7 @@ export function useAgentChat(options: { autoBoot?: boolean } = {}) {
           streaming: false,
           source: undefined,
         }));
+        setAgentState('idle');
         if (aliveRef.current) setBusy(false);
       }
     },
