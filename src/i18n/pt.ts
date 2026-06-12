@@ -50,7 +50,7 @@ const pt = {
       "ferramentas prontas: scroll · highlight · download_cv · contato",
       "agente online.",
     ],
-    cta: "Assistente IA",
+    cta: "bra.ia",
     close: "Fechar",
     viewing: "vendo",
     welcomeTitle: "Como posso ajudar?",

@@ -50,7 +50,7 @@ const en = {
       "tools ready: scroll · highlight · download_cv · contact",
       "agent online.",
     ],
-    cta: "AI Assistant",
+    cta: "bra.ia",
     close: "Close",
     viewing: "viewing",
     welcomeTitle: "How can I help?",
