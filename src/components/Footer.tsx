@@ -1,9 +1,11 @@
 import React from "react";
-import { Mail, Github, Linkedin } from "lucide-react";
+import { Mail, Github, Linkedin, Download, Loader2 } from "lucide-react";
 import { useI18n } from "../i18n";
+import { useCvDownload } from "../hooks/useCvDownload";
 
 const Footer: React.FC = () => {
 	const { t } = useI18n();
+	const { generating, downloadCv } = useCvDownload();
 
 	return (
 		<footer className="py-12 px-6 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950">
@@ -18,6 +20,22 @@ const Footer: React.FC = () => {
 				</div>
 
 				<div className="flex items-center gap-6">
+					<button
+						onClick={downloadCv}
+						disabled={generating}
+						className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-brand-600 hover:bg-brand-700 text-white text-sm font-semibold transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-70 disabled:cursor-wait shadow-sm shadow-brand-600/20"
+						aria-label={t.footer.downloadCv}
+					>
+						{generating ? (
+							<Loader2 size={16} className="animate-spin" />
+						) : (
+							<Download size={16} />
+						)}
+						{t.footer.downloadCv}
+					</button>
+
+					<div className="w-px h-6 bg-slate-200 dark:bg-slate-800" />
+
 					<a
 						href="https://github.com/blpsoares"
 						target="_blank"

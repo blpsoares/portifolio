@@ -49,11 +49,11 @@ const Career: React.FC = () => {
 
                     {/* Card */}
                     <div
-                      className={`flex-1 bg-white dark:bg-slate-900 rounded-2xl border transition-all duration-300 overflow-hidden ${
+                      className={`flex-1 bg-white dark:bg-slate-900 rounded-2xl border transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] overflow-hidden ${
                         item.current
                           ? 'border-brand-200 dark:border-brand-800/50'
                           : 'border-slate-200 dark:border-slate-800'
-                      } ${isOpen ? 'shadow-lg' : 'hover:shadow-md'}`}
+                      } ${isOpen ? 'shadow-lg shadow-brand-900/5' : 'hover:shadow-md'}`}
                     >
                       {/* Header — clickable */}
                       <button
@@ -68,7 +68,7 @@ const Career: React.FC = () => {
                               </h3>
                               {item.current && (
                                 <span className="px-2 py-0.5 bg-brand-50 dark:bg-brand-900/30 text-brand-600 dark:text-brand-400 text-xs font-bold rounded-full border border-brand-200 dark:border-brand-800/50">
-                                  ● Atual
+                                  ● {t.career.current}
                                 </span>
                               )}
                             </div>
@@ -88,35 +88,49 @@ const Career: React.FC = () => {
 
                         <ChevronDown
                           size={18}
-                          className={`flex-shrink-0 mt-1 text-slate-400 dark:text-slate-500 transition-transform duration-300 ${
-                            isOpen ? 'rotate-180' : ''
+                          className={`flex-shrink-0 mt-1 transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+                            isOpen
+                              ? 'rotate-180 text-brand-500'
+                              : 'text-slate-400 dark:text-slate-500'
                           }`}
                         />
                       </button>
 
-                      {/* Accordion body */}
+                      {/* Accordion body — grid 0fr→1fr animates to auto height smoothly */}
                       <div
-                        className={`transition-all duration-300 ease-in-out overflow-hidden ${
-                          isOpen ? 'max-h-[32rem]' : 'max-h-0'
+                        className={`grid transition-[grid-template-rows] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+                          isOpen ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'
                         }`}
                       >
-                        <div className="px-6 pb-6 border-t border-slate-100 dark:border-slate-800">
-                          <div className="flex flex-wrap gap-2 mt-4 mb-5">
-                            <span className="px-2.5 py-1 bg-slate-50 dark:bg-slate-800 rounded-md text-xs font-medium text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
-                              {item.type}
-                            </span>
-                            <span className="px-2.5 py-1 bg-slate-50 dark:bg-slate-800 rounded-md text-xs font-medium text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
-                              {item.location}
-                            </span>
+                        <div className="overflow-hidden">
+                          <div
+                            className={`px-6 pb-6 border-t border-slate-100 dark:border-slate-800 transition-all duration-500 ease-out ${
+                              isOpen ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2'
+                            }`}
+                          >
+                            <div className="flex flex-wrap gap-2 mt-4 mb-5">
+                              <span className="px-2.5 py-1 bg-slate-50 dark:bg-slate-800 rounded-md text-xs font-medium text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
+                                {item.type}
+                              </span>
+                              <span className="px-2.5 py-1 bg-slate-50 dark:bg-slate-800 rounded-md text-xs font-medium text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
+                                {item.location}
+                              </span>
+                            </div>
+                            <ul className="space-y-2">
+                              {item.bullets.map((bullet, bIdx) => (
+                                <li
+                                  key={bIdx}
+                                  style={{ transitionDelay: isOpen ? `${120 + bIdx * 55}ms` : '0ms' }}
+                                  className={`flex items-start gap-2 text-sm text-slate-600 dark:text-slate-400 leading-relaxed transition-all duration-500 ease-out ${
+                                    isOpen ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-2'
+                                  }`}
+                                >
+                                  <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-brand-500 flex-shrink-0" />
+                                  {bullet}
+                                </li>
+                              ))}
+                            </ul>
                           </div>
-                          <ul className="space-y-2">
-                            {item.bullets.map((bullet, bIdx) => (
-                              <li key={bIdx} className="flex items-start gap-2 text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
-                                <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-brand-500 flex-shrink-0" />
-                                {bullet}
-                              </li>
-                            ))}
-                          </ul>
                         </div>
                       </div>
                     </div>

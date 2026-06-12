@@ -1,9 +1,11 @@
 import React from 'react';
-import { ArrowRight, Terminal, Github, Linkedin, Mail, ChevronDown } from 'lucide-react';
+import { ArrowRight, Terminal, Github, Linkedin, Mail, ChevronDown, Download, Loader2 } from 'lucide-react';
 import { useI18n } from '../i18n';
+import { useCvDownload } from '../hooks/useCvDownload';
 
 const Hero: React.FC = () => {
   const { t } = useI18n();
+  const { generating, downloadCv } = useCvDownload();
 
   return (
     <section id="profile" className="relative min-h-screen flex flex-col justify-center pt-20 pb-10 px-6 overflow-hidden">
@@ -39,6 +41,19 @@ const Hero: React.FC = () => {
           >
             {t.hero.cta}
             <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+          </button>
+
+          <button
+            onClick={downloadCv}
+            disabled={generating}
+            className="group px-8 py-4 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white font-semibold rounded-lg hover:border-brand-500 dark:hover:border-brand-500 hover:text-brand-600 dark:hover:text-brand-400 transition-all flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-70 disabled:cursor-wait"
+          >
+            {generating ? (
+              <Loader2 size={18} className="animate-spin" />
+            ) : (
+              <Download size={18} className="group-hover:translate-y-0.5 transition-transform" />
+            )}
+            {t.footer.downloadCv}
           </button>
 
           <div className="flex items-center gap-4 px-4">
