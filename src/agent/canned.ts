@@ -46,13 +46,13 @@ const TOPICS = {
     action: { type: 'scroll', target: 'career' },
   },
   cv: {
-    pt: 'Gerando o CV em PDF e iniciando o download agora — montado na hora, no navegador.',
-    en: 'Generating the CV PDF and starting the download now — built on the fly, in the browser.',
+    pt: 'Gerando o CV em PDF e iniciando o download agora, montado na hora, no navegador.',
+    en: 'Generating the CV PDF and starting the download now, built on the fly, in the browser.',
     action: { type: 'download_cv' },
   },
   who: {
-    pt: "Bryan Soares — Software Developer & AI Engineer de São Paulo. Backend Engineer com +5 anos, hoje focado em IA Generativa aplicada: RAG, agentes, MCP e orquestração multi-agente em produção. Abri 'Quem sou'.",
-    en: "Bryan Soares — Software Developer & AI Engineer from São Paulo. Backend Engineer with 5+ years, now focused on applied Generative AI: RAG, agents, MCP and multi-agent orchestration in production. I opened 'Who I am'.",
+    pt: "Bryan Soares, AI Engineer e Software Developer de São Paulo. +5 anos de experiência, hoje focado em IA Generativa aplicada: RAG, agentes, MCP e orquestração multi-agente em produção. Abri 'Quem sou'.",
+    en: "Bryan Soares, AI Engineer and Software Developer from São Paulo. 5+ years of experience, now focused on applied Generative AI: RAG, agents, MCP and multi-agent orchestration in production. I opened 'Who I am'.",
     action: { type: 'scroll', target: 'about' },
   },
   ai: {

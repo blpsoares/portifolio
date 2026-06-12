@@ -21,11 +21,11 @@ function buildContext(): string {
   const contact = `Contact: ${p.email} · ${p.phone} · ${p.linkedin} · ${p.github} · ${p.website}`;
 
   const experience = [
-    `- Eletromídia — Senior Backend Engineer (Oct 2025–present, São Paulo, hybrid): built an MCP server on the product's core API so an LLM agent can process natural-language queries via tool use; the team's AI/GenAI reference; leads AI applicability research; built automation enabling non-technical stakeholders to ship ideas independently; architectural support and legacy refactoring.`,
-    `- Eletromídia — Mid-level Backend Engineer (Aug 2024–Oct 2025): built "Pulsar", an internal CLI for MongoDB migrations across clusters with real-time sync; automated PDF validation with Google Document AI Custom Extractor (96% accuracy); AI search field (LLM extracts intent → builds request body → returns filtered results); research on MongoDB edge computing.`,
-    `- Alest Consultoria — Software Developer (Dec 2023–Aug 2024): translated business pain into architecture; mentored 5 interns (1:1s, PDIs); built ETLs and a pipeline migrating 30,000+ documents (Drive/OneDrive/S3/Local → DocuSign) using Node.js Streams + pipeline() for backpressure and Winston observability for granular failure recovery.`,
-    `- Alest Consultoria — Intern (Jun–Dec 2023): architected a RAG corporate chatbot (Dialogflow CX) over a 10,000+ document knowledge base; fine-tuned OpenAI models (da-vinci); built Make.com/N8N integration workflows.`,
-    `- Next Fusion — Frontend Developer / Partner (2021–2023): delivered ~20 institutional sites and landing pages end-to-end (React, HTML/CSS, WordPress); SEO.`,
+    `- Eletromídia, Senior Backend Engineer (Oct 2025–present, São Paulo, hybrid): built an MCP server on the product's core API so an LLM agent can process natural-language queries via tool use; the team's AI/GenAI reference; leads AI applicability research; built automation enabling non-technical stakeholders to ship ideas independently; architectural support and legacy refactoring.`,
+    `- Eletromídia, Mid-level Backend Engineer (Aug 2024–Oct 2025): built "Pulsar", an internal CLI for MongoDB migrations across clusters with real-time sync; automated PDF validation with Google Document AI Custom Extractor (96% accuracy); AI search field (LLM extracts intent → builds request body → returns filtered results); research on MongoDB edge computing.`,
+    `- Alest Consultoria, Software Developer (Dec 2023–Aug 2024): translated business pain into architecture; mentored 5 interns (1:1s, PDIs); built ETLs and a pipeline migrating 30,000+ documents (Drive/OneDrive/S3/Local → DocuSign) using Node.js Streams + pipeline() for backpressure and Winston observability for granular failure recovery.`,
+    `- Alest Consultoria, Intern (Jun–Dec 2023): architected a RAG corporate chatbot (Dialogflow CX) over a 10,000+ document knowledge base; fine-tuned OpenAI models (da-vinci); built Make.com/N8N integration workflows.`,
+    `- Next Fusion, Frontend Developer / Partner (2021–2023): delivered ~20 institutional sites and landing pages end-to-end (React, HTML/CSS, WordPress); SEO.`,
   ].join('\n');
 
   const skills = [
@@ -44,7 +44,7 @@ function buildContext(): string {
     `- Redis caching: complex queries from ~10s to ~2s (sometimes <900ms).`,
     `- Open-source: ${profile.cvProjects
       .map((cp) => {
-        const name = en(cp.name).split('—')[0].trim();
+        const name = en(cp.name).split(':')[0].trim();
         if (name === 'Agentistics') return 'Agentistics (local AI-coding analytics dashboard)';
         if (name === 'DuckFlux') return 'DuckFlux (multi-agent YAML DSL)';
         if (name === 'Embark') return 'Embark (zero-config CI/CD for AI monorepos)';
@@ -54,14 +54,14 @@ function buildContext(): string {
   ].join('\n');
 
   const education = [
-    `- Postgraduate in Applied AI Engineering — UNIPDS (in progress, 2026–2027).`,
-    `- Technologist in Systems Analysis & Development — PUCPR (2022–2025).`,
+    `- Postgraduate in Applied AI Engineering, UNIPDS (in progress, 2026–2027).`,
+    `- Technologist in Systems Analysis & Development, PUCPR (2022–2025).`,
   ].join('\n');
 
   return `
-${p.name} — Software Developer & AI Engineer (${en(p.location)}).
+${p.name}, AI Engineer and Software Developer (${en(p.location)}).
 ${contact}
-Summary: Backend Engineer with 5+ years in software development, the last 2 focused on applied Generative AI. Builds RAG pipelines, AI agents with tool use, MCP servers connecting LLMs to real systems, and multi-agent orchestration — in production.
+Summary: AI Engineer and Software Developer with 5+ years in software development, the last 2 focused on applied Generative AI. Builds RAG pipelines, AI agents with tool use, MCP servers connecting LLMs to real systems, and multi-agent orchestration in production.
 
 EXPERIENCE
 ${experience}
