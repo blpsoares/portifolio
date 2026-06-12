@@ -95,7 +95,7 @@ const Hero: React.FC = () => {
             </span>
           </div>
 
-          <h1 className="font-display text-5xl sm:text-7xl lg:text-8xl font-bold tracking-tight text-slate-900 dark:text-white leading-[0.95]">
+          <h1 className="font-display text-4xl sm:text-6xl lg:text-7xl xl:text-8xl font-bold tracking-tight text-slate-900 dark:text-white leading-[1.02] sm:leading-[0.95]">
             {t.hero.title1}
             <br />
             <span className="holo-text">{t.hero.title2}</span>
@@ -107,10 +107,10 @@ const Hero: React.FC = () => {
             {t.hero.subtitle_suffix}
           </p>
 
-          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 pt-1">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 pt-1">
             <button
               onClick={() => document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' })}
-              className="group px-6 py-3.5 bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-semibold rounded-xl hover:bg-slate-800 dark:hover:bg-slate-100 transition-all shadow-lg shadow-slate-900/10 dark:shadow-brand-500/20 flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-[0.98]"
+              className="group w-full sm:w-auto px-6 py-3.5 bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-semibold rounded-xl hover:bg-slate-800 dark:hover:bg-slate-100 transition-all shadow-lg shadow-slate-900/10 dark:shadow-brand-500/20 flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-[0.98]"
             >
               {t.hero.cta}
               <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
@@ -119,7 +119,7 @@ const Hero: React.FC = () => {
             <button
               onClick={() => downloadCv()}
               disabled={generating}
-              className="group px-6 py-3.5 rounded-xl gradient-border glass text-slate-900 dark:text-white font-semibold hover:text-brand-600 dark:hover:text-brand-400 transition-all flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-70 disabled:cursor-wait"
+              className="group w-full sm:w-auto px-6 py-3.5 rounded-xl gradient-border glass text-slate-900 dark:text-white font-semibold hover:text-brand-600 dark:hover:text-brand-400 transition-all flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-70 disabled:cursor-wait"
             >
               {generating ? (
                 <Loader2 size={18} className="animate-spin" />

@@ -82,7 +82,7 @@ const AgentDock: React.FC = () => {
             className="group fixed bottom-5 right-5 z-50 flex items-center gap-2.5 rounded-full glass gradient-border pl-2 pr-4 py-2 shadow-lg shadow-brand-900/10 hover:shadow-brand-500/20 transition-shadow"
           >
             <AiOrb size={34} pulse />
-            <span className="text-sm font-semibold text-slate-800 dark:text-slate-100 hidden sm:block">
+            <span className="text-sm font-semibold text-slate-800 dark:text-slate-100">
               {t.agent.cta}
             </span>
           </motion.button>
@@ -98,11 +98,11 @@ const AgentDock: React.FC = () => {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 30, scale: 0.97 }}
             transition={{ type: 'spring', stiffness: 280, damping: 28 }}
-            className="fixed z-50 inset-x-3 bottom-3 sm:inset-x-auto sm:right-5 sm:bottom-5"
+            className="fixed z-50 inset-x-0 bottom-0 sm:inset-x-auto sm:right-5 sm:bottom-5"
           >
             <div
               style={{ width: size.w, height: size.h }}
-              className="group/panel relative flex flex-col rounded-3xl glass border border-slate-200/80 dark:border-slate-700/60 shadow-2xl shadow-slate-900/20 dark:shadow-black/40 overflow-hidden max-sm:!w-auto max-sm:!h-[74vh]"
+              className="group/panel relative flex flex-col rounded-3xl glass border border-slate-200/80 dark:border-slate-700/60 shadow-2xl shadow-slate-900/20 dark:shadow-black/40 overflow-hidden max-sm:!w-auto max-sm:!h-[86dvh] max-sm:!rounded-b-none max-sm:!border-x-0 max-sm:!border-b-0"
             >
               {/* RESIZE — draggable edges (desktop), invisible until hovered */}
               <div
