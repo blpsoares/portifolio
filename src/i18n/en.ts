@@ -28,6 +28,29 @@ const en = {
     tag3: "// Integrations",
     tag4: "// Low Code",
   },
+  agent: {
+    title: "bryan.ai — agent session",
+    online: "online",
+    badge: "local · 0 tokens · $0.00",
+    placeholder: "Ask me anything about Bryan…",
+    hint: "← talk to my AI",
+    thinking: "reasoning",
+    toolRunning: "executing…",
+    disclaimer: "Deterministic agent, runs 100% in your browser.",
+    suggestions: [
+      "Why hire Bryan?",
+      "Show me the AI projects",
+      "Summarize his career",
+      "Download CV",
+    ],
+    boot: [
+      "initializing agent…",
+      "loading knowledge base (CV · 5y exp)",
+      "indexing 7 projects · 5 roles",
+      "tools ready: scroll · highlight · download_cv · contact",
+      "agent online.",
+    ],
+  },
   whoiam: {
     title: "Who I am",
     p1_start:

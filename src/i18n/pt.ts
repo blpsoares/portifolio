@@ -28,6 +28,29 @@ const pt = {
     tag3: "// Integrations",
     tag4: "// Low Code",
   },
+  agent: {
+    title: "bryan.ai — agent session",
+    online: "online",
+    badge: "local · 0 tokens · $0.00",
+    placeholder: "Pergunte algo sobre o Bryan…",
+    hint: "← converse com minha IA",
+    thinking: "raciocinando",
+    toolRunning: "executando…",
+    disclaimer: "Agente determinístico, roda 100% no seu navegador.",
+    suggestions: [
+      "Por que contratar o Bryan?",
+      "Mostre os projetos de IA",
+      "Resuma a carreira",
+      "Baixar CV",
+    ],
+    boot: [
+      "inicializando agente…",
+      "carregando base de conhecimento (CV · 5 anos de exp)",
+      "indexando 7 projetos · 5 cargos",
+      "ferramentas prontas: scroll · highlight · download_cv · contato",
+      "agente online.",
+    ],
+  },
   whoiam: {
     title: "Quem sou",
     p1_start:
