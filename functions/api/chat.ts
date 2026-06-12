@@ -109,6 +109,8 @@ export async function onRequestPost(context: {
     },
   ];
 
+  const modelList = resolveModels(env);
+
   let upstream: Response;
   try {
     upstream = await fetch('https://openrouter.ai/api/v1/chat/completions', {
@@ -120,9 +122,11 @@ export async function onRequestPost(context: {
         'X-Title': 'blpsoares.dev portfolio assistant',
       },
       body: JSON.stringify({
-        // Multi-model fallback: tries each in order until one responds.
-        models: resolveModels(env),
-        route: 'fallback',
+        // Multi-model fallback: OpenRouter tries each in order until one
+        // responds. Providing `model` (primary) + `models` (full list) is the
+        // most compatible form across API versions.
+        model: modelList[0],
+        models: modelList,
         stream: true,
         temperature: 0.4,
         max_tokens: MAX_TOKENS,
@@ -135,8 +139,13 @@ export async function onRequestPost(context: {
 
   // Free quota exhausted / rate-limited upstream / any error → fallback.
   if (!upstream.ok || !upstream.body) {
+    const detail = await upstream.text().catch(() => '');
+    console.error('OpenRouter error', upstream.status, detail.slice(0, 600));
     const reason = upstream.status === 429 ? 'quota' : 'upstream';
-    return json({ fallback: true, reason, status: upstream.status }, upstream.status === 429 ? 429 : 502);
+    return json(
+      { fallback: true, reason, status: upstream.status, detail: detail.slice(0, 400) },
+      upstream.status === 429 ? 429 : 502,
+    );
   }
 
   // Stream the SSE response straight through to the browser.
