@@ -24,13 +24,13 @@ const en = {
     aiUsage: "Automation",
   },
   hero: {
-    badge: "Senior Backend Engineer",
+    badge: "AI Engineer · Software Developer",
     title1: "Robust Systems.",
     title2: "Applied Intelligence.",
-    subtitle_prefix: "Backend Engineer focused on ",
-    subtitle_highlight: "Generative AI",
+    subtitle_prefix: "",
+    subtitle_highlight: "AI Engineer and Software Developer.",
     subtitle_suffix:
-      " — I build scalable systems, AI pipelines, and agent orchestration solutions for real business problems.",
+      " I build scalable systems, AI pipelines and agent-orchestration solutions for real business problems.",
     cta: "Some projects",
     tag1: "// Node.js & Bun",
     tag2: "// GenAI & Agents",
@@ -38,7 +38,7 @@ const en = {
     tag4: "// Low Code",
   },
   agent: {
-    title: "bryan.ai — agent session",
+    title: "bryan.ai · agent session",
     online: "online",
     badge: "local · 0 tokens · $0.00",
     placeholder: "Ask me anything about Bryan…",
@@ -47,8 +47,8 @@ const en = {
     toolRunning: "executing…",
     disclaimer: "Suggestions answer instantly; free-typed questions use AI.",
     limitReached:
-      "AI usage limit reached. Try again shortly — or use the suggestions below.",
-    inputBlocked: "AI unavailable right now — use the suggestions",
+      "AI usage limit reached. Try again shortly, or use the suggestions below.",
+    inputBlocked: "AI unavailable right now, use the suggestions",
     suggestions: [
       "Why hire Bryan?",
       "Show me the AI projects",
@@ -67,12 +67,12 @@ const en = {
     viewing: "viewing",
     welcomeTitle: "How can I help?",
     welcomeText:
-      "Ask about Bryan's career, projects and skills — I'll answer instantly.",
+      "Ask about Bryan's career, projects and skills, I'll answer instantly.",
     sourceAi: "OpenRouter",
     sourceLocal: "Local · deterministic",
     sourceAiHint: "Answer from a real LLM via OpenRouter",
-    sourceLocalHint: "Rule-based engine in your browser — no LLM, no cost",
-    unavailable: "The assistant is unavailable right now — please try again shortly.",
+    sourceLocalHint: "Rule-based engine in your browser, no LLM, no cost",
+    unavailable: "The assistant is unavailable right now, please try again shortly.",
     contextSuggestions: {
       profile: ["Why hire Bryan?", "Summarize his career", "Download CV"],
       about: ["Who is Bryan?", "What's his edge?", "AI focus?"],
@@ -90,13 +90,13 @@ const en = {
   whoiam: {
     title: "Who I am",
     p1_start:
-      "Backend Engineer with 5+ years of experience in software development, with the last 2 years focused on ",
+      "AI Engineer and Software Developer with 5+ years of experience in software development, with the last 2 years focused on ",
     p1_highlight1: "applied Generative AI",
     p1_mid:
       ". I build scalable systems, RAG pipelines, AI agents with tool use, and ",
     p1_highlight2: "multi-agent orchestration",
     p1_end:
-      " solutions for real business problems. Experienced in architecting GenAI-powered products in production — from corporate chatbots over 10,000+ document knowledge bases to NLP-to-database query agents. Currently pursuing a Postgraduate degree in Applied AI Engineering.",
+      " solutions for real business problems. Experienced in architecting GenAI-powered products in production, from corporate chatbots over 10,000+ document knowledge bases to NLP-to-database query agents. Currently pursuing a Postgraduate degree in Applied AI Engineering.",
     p2: "My edge isn't just technical: I have the communication skills of someone who sells and the depth of someone who builds. I'd rather architect systems that last than ship features that need to be rewritten.",
     cta: "View projects",
   },
@@ -126,7 +126,7 @@ const en = {
     badge: "Speed & Agility",
     title: "Low Code & Acceleration",
     subtitle:
-      "Strategic integration of visual tools for MVPs, automations, and dashboards — reducing time-to-market without compromising architectural quality.",
+      "Strategic integration of visual tools for MVPs, automations, and dashboards, reducing time-to-market without compromising architectural quality.",
     categories: {
       "Integração Backend": "Backend Integration",
       "Frontend Ágil": "Agile Frontend",
@@ -138,7 +138,7 @@ const en = {
     badge: "Workflow Intelligence",
     title: "Model Context Protocol (MCP)",
     subtitle:
-      "MCP usage isn't just a tool — it's the foundation of my productivity. I connect LLMs directly to the project context to eliminate repetitive tasks.",
+      "MCP usage isn't just a tool, it's the foundation of my productivity. I connect LLMs directly to the project context to eliminate repetitive tasks.",
     descriptions: buildMcpDescriptions("en"),
   },
   projects: {
@@ -159,9 +159,9 @@ const en = {
     badge: "Open Source · Study System",
     title: "How I Keep Learning",
     subtitle:
-      "An open source web app I built to study consistently — turning content into quizzes and tracking my own progress.",
+      "An open source web app I built to study consistently, turning content into quizzes and tracking my own progress.",
     p1: "Instead of passive reading, I turn everything I study into active practice. I built learning.blpsoares.dev as my personal study system: I feed in content, it generates questions, and I answer them to reinforce what actually stuck.",
-    p2: "The project is open source and fully vibe coded — built with AI assistance from idea to deploy. It's not just a side project; it's part of my daily workflow.",
+    p2: "The project is open source and fully vibe coded, built with AI assistance from idea to deploy. It's not just a side project; it's part of my daily workflow.",
     visitSite: "Visit site",
     viewSource: "View source",
     readArticle: "Read the article",
@@ -171,7 +171,7 @@ const en = {
     badge: "Vibe Coded · Open Source",
     title: "Open Source Vibe Projects",
     subtitle:
-      "Side projects built with AI-assisted development — from idea to deploy, fully vibe coded and open source.",
+      "Side projects built with AI-assisted development, from idea to deploy, fully vibe coded and open source.",
     viewAll: "View all",
     visitSite: "Visit site",
     backHome: "Back to home",

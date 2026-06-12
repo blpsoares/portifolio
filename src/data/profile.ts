@@ -145,7 +145,7 @@ export interface Profile {
 export const profile: Profile = {
   personal: {
     name: 'Bryan Soares',
-    title: { pt: 'Software Developer · AI Engineer', en: 'Software Developer · AI Engineer' },
+    title: { pt: 'AI Engineer · Software Developer', en: 'AI Engineer · Software Developer' },
     location: { pt: 'São Paulo, Brasil', en: 'São Paulo, Brazil' },
     phone: '(11) 93045-6696',
     email: 'bryanluccas@hotmail.com',
@@ -155,8 +155,8 @@ export const profile: Profile = {
   },
 
   summary: {
-    pt: 'Desenvolvedor de Software com +5 anos de experiência em desenvolvimento de software, sendo os últimos 2 anos focado em IA Generativa aplicada. Construí pipelines RAG, agentes de IA, servidores MCP para integração com LLMs e soluções de orquestração multi-agente para problemas reais de negócio, como chatbots corporativos sobre bases de 10.000+ documentos e buscas inteligentes com IA em produção. Atualmente cursando Pós-graduação em Engenharia de IA Aplicada.',
-    en: "Software Developer with 5+ years of experience in software development, with the last 2 years focused on applied Generative AI. I've built RAG pipelines, AI agents, MCP servers for LLM integration, and multi-agent orchestration solutions for real business problems — from corporate chatbots over 10,000+ document knowledge bases to AI-powered smart search in production. Currently pursuing a Postgraduate degree in Applied AI Engineering.",
+    pt: 'AI Engineer e Software Developer com +5 anos de experiência em desenvolvimento de software, sendo os últimos 2 anos focado em IA Generativa aplicada. Construí pipelines RAG, agentes de IA, servidores MCP para integração com LLMs e soluções de orquestração multi-agente para problemas reais de negócio, como chatbots corporativos sobre bases de 10.000+ documentos e buscas inteligentes com IA em produção. Atualmente cursando Pós-graduação em Engenharia de IA Aplicada.',
+    en: "AI Engineer and Software Developer with 5+ years of experience in software development, with the last 2 years focused on applied Generative AI. I've built RAG pipelines, AI agents, MCP servers for LLM integration, and multi-agent orchestration solutions for real business problems, from corporate chatbots over 10,000+ document knowledge bases to AI-powered smart search in production. Currently pursuing a Postgraduate degree in Applied AI Engineering.",
   },
 
   experience: [
@@ -203,12 +203,12 @@ export const profile: Profile = {
       current: false,
       bullets: [
         {
-          pt: 'Criei o Pulsar, CLI interna para migrações MongoDB entre bancos no mesmo cluster ou entre clusters separados, com modo de sync em tempo real que injeta metadados nos documentos para tracking ao vivo — substituiu processo totalmente manual de múltiplos mongodumps e restores',
-          en: 'Built Pulsar, an internal CLI for MongoDB migrations between databases in the same cluster or across separate clusters/accounts, with a real-time sync mode that injects metadata into documents for live tracking — replaced a fully manual process of multiple mongodumps and restores',
+          pt: 'Criei o Pulsar, CLI interna para migrações MongoDB entre bancos no mesmo cluster ou entre clusters separados, com modo de sync em tempo real que injeta metadados nos documentos para tracking ao vivo, substituiu processo totalmente manual de múltiplos mongodumps e restores',
+          en: 'Built Pulsar, an internal CLI for MongoDB migrations between databases in the same cluster or across separate clusters/accounts, with a real-time sync mode that injects metadata into documents for live tracking, replaced a fully manual process of multiple mongodumps and restores',
         },
         {
-          pt: 'Automatizei processo manual de validação de PDFs: uso do Google Document AI com Custom Extractor para reconhecer campos dinâmicos e validar contra dados de contrato — modelo final com 96% de acurácia',
-          en: 'Automation of a manual PDF validation process: used Google Document AI with Custom Extractor to recognize dynamic fields and match them against contract data — final model with 96% accuracy',
+          pt: 'Automatizei processo manual de validação de PDFs: uso do Google Document AI com Custom Extractor para reconhecer campos dinâmicos e validar contra dados de contrato, modelo final com 96% de acurácia',
+          en: 'Automation of a manual PDF validation process: used Google Document AI with Custom Extractor to recognize dynamic fields and match them against contract data, final model with 96% accuracy',
         },
         {
           pt: 'Campo de busca com IA: a IA extrai dados-chave do prompt do usuário, monta o body do endpoint e faz a request final retornando resultados filtrados na interface, eliminando input manual de filtros',
@@ -259,8 +259,8 @@ export const profile: Profile = {
       current: false,
       bullets: [
         {
-          pt: 'Arquitetei e entreguei chatbot RAG corporativo (Dialogflow CX) integrado a base de conhecimento com 10.000+ documentos (JSONs, planilhas e PDFs) — substituiu processo 100% manual de consulta por interface em linguagem natural',
-          en: 'Architected and delivered a corporate RAG chatbot (Dialogflow CX) integrated with a knowledge base of 10,000+ documents (JSONs, spreadsheets, and PDFs) — replaced a 100% manual consultation process with a natural language interface',
+          pt: 'Arquitetei e entreguei chatbot RAG corporativo (Dialogflow CX) integrado a base de conhecimento com 10.000+ documentos (JSONs, planilhas e PDFs), substituiu processo 100% manual de consulta por interface em linguagem natural',
+          en: 'Architected and delivered a corporate RAG chatbot (Dialogflow CX) integrated with a knowledge base of 10,000+ documents (JSONs, spreadsheets, and PDFs), replaced a 100% manual consultation process with a natural language interface',
         },
         {
           pt: 'Fine-tuning de modelos da OpenAI (da-vinci) para casos de uso específicos de domínio na primeira onda de adoção GenAI',
@@ -331,18 +331,18 @@ export const profile: Profile = {
     },
     {
       title: {
-        pt: 'Filtros Inteligentes — Agente NLP para Queries',
-        en: 'Intelligent Filters — NLP to Database Query Agent',
+        pt: 'Filtros Inteligentes: Agente NLP para Queries',
+        en: 'Intelligent Filters: NLP to Database Query Agent',
       },
       category: { pt: 'AI AGENT · TOOL USE', en: 'AI AGENT · TOOL USE' },
       description: {
-        pt: 'Desenvolvimento de um agente de IA capaz de interpretar entradas de texto livre do usuário e convertê-las em queries estruturadas de MongoDB. O sistema entende a intenção do usuário, aplica a lógica de negócio e retorna os resultados filtrados — eliminando a necessidade de preenchimento manual de filtros. Integrado a produto interno em produção.',
-        en: 'Development of an AI agent capable of interpreting free-text user inputs and converting them into structured MongoDB queries. The system understands user intent, applies business logic, and returns filtered results — eliminating the need for manual filter input. Integrated into an internal production product.',
+        pt: 'Desenvolvimento de um agente de IA capaz de interpretar entradas de texto livre do usuário e convertê-las em queries estruturadas de MongoDB. O sistema entende a intenção do usuário, aplica a lógica de negócio e retorna os resultados filtrados, eliminando a necessidade de preenchimento manual de filtros. Integrado a produto interno em produção.',
+        en: 'Development of an AI agent capable of interpreting free-text user inputs and converting them into structured MongoDB queries. The system understands user intent, applies business logic, and returns filtered results, eliminating the need for manual filter input. Integrated into an internal production product.',
       },
-      cardTitle: 'Intelligent Filters — NLP to Database Query Agent',
+      cardTitle: 'Intelligent Filters: NLP to Database Query Agent',
       cardCategory: 'AI AGENT · TOOL USE',
       cardDescription:
-        'Desenvolvimento de um agente de IA capaz de interpretar entradas de texto livre do usuário e convertê-las em queries estruturadas de MongoDB. O sistema entende a intenção do usuário, aplica a lógica de negócio e retorna os resultados filtrados — eliminando a necessidade de preenchimento manual de filtros. Integrado a produto interno em produção.',
+        'Desenvolvimento de um agente de IA capaz de interpretar entradas de texto livre do usuário e convertê-las em queries estruturadas de MongoDB. O sistema entende a intenção do usuário, aplica a lógica de negócio e retorna os resultados filtrados, eliminando a necessidade de preenchimento manual de filtros. Integrado a produto interno em produção.',
       technologies: ['OpenAI', 'MongoDB', 'Node.js', 'TypeScript', 'Windmill', 'AI Agent'],
     },
     {
@@ -362,13 +362,13 @@ export const profile: Profile = {
       title: { pt: 'Migração Massiva com Node Streams', en: 'Massive Migration with Node Streams' },
       category: { pt: 'PERFORMANCE & DATA', en: 'PERFORMANCE & DATA' },
       description: {
-        pt: 'Arquitetura e execução de pipeline de migração de 20.000+ documentos de múltiplas origens (Drive, OneDrive, S3, Local) para DocuSign. Utilização intensiva de Node.js Streams para controle de backpressure, evitando memory leaks. Implementação de observabilidade com Winston para retomada granular em caso de falha — tolerância a falhas sem reprocessamento do início. Solução construída para ser reutilizável em outros clientes com a mesma necessidade.',
-        en: 'Architecture and execution of a migration pipeline for 20,000+ documents from multiple sources (Drive, OneDrive, S3, Local) to DocuSign. Intensive use of Node.js Streams for backpressure control, preventing memory leaks. Observability implementation with Winston for granular recovery on failure — fault tolerance without reprocessing from scratch. Solution built to be reusable across other clients with the same need.',
+        pt: 'Arquitetura e execução de pipeline de migração de 20.000+ documentos de múltiplas origens (Drive, OneDrive, S3, Local) para DocuSign. Utilização intensiva de Node.js Streams para controle de backpressure, evitando memory leaks. Implementação de observabilidade com Winston para retomada granular em caso de falha, tolerância a falhas sem reprocessamento do início. Solução construída para ser reutilizável em outros clientes com a mesma necessidade.',
+        en: 'Architecture and execution of a migration pipeline for 20,000+ documents from multiple sources (Drive, OneDrive, S3, Local) to DocuSign. Intensive use of Node.js Streams for backpressure control, preventing memory leaks. Observability implementation with Winston for granular recovery on failure, fault tolerance without reprocessing from scratch. Solution built to be reusable across other clients with the same need.',
       },
       cardTitle: 'Migração Massiva com Node Streams',
       cardCategory: 'Performance & Data',
       cardDescription:
-        'Arquitetura e execução de pipeline de migração de 20.000+ documentos de múltiplas origens (Drive, OneDrive, S3, Local) para DocuSign. Utilização intensiva de Node.js Streams para controle de backpressure, evitando memory leaks. Implementação de observabilidade com Winston para retomada granular em caso de falha — tolerância a falhas sem reprocessamento do início. Solução construída para ser reutilizável em outros clientes com a mesma necessidade.',
+        'Arquitetura e execução de pipeline de migração de 20.000+ documentos de múltiplas origens (Drive, OneDrive, S3, Local) para DocuSign. Utilização intensiva de Node.js Streams para controle de backpressure, evitando memory leaks. Implementação de observabilidade com Winston para retomada granular em caso de falha, tolerância a falhas sem reprocessamento do início. Solução construída para ser reutilizável em outros clientes com a mesma necessidade.',
       technologies: ['Node.js Streams', 'API Integrations', 'File Systems', 'Winston'],
     },
     {
@@ -415,8 +415,8 @@ export const profile: Profile = {
   cvProjects: [
     {
       name: {
-        pt: 'Agentistics — Dashboard de Analytics Local para Assistentes de Código com IA',
-        en: 'Agentistics — Local Analytics Dashboard for AI Coding Assistants',
+        pt: 'Agentistics: Dashboard de Analytics Local para Assistentes de Código com IA',
+        en: 'Agentistics: Local Analytics Dashboard for AI Coding Assistants',
       },
       description: {
         pt: 'Construí um dashboard de analytics local-first que parseia sessões ~/.claude/ para exibir uso de tokens, custos (USD/BRL), métricas de agentes, heatmaps de atividade e breakdown por modelo. Inclui CLI com modo TUI, export OpenTelemetry e geração de relatórios PDF. Zero cloud, zero telemetria.',
@@ -426,8 +426,8 @@ export const profile: Profile = {
     },
     {
       name: {
-        pt: 'DuckFlux — DSL Declarativa para Orquestração Multi-Agente',
-        en: 'DuckFlux — Declarative DSL for Multi-Agent Orchestration',
+        pt: 'DuckFlux: DSL Declarativa para Orquestração Multi-Agente',
+        en: 'DuckFlux: Declarative DSL for Multi-Agent Orchestration',
       },
       description: {
         pt: 'Co-autor de uma engine DSL nativa em YAML para orquestração de pipelines de IA multi-agente. Inclui execução paralela, condicionais CEL, controle de fluxo por máquina de estados, suporte nativo a MCP, steps event-driven (emit/wait) e sub-workflows aninhados. Suporta Go CLI e runtimes Bun/Node.js.',
@@ -437,8 +437,8 @@ export const profile: Profile = {
     },
     {
       name: {
-        pt: 'Embark — Framework CI/CD Zero-Config para Monorepos Assistidos por IA',
-        en: 'Embark — Zero-Config CI/CD Framework for AI-Assisted Monorepos',
+        pt: 'Embark: Framework CI/CD Zero-Config para Monorepos Assistidos por IA',
+        en: 'Embark: Zero-Config CI/CD Framework for AI-Assisted Monorepos',
       },
       description: {
         pt: 'Construí um framework monorepo que auto-gera workflows GitHub Actions, Dockerfiles (via CLIs de IA: Claude, Gemini, Copilot, Codex) e pipelines de deploy Cloud Run / Netlify / Cloudflare a cada commit. Enforça gates de qualidade de código (77% de cobertura) via pre-push hooks.',
@@ -448,8 +448,8 @@ export const profile: Profile = {
     },
     {
       name: {
-        pt: 'Rede Neural — Modelo de Predição de Planos',
-        en: 'Neural Network — Plan Prediction Model',
+        pt: 'Rede Neural: Modelo de Predição de Planos',
+        en: 'Neural Network: Plan Prediction Model',
       },
       description: {
         pt: 'Treinei uma rede neural feedforward do zero como parte da pós-graduação em Engenharia de IA. Usei ativação ReLU, ajuste de pesos de neurônios e contagem de epochs para predizer qual plano de assinatura melhor se adequa a padrões de comportamento.',
