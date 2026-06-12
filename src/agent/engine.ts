@@ -13,7 +13,7 @@ import type { Translations, Locale } from '../i18n';
 
 export type AgentAction =
   | { type: 'scroll'; target: string }
-  | { type: 'download_cv' }
+  | { type: 'download_cv'; locale?: 'pt' | 'en' }
   | { type: 'open_url'; url: string }
   | { type: 'none' };
 
@@ -36,7 +36,8 @@ interface Intent {
   id: string;
   /** keywords in both languages; matching is accent-insensitive substring */
   kw: string[];
-  reply: (t: Translations, locale: Locale) => AgentReply;
+  /** `query` is already normalized (lowercase, accent-stripped) */
+  reply: (t: Translations, locale: Locale, query: string) => AgentReply;
 }
 
 const norm = (s: string) =>
@@ -204,18 +205,39 @@ const intents: Intent[] = [
     kw: [
       'cv', 'curriculo', 'currículo', 'baixar', 'download', 'resume', 'pdf',
     ],
-    reply: (_t, locale) => ({
-      reasoning: [
-        L(locale, 'localizando gerador de PDF', 'locating PDF generator'),
-        L(locale, 'invocando ferramenta: download_cv', 'invoking tool: download_cv'),
-      ],
-      tool: { name: 'download_cv', arg: '', action: { type: 'download_cv' } },
-      answer: L(
-        locale,
-        'Gerando o CV em PDF e iniciando o download agora. Ele é montado na hora, no navegador, a partir dos mesmos dados que eu uso.',
-        'Generating the CV PDF and starting the download now. It is built on the fly, in the browser, from the same data I use.',
-      ),
-    }),
+    reply: (_t, locale, query) => {
+      // Understand an explicitly requested language ("cv em ptbr", "resume in english")
+      const wantsPt = /(ptbr|pt-br|pt br|portugu|brasil|brazil|\bpt\b)/.test(query);
+      const wantsEn = /(ingles|english|\beng\b|\ben\b)/.test(query);
+      const target: 'pt' | 'en' | undefined = wantsPt ? 'pt' : wantsEn ? 'en' : undefined;
+      const langLabel =
+        target === 'pt'
+          ? L(locale, 'português', 'Portuguese')
+          : target === 'en'
+            ? L(locale, 'inglês', 'English')
+            : '';
+      return {
+        reasoning: [
+          L(locale, 'localizando gerador de PDF', 'locating PDF generator'),
+          target
+            ? L(locale, `idioma solicitado: ${langLabel}`, `requested language: ${langLabel}`)
+            : L(locale, 'usando idioma da página', 'using page language'),
+          L(locale, 'invocando ferramenta: download_cv', 'invoking tool: download_cv'),
+        ],
+        tool: { name: 'download_cv', arg: target ?? '', action: { type: 'download_cv', locale: target } },
+        answer: target
+          ? L(
+              locale,
+              `Entendido — gerando o CV em ${langLabel} e baixando agora (montado na hora, no navegador).`,
+              `Got it — generating the CV in ${langLabel} and downloading now (built on the fly, in the browser).`,
+            )
+          : L(
+              locale,
+              'Gerando o CV em PDF e iniciando o download agora. Ele é montado na hora, no navegador, a partir dos mesmos dados que eu uso.',
+              'Generating the CV PDF and starting the download now. It is built on the fly, in the browser, from the same data I use.',
+            ),
+      };
+    },
   },
   {
     id: 'contact',
@@ -283,5 +305,5 @@ export function matchIntent(query: string, t: Translations, locale: Locale): Age
     }
   }
 
-  return best ? best.reply(t, locale) : fallback(locale);
+  return best ? best.reply(t, locale, q) : fallback(locale);
 }

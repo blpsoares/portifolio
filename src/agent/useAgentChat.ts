@@ -94,7 +94,7 @@ export function useAgentChat(options: { autoBoot?: boolean } = {}) {
           break;
         }
         case 'download_cv':
-          void downloadCv();
+          void downloadCv(action.locale);
           break;
         case 'open_url':
           window.open(action.url, '_blank', 'noopener');
