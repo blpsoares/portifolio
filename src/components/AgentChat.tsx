@@ -37,26 +37,40 @@ const AgentChat: React.FC<AgentChatProps> = ({ chat, suggestions, contextNote })
   const { t } = useI18n();
   const { booted, messages, input, setInput, busy, send } = chat;
   const scrollRef = useRef<HTMLDivElement>(null);
-  const [atBottom, setAtBottom] = useState(true);
+  const autoFollow = useRef(true);
+  const lastTop = useRef(0);
+  const [showJump, setShowJump] = useState(false);
 
   const empty = messages.length === 0;
-
-  const computeAtBottom = useCallback(() => {
-    const el = scrollRef.current;
-    if (!el) return;
-    setAtBottom(el.scrollHeight - el.scrollTop - el.clientHeight < 80);
-  }, []);
 
   const scrollToBottom = useCallback((behavior: ScrollBehavior = 'smooth') => {
     const el = scrollRef.current;
     if (el) el.scrollTo({ top: el.scrollHeight, behavior });
-    setAtBottom(true);
+    autoFollow.current = true;
+    setShowJump(false);
   }, []);
 
-  // Auto-follow only when the user is already at the bottom.
+  // Direction-aware: scrolling UP releases the auto-follow (so you can read
+  // history while it streams); returning to the bottom re-engages it.
+  const handleScroll = useCallback(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const top = el.scrollTop;
+    const atBottom = el.scrollHeight - top - el.clientHeight < 48;
+    if (top < lastTop.current - 2 && !atBottom) {
+      autoFollow.current = false;
+      setShowJump(true);
+    } else if (atBottom) {
+      autoFollow.current = true;
+      setShowJump(false);
+    }
+    lastTop.current = top;
+  }, []);
+
+  // Follow new content only while the user hasn't scrolled away.
   useEffect(() => {
-    if (atBottom) scrollToBottom('auto');
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const el = scrollRef.current;
+    if (el && autoFollow.current) el.scrollTop = el.scrollHeight;
   }, [messages]);
 
   return (
@@ -65,7 +79,7 @@ const AgentChat: React.FC<AgentChatProps> = ({ chat, suggestions, contextNote })
       <div className="relative flex-1 min-h-0">
         <div
           ref={scrollRef}
-          onScroll={computeAtBottom}
+          onScroll={handleScroll}
           className="absolute inset-0 overflow-y-auto hide-scrollbar px-4 py-4"
           aria-live="polite"
         >
@@ -171,7 +185,7 @@ const AgentChat: React.FC<AgentChatProps> = ({ chat, suggestions, contextNote })
         </div>
 
         {/* JUMP TO LATEST */}
-        {!atBottom && !empty && (
+        {showJump && !empty && (
           <button
             type="button"
             onClick={() => scrollToBottom('smooth')}
