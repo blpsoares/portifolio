@@ -25,8 +25,7 @@ export interface ChatMessage {
  *   1. tries the real AI (OpenRouter via /api/chat) and streams its answer;
  *   2. on any failure (no key, free quota exhausted, rate limit, offline, or
  *      local dev where the function doesn't exist) it gracefully falls back to
- *      the deterministic engine — with the full reasoning → tool → answer
- *      choreography. The site is never "down".
+ *      the deterministic engine. The site is never "down".
  */
 export function useAgentChat(options: { autoBoot?: boolean } = {}) {
   const { autoBoot = true } = options;
@@ -38,7 +37,6 @@ export function useAgentChat(options: { autoBoot?: boolean } = {}) {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState('');
   const [busy, setBusy] = useState(false);
-  const [jobText, setJobText] = useState('');
 
   const idRef = useRef(0);
   const nextId = () => ++idRef.current;
@@ -47,8 +45,6 @@ export function useAgentChat(options: { autoBoot?: boolean } = {}) {
   const timersRef = useRef<Set<ReturnType<typeof setTimeout>>>(new Set());
   const bootKbRef = useRef<string[]>(t.agent.boot);
   bootKbRef.current = t.agent.boot;
-  const jobTextRef = useRef('');
-  jobTextRef.current = jobText;
 
   useEffect(() => {
     aliveRef.current = true;
@@ -60,7 +56,7 @@ export function useAgentChat(options: { autoBoot?: boolean } = {}) {
     };
   }, []);
 
-  // BOOT SEQUENCE
+  // BOOT SEQUENCE (only when enabled)
   useEffect(() => {
     if (!autoBoot) return;
     let cancelled = false;
@@ -78,7 +74,6 @@ export function useAgentChat(options: { autoBoot?: boolean } = {}) {
     return () => {
       cancelled = true;
     };
-    // run once on mount
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -120,7 +115,6 @@ export function useAgentChat(options: { autoBoot?: boolean } = {}) {
       const query = raw.trim();
       if (!query || busy) return;
       const L = (pt: string, en: string) => (locale === 'pt' ? pt : en);
-      const job = jobTextRef.current.trim();
 
       setBusy(true);
       setInput('');
@@ -137,24 +131,18 @@ export function useAgentChat(options: { autoBoot?: boolean } = {}) {
 
       // ===== 1) Try the real AI =====
       try {
-        const thinking = job
-          ? [
-              L('conectando ao modelo via OpenRouter…', 'connecting to the model via OpenRouter…'),
-              L('lendo a vaga anexada…', 'reading the attached job description…'),
-            ]
-          : [
-              L('conectando ao modelo via OpenRouter…', 'connecting to the model via OpenRouter…'),
-              L('recuperando contexto do CV…', 'retrieving CV context…'),
-            ];
+        const thinking = [
+          L('conectando ao modelo…', 'connecting to the model…'),
+          L('recuperando contexto do CV…', 'retrieving CV context…'),
+        ];
         for (const line of thinking) {
-          await sleep(380);
+          await sleep(360);
           if (!aliveRef.current) return;
           patch(agentId, (m) => ({ ...m, reasoning: [...(m.reasoning ?? []), line] }));
         }
 
         await streamAiReply({
           query,
-          jobText: job || undefined,
           locale,
           onChunk: (delta) => {
             if (!aliveRef.current) return;
@@ -168,7 +156,6 @@ export function useAgentChat(options: { autoBoot?: boolean } = {}) {
       } catch (err) {
         if (!(err instanceof AiUnavailable)) console.error('agent error', err);
         if (!aliveRef.current) return;
-        // reset the shell for the deterministic choreography
         patch(agentId, (m) => ({ ...m, reasoning: [], text: '', source: 'local' }));
       }
 
@@ -176,7 +163,7 @@ export function useAgentChat(options: { autoBoot?: boolean } = {}) {
       const reply = matchIntent(query, t, locale);
 
       for (const line of reply.reasoning) {
-        await sleep(460);
+        await sleep(440);
         if (!aliveRef.current) return;
         patch(agentId, (m) => ({ ...m, reasoning: [...(m.reasoning ?? []), line] }));
       }
@@ -196,8 +183,7 @@ export function useAgentChat(options: { autoBoot?: boolean } = {}) {
       for (let i = 0; i < words.length; i++) {
         await sleep(24);
         if (!aliveRef.current) return;
-        const slice = words.slice(0, i + 1).join(' ');
-        patch(agentId, (m) => ({ ...m, text: slice }));
+        patch(agentId, (m) => ({ ...m, text: words.slice(0, i + 1).join(' ') }));
       }
 
       patch(agentId, (m) => ({ ...m, streaming: false }));
@@ -214,8 +200,6 @@ export function useAgentChat(options: { autoBoot?: boolean } = {}) {
     setInput,
     busy,
     send,
-    jobText,
-    setJobText,
     hasStarted: messages.length > 0,
   };
 }

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Cpu, Eye } from 'lucide-react';
+import { X, Sparkles, Eye } from 'lucide-react';
 import { useI18n } from '../i18n';
 import { useAgentChat } from '../agent/useAgentChat';
 import { useActiveSection } from '../hooks/useActiveSection';
@@ -8,14 +8,14 @@ import AgentChat from './AgentChat';
 import AiOrb from './ui/AiOrb';
 
 /**
- * Persistent, site-wide AI assistant. A floating orb launcher (present on every
- * section) opens a drawer running the same agent engine as the hero console,
- * but with context-aware suggestions based on the section currently in view.
+ * Persistent, site-wide AI assistant. A floating orb launcher (on every section)
+ * opens a clean chat panel running the hybrid agent engine, with context-aware
+ * suggestions based on the section currently in view.
  */
 const AgentDock: React.FC = () => {
   const { t } = useI18n();
   const [open, setOpen] = useState(false);
-  const chat = useAgentChat();
+  const chat = useAgentChat({ autoBoot: false });
   const active = useActiveSection();
 
   const ctxMap = t.agent.contextSuggestions as Record<string, string[]>;
@@ -35,50 +35,41 @@ const AgentDock: React.FC = () => {
             exit={{ scale: 0, opacity: 0 }}
             transition={{ type: 'spring', stiffness: 320, damping: 22 }}
             aria-label={t.agent.cta}
-            className="group fixed bottom-5 right-5 z-50 flex items-center gap-3 rounded-full glass gradient-border pl-2 pr-4 py-2 shadow-xl shadow-brand-900/20"
+            className="group fixed bottom-5 right-5 z-50 flex items-center gap-2.5 rounded-full glass gradient-border pl-2 pr-4 py-2 shadow-lg shadow-brand-900/10 hover:shadow-brand-500/20 transition-shadow"
           >
-            <AiOrb size={38} pulse />
-            <span className="text-sm font-semibold text-slate-800 dark:text-slate-100 pr-1 hidden sm:block">
+            <AiOrb size={34} pulse />
+            <span className="text-sm font-semibold text-slate-800 dark:text-slate-100 hidden sm:block">
               {t.agent.cta}
             </span>
           </motion.button>
         )}
       </AnimatePresence>
 
-      {/* DRAWER */}
+      {/* PANEL */}
       <AnimatePresence>
         {open && (
           <motion.div
-            key="drawer"
-            initial={{ opacity: 0, y: 40, scale: 0.96 }}
+            key="panel"
+            initial={{ opacity: 0, y: 30, scale: 0.97 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 40, scale: 0.96 }}
-            transition={{ type: 'spring', stiffness: 260, damping: 26 }}
-            className="fixed z-50 bottom-0 right-0 sm:bottom-5 sm:right-5 w-full sm:w-[400px] max-w-full"
+            exit={{ opacity: 0, y: 30, scale: 0.97 }}
+            transition={{ type: 'spring', stiffness: 280, damping: 28 }}
+            className="fixed z-50 inset-x-3 bottom-3 sm:inset-x-auto sm:right-5 sm:bottom-5 sm:w-[400px]"
           >
-            <div className="relative m-3 sm:m-0 rounded-2xl gradient-border glass shadow-2xl shadow-slate-900/20 dark:shadow-brand-500/10 overflow-hidden">
-              <div
-                aria-hidden="true"
-                className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-brand-400/70 to-transparent animate-scan"
-              />
-
+            <div className="flex flex-col h-[72vh] sm:h-[600px] max-h-[640px] rounded-3xl glass border border-slate-200/80 dark:border-slate-700/60 shadow-2xl shadow-slate-900/20 dark:shadow-black/40 overflow-hidden">
               {/* HEADER */}
-              <div className="flex items-center gap-3 px-4 py-3 border-b border-slate-200/70 dark:border-slate-700/60 bg-slate-50/80 dark:bg-slate-950/50">
-                <AiOrb size={26} pulse={false} />
-                <div className="min-w-0">
-                  <p className="text-xs font-mono font-medium text-slate-700 dark:text-slate-200 truncate">
-                    {t.agent.title}
+              <div className="shrink-0 flex items-center gap-3 px-4 py-3 border-b border-slate-200/70 dark:border-slate-800/70">
+                <div className="relative">
+                  <div className="w-9 h-9 rounded-full bg-gradient-to-br from-brand-400 to-emerald-600 grid place-items-center shadow-sm shadow-brand-500/30">
+                    <Sparkles size={16} className="text-white" />
+                  </div>
+                  <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-emerald-500 ring-2 ring-white dark:ring-slate-900" aria-hidden="true" />
+                </div>
+                <div className="min-w-0 leading-tight">
+                  <p className="text-sm font-semibold text-slate-900 dark:text-white truncate">
+                    {t.agent.cta}
                   </p>
-                  <span className="flex items-center gap-1.5 text-[10px] font-medium text-emerald-600 dark:text-emerald-400">
-                    <span className="relative flex h-1.5 w-1.5" aria-hidden="true">
-                      <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75 animate-ping" />
-                      <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                    </span>
-                    {t.agent.online}
-                    <span className="hidden md:inline-flex items-center gap-1 ml-1 text-slate-400 dark:text-slate-500">
-                      <Cpu size={10} aria-hidden="true" /> {t.agent.badge}
-                    </span>
-                  </span>
+                  <p className="text-[11px] text-emerald-600 dark:text-emerald-400">{t.agent.online}</p>
                 </div>
                 <button
                   type="button"
@@ -86,26 +77,24 @@ const AgentDock: React.FC = () => {
                   aria-label={t.agent.close}
                   className="ml-auto p-1.5 rounded-lg text-slate-500 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200/60 dark:hover:bg-slate-800/60 transition-colors"
                 >
-                  <X size={16} />
+                  <X size={18} />
                 </button>
               </div>
 
-              <AgentChat
-                chat={chat}
-                suggestions={suggestions}
-                heightClass="h-[44vh] sm:h-[360px]"
-                contextNote={
-                  active ? (
-                    <span className="inline-flex items-center gap-1.5">
-                      <Eye size={11} aria-hidden="true" />
-                      {t.agent.viewing}: <strong className="font-semibold">{active.label}</strong>
-                    </span>
-                  ) : null
-                }
-              />
-
-              <div className="px-4 pb-3 pt-1 flex items-center gap-1.5 text-[10px] text-slate-400 dark:text-slate-500 border-t border-slate-200/70 dark:border-slate-700/60">
-                {t.agent.disclaimer}
+              {/* CHAT */}
+              <div className="flex-1 min-h-0">
+                <AgentChat
+                  chat={chat}
+                  suggestions={suggestions}
+                  contextNote={
+                    active ? (
+                      <span className="inline-flex items-center gap-1.5">
+                        <Eye size={11} aria-hidden="true" />
+                        {t.agent.viewing}: <strong className="font-semibold">{active.label}</strong>
+                      </span>
+                    ) : null
+                  }
+                />
               </div>
             </div>
           </motion.div>

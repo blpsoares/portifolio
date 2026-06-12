@@ -53,11 +53,9 @@ const en = {
     cta: "AI Assistant",
     close: "Close",
     viewing: "viewing",
-    attach: "Attach job",
-    attachPlaceholder:
-      "Paste the job description here, then ask e.g. \"why hire Bryan for this role?\"",
-    attached: "job attached",
-    clear: "remove",
+    welcomeTitle: "How can I help?",
+    welcomeText:
+      "Ask about Bryan's career, projects and skills — I'll answer instantly.",
     sourceAi: "OpenRouter",
     sourceLocal: "local",
     contextSuggestions: {
