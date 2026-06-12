@@ -57,7 +57,9 @@ const pt = {
     welcomeText:
       "Pergunte sobre a carreira, projetos e skills do Bryan — eu respondo na hora.",
     sourceAi: "OpenRouter",
-    sourceLocal: "local",
+    sourceLocal: "Local · determinístico",
+    sourceAiHint: "Resposta de um LLM real via OpenRouter",
+    sourceLocalHint: "Motor de regras no navegador — sem LLM, sem custo",
     contextSuggestions: {
       profile: ["Por que contratar o Bryan?", "Resuma a carreira", "Baixar CV"],
       about: ["Quem é o Bryan?", "Qual o diferencial dele?", "Foco em IA?"],

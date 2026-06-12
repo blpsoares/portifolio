@@ -15,6 +15,8 @@ interface StreamArgs {
   jobText?: string;
   locale: Locale;
   onChunk: (delta: string) => void;
+  /** reports which model actually answered (e.g. "openai/gpt-oss-120b:free") */
+  onModel?: (model: string) => void;
   signal?: AbortSignal;
 }
 
@@ -30,6 +32,7 @@ export async function streamAiReply({
   jobText,
   locale,
   onChunk,
+  onModel,
   signal,
 }: StreamArgs): Promise<void> {
   let res: Response;
@@ -61,6 +64,7 @@ export async function streamAiReply({
   const decoder = new TextDecoder();
   let buffer = '';
   let produced = false;
+  let modelReported = false;
 
   while (true) {
     const { value, done } = await reader.read();
@@ -80,8 +84,13 @@ export async function streamAiReply({
       }
       try {
         const parsed = JSON.parse(payload) as {
+          model?: string;
           choices?: { delta?: { content?: string } }[];
         };
+        if (!modelReported && parsed.model && onModel) {
+          modelReported = true;
+          onModel(parsed.model);
+        }
         const delta = parsed.choices?.[0]?.delta?.content;
         if (delta) {
           produced = true;

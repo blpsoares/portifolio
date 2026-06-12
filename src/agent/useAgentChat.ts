@@ -18,6 +18,8 @@ export interface ChatMessage {
   streaming?: boolean;
   /** which brain produced the answer */
   source?: 'ai' | 'local';
+  /** the exact model id that answered (ai only) */
+  model?: string;
 }
 
 /**
@@ -144,6 +146,10 @@ export function useAgentChat(options: { autoBoot?: boolean } = {}) {
         await streamAiReply({
           query,
           locale,
+          onModel: (model) => {
+            if (!aliveRef.current) return;
+            patch(agentId, (m) => ({ ...m, model }));
+          },
           onChunk: (delta) => {
             if (!aliveRef.current) return;
             patch(agentId, (m) => ({ ...m, text: m.text + delta, source: 'ai' }));

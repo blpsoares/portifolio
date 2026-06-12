@@ -13,6 +13,9 @@ interface AgentChatProps {
   contextNote?: React.ReactNode;
 }
 
+/** "openai/gpt-oss-120b:free" -> "gpt-oss-120b" */
+const prettyModel = (id: string) => id.split('/').pop()?.replace(':free', '') ?? id;
+
 const Avatar: React.FC = () => (
   <div
     className="shrink-0 w-7 h-7 rounded-full bg-gradient-to-br from-brand-400 to-emerald-600 grid place-items-center shadow-sm shadow-brand-500/30"
@@ -135,16 +138,21 @@ const AgentChat: React.FC<AgentChatProps> = ({ chat, suggestions, contextNote })
                     </div>
                   )}
 
-                  {/* source badge */}
+                  {/* source badge — makes it explicit which brain answered */}
                   {m.source && !m.streaming && (
-                    <div className="flex items-center gap-1 text-[9px] uppercase tracking-wider text-slate-400 dark:text-slate-500">
+                    <div
+                      title={m.source === 'ai' ? t.agent.sourceAiHint : t.agent.sourceLocalHint}
+                      className="inline-flex items-center gap-1.5 w-fit px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800/70 text-[10px] font-medium text-slate-500 dark:text-slate-400 cursor-default"
+                    >
                       <span
                         className={`inline-block w-1.5 h-1.5 rounded-full ${
-                          m.source === 'ai' ? 'bg-brand-500' : 'bg-slate-400'
+                          m.source === 'ai' ? 'bg-brand-500' : 'bg-amber-500'
                         }`}
                         aria-hidden="true"
                       />
-                      {m.source === 'ai' ? t.agent.sourceAi : t.agent.sourceLocal}
+                      {m.source === 'ai'
+                        ? `${t.agent.sourceAi}${m.model ? ` · ${prettyModel(m.model)}` : ''}`
+                        : t.agent.sourceLocal}
                     </div>
                   )}
                 </div>

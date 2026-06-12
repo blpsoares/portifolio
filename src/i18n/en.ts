@@ -57,7 +57,9 @@ const en = {
     welcomeText:
       "Ask about Bryan's career, projects and skills — I'll answer instantly.",
     sourceAi: "OpenRouter",
-    sourceLocal: "local",
+    sourceLocal: "Local · deterministic",
+    sourceAiHint: "Answer from a real LLM via OpenRouter",
+    sourceLocalHint: "Rule-based engine in your browser — no LLM, no cost",
     contextSuggestions: {
       profile: ["Why hire Bryan?", "Summarize his career", "Download CV"],
       about: ["Who is Bryan?", "What's his edge?", "AI focus?"],
