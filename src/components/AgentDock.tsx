@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Sparkles, Eye } from 'lucide-react';
 import { useI18n } from '../i18n';
@@ -7,16 +7,58 @@ import { useActiveSection } from '../hooks/useActiveSection';
 import AgentChat from './AgentChat';
 import AiOrb from './ui/AiOrb';
 
+const DEFAULT_SIZE = { w: 420, h: 640 };
+const clamp = (v: number, min: number, max: number) => Math.min(Math.max(v, min), max);
+
 /**
- * Persistent, site-wide AI assistant. A floating orb launcher (on every section)
- * opens a clean chat panel running the hybrid agent engine, with context-aware
- * suggestions based on the section currently in view.
+ * Persistent, site-wide AI assistant ("bra.ia"). A floating orb launcher opens a
+ * resizable chat panel running the hybrid agent, with context-aware suggestions
+ * based on the section in view.
  */
 const AgentDock: React.FC = () => {
   const { t } = useI18n();
   const [open, setOpen] = useState(false);
   const chat = useAgentChat({ autoBoot: false });
   const active = useActiveSection();
+
+  const [size, setSize] = useState(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const s = JSON.parse(localStorage.getItem('braia.size') || '');
+        if (s?.w && s?.h) return s as { w: number; h: number };
+      } catch {
+        /* ignore */
+      }
+    }
+    return DEFAULT_SIZE;
+  });
+  const sizeRef = useRef(size);
+  sizeRef.current = size;
+
+  const startResize = useCallback((e: React.PointerEvent) => {
+    e.preventDefault();
+    const startX = e.clientX;
+    const startY = e.clientY;
+    const { w: startW, h: startH } = sizeRef.current;
+
+    const onMove = (ev: PointerEvent) => {
+      // panel is anchored bottom-right, so the top-left handle grows up/left
+      const w = clamp(startW + (startX - ev.clientX), 340, window.innerWidth - 24);
+      const h = clamp(startH + (startY - ev.clientY), 380, window.innerHeight - 32);
+      setSize({ w, h });
+    };
+    const onUp = () => {
+      window.removeEventListener('pointermove', onMove);
+      window.removeEventListener('pointerup', onUp);
+      try {
+        localStorage.setItem('braia.size', JSON.stringify(sizeRef.current));
+      } catch {
+        /* ignore */
+      }
+    };
+    window.addEventListener('pointermove', onMove);
+    window.addEventListener('pointerup', onUp);
+  }, []);
 
   const ctxMap = t.agent.contextSuggestions as Record<string, string[]>;
   const suggestions = (active && ctxMap[active.id]) || t.agent.suggestions;
@@ -54,21 +96,36 @@ const AgentDock: React.FC = () => {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 30, scale: 0.97 }}
             transition={{ type: 'spring', stiffness: 280, damping: 28 }}
-            className="fixed z-50 inset-x-3 bottom-3 sm:inset-x-auto sm:right-5 sm:bottom-5 sm:w-[400px]"
+            className="fixed z-50 inset-x-3 bottom-3 sm:inset-x-auto sm:right-5 sm:bottom-5"
           >
-            <div className="flex flex-col h-[72vh] sm:h-[600px] max-h-[640px] rounded-3xl glass border border-slate-200/80 dark:border-slate-700/60 shadow-2xl shadow-slate-900/20 dark:shadow-black/40 overflow-hidden">
+            <div
+              style={{ width: size.w, height: size.h }}
+              className="relative flex flex-col rounded-3xl glass border border-slate-200/80 dark:border-slate-700/60 shadow-2xl shadow-slate-900/20 dark:shadow-black/40 overflow-hidden max-sm:!w-auto max-sm:!h-[74vh]"
+            >
+              {/* RESIZE HANDLE (top-left, desktop) */}
+              <div
+                onPointerDown={startResize}
+                role="separator"
+                aria-label="Resize"
+                className="hidden sm:block absolute top-0 left-0 z-20 w-6 h-6 cursor-nwse-resize group/resize"
+                style={{ cursor: 'nwse-resize' }}
+              >
+                <span className="absolute top-2 left-2 w-2.5 h-2.5 border-l-2 border-t-2 border-slate-400/50 dark:border-slate-500/50 rounded-tl-sm group-hover/resize:border-brand-500 transition-colors" />
+              </div>
+
               {/* HEADER */}
-              <div className="shrink-0 flex items-center gap-3 px-4 py-3 border-b border-slate-200/70 dark:border-slate-800/70">
+              <div className="shrink-0 flex items-center gap-3 px-4 py-3 pl-5 border-b border-slate-200/70 dark:border-slate-800/70">
                 <div className="relative">
                   <div className="w-9 h-9 rounded-full bg-gradient-to-br from-brand-400 to-emerald-600 grid place-items-center shadow-sm shadow-brand-500/30">
                     <Sparkles size={16} className="text-white" />
                   </div>
-                  <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-emerald-500 ring-2 ring-white dark:ring-slate-900" aria-hidden="true" />
+                  <span
+                    className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-emerald-500 ring-2 ring-white dark:ring-slate-900"
+                    aria-hidden="true"
+                  />
                 </div>
                 <div className="min-w-0 leading-tight">
-                  <p className="text-sm font-semibold text-slate-900 dark:text-white truncate">
-                    {t.agent.cta}
-                  </p>
+                  <p className="text-sm font-semibold text-slate-900 dark:text-white truncate">{t.agent.cta}</p>
                   <p className="text-[11px] text-emerald-600 dark:text-emerald-400">{t.agent.online}</p>
                 </div>
                 <button

@@ -21,7 +21,7 @@ const Footer: React.FC = () => {
 
 				<div className="flex items-center gap-6">
 					<button
-						onClick={downloadCv}
+						onClick={() => downloadCv()}
 						disabled={generating}
 						className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-brand-600 hover:bg-brand-700 text-white text-sm font-semibold transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-70 disabled:cursor-wait shadow-sm shadow-brand-600/20"
 						aria-label={t.footer.downloadCv}

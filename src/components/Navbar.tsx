@@ -136,7 +136,7 @@ const Navbar: React.FC<NavbarProps> = ({ isDarkMode, toggleTheme }) => {
             ),
           )}
           <button
-            onClick={downloadCv}
+            onClick={() => downloadCv()}
             disabled={generating}
             className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-brand-600 hover:bg-brand-700 text-white text-xs font-semibold transition-all hover:scale-[1.03] active:scale-[0.97] disabled:opacity-70 disabled:cursor-wait shadow-sm shadow-brand-600/20 whitespace-nowrap"
             aria-label={t.footer.downloadCv}
@@ -196,7 +196,7 @@ const Navbar: React.FC<NavbarProps> = ({ isDarkMode, toggleTheme }) => {
         <div className="md:hidden absolute top-full left-0 right-0 bg-white dark:bg-slate-950 border-b border-slate-200 dark:border-slate-800 px-6 py-4 shadow-xl max-h-[80vh] overflow-y-auto">
           <div className="flex flex-col space-y-4">
             <button
-              onClick={downloadCv}
+              onClick={() => downloadCv()}
               disabled={generating}
               className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 rounded-lg bg-brand-600 hover:bg-brand-700 text-white text-sm font-semibold transition-colors disabled:opacity-70 disabled:cursor-wait shadow-sm shadow-brand-600/20"
             >

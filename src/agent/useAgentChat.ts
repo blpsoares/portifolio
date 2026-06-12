@@ -156,6 +156,13 @@ export function useAgentChat(options: { autoBoot?: boolean } = {}) {
           },
         });
 
+        // The LLM answers in words but can't drive the page. Honor explicit
+        // side-effect requests (download CV, open contact link) via the
+        // deterministic detector — without hijacking with scrolls.
+        const det = matchIntent(query, t, locale);
+        if (det.tool && (det.tool.action.type === 'download_cv' || det.tool.action.type === 'open_url')) {
+          runAction(det.tool.action);
+        }
         patch(agentId, (m) => ({ ...m, streaming: false, source: 'ai' }));
         if (aliveRef.current) setBusy(false);
         return;
