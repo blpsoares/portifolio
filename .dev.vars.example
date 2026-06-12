@@ -1,0 +1,12 @@
+# Real-AI assistant (OpenRouter) — Cloudflare Pages env vars.
+# Copy to `.dev.vars` for local `wrangler pages dev`, and set the same keys as
+# Secrets/Variables in the Cloudflare Pages dashboard for production.
+#
+# Without OPENROUTER_API_KEY the /api/chat function returns a fallback signal
+# and the site automatically uses the internal deterministic agent.
+
+OPENROUTER_API_KEY=sk-or-your-key-here
+
+# Optional — defaults to a free model if unset.
+# Examples: deepseek/deepseek-chat-v3-0324:free, meta-llama/llama-3.3-70b-instruct:free
+OPENROUTER_MODEL=deepseek/deepseek-chat-v3-0324:free

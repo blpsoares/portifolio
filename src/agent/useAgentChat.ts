@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useI18n } from '../i18n';
 import { useCvDownload } from '../hooks/useCvDownload';
-import { matchIntent, type AgentReply, type AgentAction } from './engine';
+import { matchIntent, type AgentAction } from './engine';
+import { streamAiReply, AiUnavailable } from './chatClient';
 
 /** Small awaitable delay used to pace the "agent" output. */
 const sleep = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
@@ -15,16 +16,17 @@ export interface ChatMessage {
   reasoning?: string[];
   tool?: { name: string; arg: string };
   streaming?: boolean;
+  /** which brain produced the answer */
+  source?: 'ai' | 'local';
 }
 
 /**
- * Shared "agent brain" for the UI. Owns the transcript, the boot sequence,
- * the reasoning → tool-call → streamed-answer choreography and the real
- * page-driving side effects. Consumed by both the hero console and the
- * global dock so they behave identically.
- *
- * `respond()` is the single seam where a real LLM backend can replace the
- * deterministic `matchIntent` later — nothing else needs to change.
+ * Shared "agent brain". Hybrid by design:
+ *   1. tries the real AI (OpenRouter via /api/chat) and streams its answer;
+ *   2. on any failure (no key, free quota exhausted, rate limit, offline, or
+ *      local dev where the function doesn't exist) it gracefully falls back to
+ *      the deterministic engine — with the full reasoning → tool → answer
+ *      choreography. The site is never "down".
  */
 export function useAgentChat(options: { autoBoot?: boolean } = {}) {
   const { autoBoot = true } = options;
@@ -36,6 +38,7 @@ export function useAgentChat(options: { autoBoot?: boolean } = {}) {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState('');
   const [busy, setBusy] = useState(false);
+  const [jobText, setJobText] = useState('');
 
   const idRef = useRef(0);
   const nextId = () => ++idRef.current;
@@ -44,6 +47,8 @@ export function useAgentChat(options: { autoBoot?: boolean } = {}) {
   const timersRef = useRef<Set<ReturnType<typeof setTimeout>>>(new Set());
   const bootKbRef = useRef<string[]>(t.agent.boot);
   bootKbRef.current = t.agent.boot;
+  const jobTextRef = useRef('');
+  jobTextRef.current = jobText;
 
   useEffect(() => {
     aliveRef.current = true;
@@ -106,23 +111,22 @@ export function useAgentChat(options: { autoBoot?: boolean } = {}) {
     [downloadCv],
   );
 
-  const respond = useCallback(
-    async (query: string): Promise<AgentReply> => matchIntent(query, t, locale),
-    [t, locale],
-  );
+  const patch = useCallback((id: number, fn: (m: ChatMessage) => ChatMessage) => {
+    setMessages((prev) => prev.map((m) => (m.id === id ? fn(m) : m)));
+  }, []);
 
   const send = useCallback(
     async (raw: string) => {
       const query = raw.trim();
       if (!query || busy) return;
+      const L = (pt: string, en: string) => (locale === 'pt' ? pt : en);
+      const job = jobTextRef.current.trim();
+
       setBusy(true);
       setInput('');
 
       setMessages((prev) => [...prev, { id: nextId(), role: 'user', text: query }]);
-      await sleep(260);
-      if (!aliveRef.current) return;
-
-      const reply = await respond(query);
+      await sleep(200);
       if (!aliveRef.current) return;
 
       const agentId = nextId();
@@ -131,41 +135,75 @@ export function useAgentChat(options: { autoBoot?: boolean } = {}) {
         { id: agentId, role: 'agent', text: '', reasoning: [], streaming: true },
       ]);
 
-      for (const line of reply.reasoning) {
-        await sleep(480);
+      // ===== 1) Try the real AI =====
+      try {
+        const thinking = job
+          ? [
+              L('conectando ao modelo via OpenRouter…', 'connecting to the model via OpenRouter…'),
+              L('lendo a vaga anexada…', 'reading the attached job description…'),
+            ]
+          : [
+              L('conectando ao modelo via OpenRouter…', 'connecting to the model via OpenRouter…'),
+              L('recuperando contexto do CV…', 'retrieving CV context…'),
+            ];
+        for (const line of thinking) {
+          await sleep(380);
+          if (!aliveRef.current) return;
+          patch(agentId, (m) => ({ ...m, reasoning: [...(m.reasoning ?? []), line] }));
+        }
+
+        await streamAiReply({
+          query,
+          jobText: job || undefined,
+          locale,
+          onChunk: (delta) => {
+            if (!aliveRef.current) return;
+            patch(agentId, (m) => ({ ...m, text: m.text + delta, source: 'ai' }));
+          },
+        });
+
+        patch(agentId, (m) => ({ ...m, streaming: false, source: 'ai' }));
+        if (aliveRef.current) setBusy(false);
+        return;
+      } catch (err) {
+        if (!(err instanceof AiUnavailable)) console.error('agent error', err);
         if (!aliveRef.current) return;
-        setMessages((prev) =>
-          prev.map((m) =>
-            m.id === agentId ? { ...m, reasoning: [...(m.reasoning ?? []), line] } : m,
-          ),
-        );
+        // reset the shell for the deterministic choreography
+        patch(agentId, (m) => ({ ...m, reasoning: [], text: '', source: 'local' }));
+      }
+
+      // ===== 2) Deterministic fallback =====
+      const reply = matchIntent(query, t, locale);
+
+      for (const line of reply.reasoning) {
+        await sleep(460);
+        if (!aliveRef.current) return;
+        patch(agentId, (m) => ({ ...m, reasoning: [...(m.reasoning ?? []), line] }));
       }
 
       if (reply.tool) {
-        await sleep(400);
+        await sleep(380);
         if (!aliveRef.current) return;
         const tool = reply.tool;
-        setMessages((prev) =>
-          prev.map((m) => (m.id === agentId ? { ...m, tool: { name: tool.name, arg: tool.arg } } : m)),
-        );
-        await sleep(680);
+        patch(agentId, (m) => ({ ...m, tool: { name: tool.name, arg: tool.arg } }));
+        await sleep(660);
         if (!aliveRef.current) return;
         runAction(reply.tool.action);
       }
 
-      await sleep(300);
+      await sleep(280);
       const words = reply.answer.split(' ');
       for (let i = 0; i < words.length; i++) {
-        await sleep(26);
+        await sleep(24);
         if (!aliveRef.current) return;
         const slice = words.slice(0, i + 1).join(' ');
-        setMessages((prev) => prev.map((m) => (m.id === agentId ? { ...m, text: slice } : m)));
+        patch(agentId, (m) => ({ ...m, text: slice }));
       }
 
-      setMessages((prev) => prev.map((m) => (m.id === agentId ? { ...m, streaming: false } : m)));
+      patch(agentId, (m) => ({ ...m, streaming: false }));
       if (aliveRef.current) setBusy(false);
     },
-    [busy, respond, runAction],
+    [busy, locale, t, runAction, patch],
   );
 
   return {
@@ -176,6 +214,8 @@ export function useAgentChat(options: { autoBoot?: boolean } = {}) {
     setInput,
     busy,
     send,
+    jobText,
+    setJobText,
     hasStarted: messages.length > 0,
   };
 }

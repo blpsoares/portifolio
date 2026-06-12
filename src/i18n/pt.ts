@@ -53,6 +53,13 @@ const pt = {
     cta: "Assistente IA",
     close: "Fechar",
     viewing: "vendo",
+    attach: "Anexar vaga",
+    attachPlaceholder:
+      "Cole a descrição da vaga aqui e pergunte, ex: \"por que contratar o Bryan para esta vaga?\"",
+    attached: "vaga anexada",
+    clear: "remover",
+    sourceAi: "OpenRouter",
+    sourceLocal: "local",
     contextSuggestions: {
       profile: ["Por que contratar o Bryan?", "Resuma a carreira", "Baixar CV"],
       about: ["Quem é o Bryan?", "Qual o diferencial dele?", "Foco em IA?"],

@@ -53,6 +53,13 @@ const en = {
     cta: "AI Assistant",
     close: "Close",
     viewing: "viewing",
+    attach: "Attach job",
+    attachPlaceholder:
+      "Paste the job description here, then ask e.g. \"why hire Bryan for this role?\"",
+    attached: "job attached",
+    clear: "remove",
+    sourceAi: "OpenRouter",
+    sourceLocal: "local",
     contextSuggestions: {
       profile: ["Why hire Bryan?", "Summarize his career", "Download CV"],
       about: ["Who is Bryan?", "What's his edge?", "AI focus?"],

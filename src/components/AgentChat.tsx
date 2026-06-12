@@ -1,5 +1,5 @@
-import React, { useEffect, useRef } from 'react';
-import { Sparkles, Send, Wrench } from 'lucide-react';
+import React, { useEffect, useRef, useState } from 'react';
+import { Sparkles, Send, Wrench, Paperclip, X } from 'lucide-react';
 import { useI18n } from '../i18n';
 import type { useAgentChat } from '../agent/useAgentChat';
 
@@ -16,9 +16,8 @@ interface AgentChatProps {
 }
 
 /**
- * Presentational transcript + suggestions + input. The behaviour lives in
- * `useAgentChat`; this just renders it. Shared by the hero console and the
- * global dock.
+ * Presentational transcript + attach + suggestions + input. Behaviour lives in
+ * `useAgentChat`; this just renders it. Shared by the hero console and the dock.
  */
 const AgentChat: React.FC<AgentChatProps> = ({
   chat,
@@ -27,8 +26,9 @@ const AgentChat: React.FC<AgentChatProps> = ({
   contextNote,
 }) => {
   const { t } = useI18n();
-  const { bootLines, booted, messages, input, setInput, busy, send } = chat;
+  const { bootLines, booted, messages, input, setInput, busy, send, jobText, setJobText } = chat;
   const scrollRef = useRef<HTMLDivElement>(null);
+  const [attachOpen, setAttachOpen] = useState(false);
 
   useEffect(() => {
     const el = scrollRef.current;
@@ -97,6 +97,17 @@ const AgentChat: React.FC<AgentChatProps> = ({
                     {m.streaming && (
                       <span className="inline-block w-1.5 h-3.5 bg-brand-400 align-middle ml-0.5 animate-blink" aria-hidden="true" />
                     )}
+                    {m.source && !m.streaming && (
+                      <span className="mt-1.5 flex items-center gap-1 text-[9px] uppercase tracking-wider text-slate-400 dark:text-slate-500">
+                        <span
+                          className={`inline-block w-1.5 h-1.5 rounded-full ${
+                            m.source === 'ai' ? 'bg-brand-500' : 'bg-slate-400'
+                          }`}
+                          aria-hidden="true"
+                        />
+                        {m.source === 'ai' ? t.agent.sourceAi : t.agent.sourceLocal}
+                      </span>
+                    )}
                   </div>
                 )}
               </div>
@@ -105,12 +116,39 @@ const AgentChat: React.FC<AgentChatProps> = ({
         )}
       </div>
 
+      {/* ATTACHMENT (job description) */}
+      {attachOpen && (
+        <div className="px-4 pt-2 border-t border-slate-200/70 dark:border-slate-700/60">
+          <textarea
+            value={jobText}
+            onChange={(e) => setJobText(e.target.value)}
+            placeholder={t.agent.attachPlaceholder}
+            rows={3}
+            className="w-full resize-none rounded-lg bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-700/70 px-3 py-2 text-[12px] text-slate-800 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-brand-500"
+          />
+        </div>
+      )}
+
       {/* SUGGESTED PROMPTS */}
-      <div className="px-4 pt-2 pb-2 flex flex-wrap gap-2 border-t border-slate-200/70 dark:border-slate-700/60">
+      <div className="px-4 pt-2 pb-2 flex flex-wrap items-center gap-2 border-t border-slate-200/70 dark:border-slate-700/60">
         {contextNote && (
           <div className="w-full text-[10px] font-mono text-brand-600 dark:text-brand-400 mb-1">
             {contextNote}
           </div>
+        )}
+        {jobText.trim() && (
+          <span className="inline-flex items-center gap-1.5 text-[10px] font-mono px-2 py-1 rounded-full bg-brand-500/10 text-brand-700 dark:text-brand-300 border border-brand-500/30">
+            <Paperclip size={10} aria-hidden="true" />
+            {t.agent.attached}
+            <button
+              type="button"
+              onClick={() => setJobText('')}
+              aria-label={t.agent.clear}
+              className="hover:text-brand-900 dark:hover:text-white"
+            >
+              <X size={11} />
+            </button>
+          </span>
         )}
         {suggestions.map((s) => (
           <button
@@ -133,6 +171,19 @@ const AgentChat: React.FC<AgentChatProps> = ({
         }}
         className="flex items-center gap-2 px-3 py-3 border-t border-slate-200/70 dark:border-slate-700/60 bg-slate-50/60 dark:bg-slate-950/40"
       >
+        <button
+          type="button"
+          onClick={() => setAttachOpen((v) => !v)}
+          aria-label={t.agent.attach}
+          title={t.agent.attach}
+          className={`shrink-0 p-2 rounded-lg border transition-colors ${
+            attachOpen || jobText.trim()
+              ? 'border-brand-500 text-brand-600 dark:text-brand-400'
+              : 'border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:text-brand-600 dark:hover:text-brand-400'
+          }`}
+        >
+          <Paperclip size={15} />
+        </button>
         <input
           value={input}
           onChange={(e) => setInput(e.target.value)}

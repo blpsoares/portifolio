@@ -52,10 +52,7 @@ const SectionShell: React.FC<SectionShellProps> = ({
               <span className="font-mono text-xs font-semibold text-brand-500 dark:text-brand-400">
                 {num}
               </span>
-              <span className="h-px w-8 bg-gradient-to-r from-brand-500/70 to-transparent" />
-              <span className="font-mono text-[11px] font-medium uppercase tracking-[0.25em] text-slate-500 dark:text-slate-400">
-                {eyebrow}
-              </span>
+              <span className="h-px w-16 bg-gradient-to-r from-brand-500/70 via-brand-500/30 to-transparent" />
             </div>
 
             <h2 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-slate-900 dark:text-white leading-[1.05]">

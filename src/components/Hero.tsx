@@ -1,16 +1,8 @@
 import React, { useRef } from 'react';
-import {
-  motion,
-  useMotionValue,
-  useSpring,
-  useTransform,
-  useScroll,
-  useReducedMotion,
-} from 'framer-motion';
+import { motion, useMotionValue, useSpring, useTransform, useScroll, useReducedMotion } from 'framer-motion';
 import { ArrowRight, Github, Linkedin, Mail, ChevronDown, Download, Loader2, Circle } from 'lucide-react';
 import { useI18n } from '../i18n';
 import { useCvDownload } from '../hooks/useCvDownload';
-import NeuralViz from './ui/NeuralViz';
 
 const Hero: React.FC = () => {
   const { t } = useI18n();
@@ -19,18 +11,15 @@ const Hero: React.FC = () => {
   const ref = useRef<HTMLElement>(null);
 
   // Scroll-driven parallax.
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ['start start', 'end start'],
-  });
+  const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] });
   const bgScrollY = useTransform(scrollYProgress, [0, 1], [0, reduce ? 0 : 160]);
-  const contentScrollY = useTransform(scrollYProgress, [0, 1], [0, reduce ? 0 : -50]);
-  const heroFade = useTransform(scrollYProgress, [0, 0.75], [1, reduce ? 1 : 0]);
+  const contentScrollY = useTransform(scrollYProgress, [0, 1], [0, reduce ? 0 : -40]);
+  const heroFade = useTransform(scrollYProgress, [0, 0.8], [1, reduce ? 1 : 0]);
 
-  // Mouse-driven parallax.
+  // Mouse-driven parallax for the ambient glows.
   const mx = useMotionValue(0);
   const my = useMotionValue(0);
-  const spring = { stiffness: 45, damping: 18, mass: 0.6 };
+  const spring = { stiffness: 40, damping: 18, mass: 0.6 };
   const px = useSpring(mx, spring);
   const py = useSpring(my, spring);
 
@@ -41,12 +30,10 @@ const Hero: React.FC = () => {
     my.set(((e.clientY - r.top) / r.height - 0.5) * 2);
   };
 
-  const haloX = useTransform(px, [-1, 1], [30, -30]);
-  const haloY = useTransform(py, [-1, 1], [24, -24]);
-  const vizX = useTransform(px, [-1, 1], [-18, 18]);
-  const vizY = useTransform(py, [-1, 1], [-14, 14]);
-  const vizRotX = useTransform(py, [-1, 1], [6, -6]);
-  const vizRotY = useTransform(px, [-1, 1], [-8, 8]);
+  const glowAX = useTransform(px, [-1, 1], [40, -40]);
+  const glowAY = useTransform(py, [-1, 1], [32, -32]);
+  const glowBX = useTransform(px, [-1, 1], [-30, 30]);
+  const glowBY = useTransform(py, [-1, 1], [-24, 24]);
 
   return (
     <section
@@ -57,7 +44,7 @@ const Hero: React.FC = () => {
       onMouseMove={handleMove}
       className="relative min-h-[100svh] flex items-center pt-28 pb-20 px-6 overflow-hidden"
     >
-      {/* ===== BACKGROUND PARALLAX LAYERS ===== */}
+      {/* ===== AMBIENT PARALLAX GLOWS ===== */}
       <motion.div
         aria-hidden="true"
         style={{ y: bgScrollY, opacity: heroFade }}
@@ -65,26 +52,25 @@ const Hero: React.FC = () => {
       >
         <div className="hero-aurora absolute inset-0" />
         <motion.div
-          style={{ x: haloX, y: haloY }}
-          className="absolute right-[6%] top-[14%] w-[360px] h-[360px] rounded-full bg-brand-500/10 blur-3xl"
+          style={{ x: glowAX, y: glowAY }}
+          className="absolute right-[4%] top-[12%] w-[460px] h-[460px] rounded-full bg-brand-500/12 blur-[100px]"
         />
         <motion.div
-          style={{ x: haloX, y: haloY }}
-          className="absolute left-[-8%] bottom-[8%] w-[380px] h-[380px] rounded-full bg-emerald-500/10 blur-3xl"
+          style={{ x: glowBX, y: glowBY }}
+          className="absolute left-[-6%] bottom-[6%] w-[420px] h-[420px] rounded-full bg-emerald-500/10 blur-[100px]"
         />
       </motion.div>
 
-      {/* ===== FOREGROUND CONTENT ===== */}
+      {/* ===== CONTENT ===== */}
       <motion.div
         style={{ y: contentScrollY }}
-        className="relative z-10 max-w-6xl mx-auto w-full grid grid-cols-1 lg:grid-cols-[1.05fr_0.95fr] gap-x-10 gap-y-12 items-center"
+        className="relative z-10 max-w-5xl mx-auto w-full"
       >
-        {/* LEFT COLUMN */}
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-          className="space-y-7"
+          className="max-w-3xl space-y-8"
         >
           <div className="flex flex-wrap items-center gap-3">
             <span className="inline-flex items-center gap-2 rounded-full glass gradient-border px-3.5 py-1.5 text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-200">
@@ -99,13 +85,13 @@ const Hero: React.FC = () => {
             </span>
           </div>
 
-          <h1 className="font-display text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-slate-900 dark:text-white leading-[0.98]">
+          <h1 className="font-display text-5xl sm:text-7xl lg:text-8xl font-bold tracking-tight text-slate-900 dark:text-white leading-[0.95]">
             {t.hero.title1}
             <br />
             <span className="holo-text">{t.hero.title2}</span>
           </h1>
 
-          <p className="text-lg md:text-xl text-slate-600 dark:text-slate-400 max-w-xl leading-relaxed font-light">
+          <p className="text-lg md:text-xl text-slate-600 dark:text-slate-400 max-w-2xl leading-relaxed font-light">
             {t.hero.subtitle_prefix}
             <strong className="text-slate-900 dark:text-slate-200 font-medium">{t.hero.subtitle_highlight}</strong>
             {t.hero.subtitle_suffix}
@@ -153,7 +139,7 @@ const Hero: React.FC = () => {
             </div>
           </div>
 
-          <div className="pt-5 border-t border-slate-200/60 dark:border-slate-800/60 flex flex-wrap gap-x-6 gap-y-3 text-sm text-slate-500 dark:text-slate-500 font-mono">
+          <div className="pt-6 border-t border-slate-200/60 dark:border-slate-800/60 flex flex-wrap gap-x-6 gap-y-3 text-sm text-slate-500 dark:text-slate-500 font-mono">
             {[t.hero.tag1, t.hero.tag2, t.hero.tag3, t.hero.tag4].map((tag) => (
               <span
                 key={tag}
@@ -164,23 +150,6 @@ const Hero: React.FC = () => {
               </span>
             ))}
           </div>
-        </motion.div>
-
-        {/* RIGHT COLUMN — meaningful AI visual (neural network) with parallax */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.92 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-          style={{
-            x: vizX,
-            y: vizY,
-            rotateX: vizRotX,
-            rotateY: vizRotY,
-            transformPerspective: 1200,
-          }}
-          className="relative hidden lg:block w-full max-w-md mx-auto [transform-style:preserve-3d]"
-        >
-          <NeuralViz />
         </motion.div>
       </motion.div>
 
