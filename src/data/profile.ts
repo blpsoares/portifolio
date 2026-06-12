@@ -1,0 +1,699 @@
+/**
+ * SINGLE SOURCE OF TRUTH for all of Bryan Soares' profile / CV data.
+ *
+ * Everything visible on the site, in the generated CV PDF, and in the AI
+ * assistant's knowledge derives from this file. Edit data HERE — the i18n
+ * locale files (`src/i18n/pt.ts`, `src/i18n/en.ts`), `src/constants.tsx`, and
+ * `functions/api/_context.ts` all build their values from this module.
+ *
+ * IMPORTANT: this file must stay PURE DATA — no React/browser imports — because
+ * it is also imported by Cloudflare Pages Functions (`functions/api/_context.ts`)
+ * which are bundled separately from the Vite app.
+ */
+
+export type Locale = 'pt' | 'en';
+
+/** A piece of text that differs between Portuguese and English. */
+export interface I18nText {
+  pt: string;
+  en: string;
+}
+
+/** Resolve a bilingual text to a single locale. */
+export const pick = (t: I18nText, l: Locale): string => t[l];
+
+// ---------------------------------------------------------------------------
+// Personal / contact
+// ---------------------------------------------------------------------------
+export interface Personal {
+  name: string;
+  title: I18nText;
+  location: I18nText;
+  phone: string;
+  email: string;
+  website: string;
+  linkedin: string;
+  github: string;
+}
+
+// ---------------------------------------------------------------------------
+// Experience (feeds t.career.items + the CV PDF experience section)
+// ---------------------------------------------------------------------------
+export interface Experience {
+  role: I18nText;
+  company: string;
+  period: I18nText;
+  duration: I18nText;
+  type: I18nText;
+  location: I18nText;
+  current: boolean;
+  bullets: I18nText[];
+  /** Tech line shown under this role in the CV PDF (cv.tech[i]). */
+  cvTech: string;
+}
+
+// ---------------------------------------------------------------------------
+// On-page work projects (feeds PROJECTS + t.projects.items)
+// ---------------------------------------------------------------------------
+export interface WorkProject {
+  /** On-page localized title (t.projects.items[i].title). */
+  title: I18nText;
+  /** On-page localized category (t.projects.items[i].category). */
+  category: I18nText;
+  /** On-page localized description (t.projects.items[i].description). */
+  description: I18nText;
+  /** PROJECTS card fields in constants.tsx (locale-neutral defaults). */
+  cardTitle: string;
+  cardCategory: string;
+  cardDescription: string;
+  technologies: string[];
+}
+
+// ---------------------------------------------------------------------------
+// CV PDF projects (feeds cv.projects) — distinct from on-page work projects
+// ---------------------------------------------------------------------------
+export interface CvProject {
+  name: I18nText;
+  description: I18nText;
+  stack: string;
+}
+
+// ---------------------------------------------------------------------------
+// Education (feeds t.education.items)
+// ---------------------------------------------------------------------------
+export interface Education {
+  institution: string;
+  degree: I18nText;
+  field: I18nText;
+  period: I18nText;
+  logo: string;
+  current: boolean;
+  status: I18nText;
+}
+
+// ---------------------------------------------------------------------------
+// CV PDF skill groups (feeds cv.skills) — distinct from on-page Tech Arsenal
+// ---------------------------------------------------------------------------
+export interface CvSkill {
+  category: I18nText;
+  items: I18nText;
+}
+
+// ---------------------------------------------------------------------------
+// On-page Tech Arsenal (feeds SKILLS in constants.tsx)
+// ---------------------------------------------------------------------------
+export interface TechStackGroup {
+  /** Language-neutral key matching t.techstack.categories. */
+  title: string;
+  skills: string[];
+}
+
+// ---------------------------------------------------------------------------
+// Low-code tools (feeds LOW_CODE_TOOLS + lowcode.descriptions)
+// ---------------------------------------------------------------------------
+export interface LowCodeTool {
+  category: string;
+  tools: string;
+  /** Icon name resolved to a lucide-react component in constants.tsx. */
+  icon: 'workflow' | 'layers' | 'zap';
+  description: I18nText;
+}
+
+// ---------------------------------------------------------------------------
+// MCP workflows (feeds MCP_WORKFLOWS + mcp.descriptions)
+// ---------------------------------------------------------------------------
+export interface McpWorkflow {
+  tool: string;
+  icon: 'terminal' | 'file' | 'database';
+  description: I18nText;
+}
+
+export interface Profile {
+  personal: Personal;
+  summary: I18nText;
+  experience: Experience[];
+  workProjects: WorkProject[];
+  cvProjects: CvProject[];
+  education: Education[];
+  cvSkills: CvSkill[];
+  techStack: TechStackGroup[];
+  lowCodeTools: LowCodeTool[];
+  mcpWorkflows: McpWorkflow[];
+  languages: I18nText;
+}
+
+export const profile: Profile = {
+  personal: {
+    name: 'Bryan Soares',
+    title: { pt: 'Software Developer · AI Engineer', en: 'Software Developer · AI Engineer' },
+    location: { pt: 'São Paulo, Brasil', en: 'São Paulo, Brazil' },
+    phone: '(11) 93045-6696',
+    email: 'bryanluccas@hotmail.com',
+    website: 'blpsoares.dev',
+    linkedin: 'linkedin.com/in/blpsoares',
+    github: 'github.com/blpsoares',
+  },
+
+  summary: {
+    pt: 'Desenvolvedor de Software com +5 anos de experiência em desenvolvimento de software, sendo os últimos 2 anos focado em IA Generativa aplicada. Construí pipelines RAG, agentes de IA, servidores MCP para integração com LLMs e soluções de orquestração multi-agente para problemas reais de negócio, como chatbots corporativos sobre bases de 10.000+ documentos e buscas inteligentes com IA em produção. Atualmente cursando Pós-graduação em Engenharia de IA Aplicada.',
+    en: "Software Developer with 5+ years of experience in software development, with the last 2 years focused on applied Generative AI. I've built RAG pipelines, AI agents, MCP servers for LLM integration, and multi-agent orchestration solutions for real business problems — from corporate chatbots over 10,000+ document knowledge bases to AI-powered smart search in production. Currently pursuing a Postgraduate degree in Applied AI Engineering.",
+  },
+
+  experience: [
+    {
+      role: { pt: 'Desenvolvedor Backend Senior', en: 'Senior Backend Developer' },
+      company: 'Eletromidia',
+      period: { pt: 'out 2025 – Presente', en: 'Oct 2025 – Present' },
+      duration: { pt: '8 meses', en: '8 months' },
+      type: { pt: 'Tempo integral', en: 'Full-time' },
+      location: { pt: 'São Paulo · Híbrido', en: 'São Paulo · Hybrid' },
+      current: true,
+      bullets: [
+        {
+          pt: 'Construí um servidor MCP na API principal do produto da empresa, permitindo um agente LLM processar queries em linguagem natural via tool use',
+          en: "Built an MCP server on the company's main product API, enabling an LLM agent to process natural language queries via tool use",
+        },
+        {
+          pt: 'Pesquisa de aplicabilidade de IA em produtos, identificando oportunidades de integração GenAI em ferramentas internas',
+          en: 'Research on AI applicability in products, identifying GenAI integration opportunities in internal tools',
+        },
+        {
+          pt: 'Criei projetos de automação permitindo stakeholders não-técnicos transformarem ideias em realidade de forma independente',
+          en: 'Created automation projects enabling non-technical stakeholders to bring their ideas to life independently',
+        },
+        {
+          pt: 'Suporte arquitetural para novos projetos e refatoração de sistemas legados',
+          en: 'Architectural support for new projects and refactoring of legacy systems',
+        },
+        {
+          pt: 'Referência de IA/GenAI do time, apoiando outros devs em arquitetura, implementações e uso de IA',
+          en: 'AI/GenAI reference for the team, supporting other developers in architecture, implementations, and AI usage',
+        },
+      ],
+      cvTech:
+        'Node.js, TypeScript, MCP, Gemini, Anthropic, OpenAI, GitHub Copilot, MongoDB, Docker, N8N, Windmill, Cloudflare',
+    },
+    {
+      role: { pt: 'Desenvolvedor Backend Pleno', en: 'Mid-level Backend Developer' },
+      company: 'Eletromidia',
+      period: { pt: 'ago 2024 – out 2025', en: 'Aug 2024 – Oct 2025' },
+      duration: { pt: '1 ano 3 meses', en: '1 yr 3 mos' },
+      type: { pt: 'Tempo integral', en: 'Full-time' },
+      location: { pt: 'São Paulo · Híbrido', en: 'São Paulo · Hybrid' },
+      current: false,
+      bullets: [
+        {
+          pt: 'Criei o Pulsar, CLI interna para migrações MongoDB entre bancos no mesmo cluster ou entre clusters separados, com modo de sync em tempo real que injeta metadados nos documentos para tracking ao vivo — substituiu processo totalmente manual de múltiplos mongodumps e restores',
+          en: 'Built Pulsar, an internal CLI for MongoDB migrations between databases in the same cluster or across separate clusters/accounts, with a real-time sync mode that injects metadata into documents for live tracking — replaced a fully manual process of multiple mongodumps and restores',
+        },
+        {
+          pt: 'Automatizei processo manual de validação de PDFs: uso do Google Document AI com Custom Extractor para reconhecer campos dinâmicos e validar contra dados de contrato — modelo final com 96% de acurácia',
+          en: 'Automation of a manual PDF validation process: used Google Document AI with Custom Extractor to recognize dynamic fields and match them against contract data — final model with 96% accuracy',
+        },
+        {
+          pt: 'Campo de busca com IA: a IA extrai dados-chave do prompt do usuário, monta o body do endpoint e faz a request final retornando resultados filtrados na interface, eliminando input manual de filtros',
+          en: "AI-powered search field: the AI extracts key data from the user's prompt, builds the endpoint body, and makes the final request returning filtered results in the interface, eliminating manual filter input",
+        },
+        {
+          pt: 'Pesquisa completa e apresentação sobre MongoDB edge computing para uma aplicação da empresa',
+          en: 'Full research and presentation of MongoDB edge computing for a company application',
+        },
+      ],
+      cvTech: 'Node.js, TypeScript, MongoDB, Document AI, OpenAI, Windmill, Docker',
+    },
+    {
+      role: { pt: 'Desenvolvedor de Software', en: 'Software Developer' },
+      company: 'Alest Consultoria',
+      period: { pt: 'dez 2023 – ago 2024', en: 'Dec 2023 – Aug 2024' },
+      duration: { pt: '9 meses', en: '9 months' },
+      type: { pt: 'Tempo integral', en: 'Full-time' },
+      location: { pt: 'São Paulo · Presencial', en: 'São Paulo · On-site' },
+      current: false,
+      bullets: [
+        {
+          pt: 'Reuniões com clientes e desenho das arquiteturas a serem utilizadas em cada projeto, traduzindo dores de negócio em soluções técnicas',
+          en: 'Client meetings and architecture design for each project, translating business pains into technical solutions',
+        },
+        {
+          pt: 'Mentorei 5 estagiários através de 1:1s regulares, orientando crescimento de carreira e apresentando planos de desenvolvimento individual (PDIs)',
+          en: 'Mentored 5 interns through regular 1:1s, guiding career growth and presenting individual development plans (PDIs)',
+        },
+        {
+          pt: 'ETLs para projetos massivos de migração de dados em múltiplos ambientes de clientes',
+          en: 'ETLs for massive data migration projects across multiple client environments',
+        },
+        {
+          pt: 'Arquitetei pipeline de migração de 30.000+ documentos (Drive · OneDrive · S3 · Local → DocuSign) com Node.js Streams e pipeline() para controle de backpressure e observabilidade com Winston para recuperação granular em falhas',
+          en: 'Architected a migration pipeline for 30,000+ documents (Drive · OneDrive · S3 · Local → DocuSign) using Node.js Streams with pipeline() for backpressure control and Winston observability for granular failure recovery',
+        },
+      ],
+      cvTech: 'Node.js, TypeScript, GCP, Docker, Node Streams, Winston, APIs',
+    },
+    {
+      role: { pt: 'Desenvolvedor Estagiário', en: 'Developer Intern' },
+      company: 'Alest Consultoria',
+      period: { pt: 'jun 2023 – dez 2023', en: 'Jun 2023 – Dec 2023' },
+      duration: { pt: '7 meses', en: '7 months' },
+      type: { pt: 'Estágio', en: 'Internship' },
+      location: { pt: 'São Paulo', en: 'São Paulo' },
+      current: false,
+      bullets: [
+        {
+          pt: 'Arquitetei e entreguei chatbot RAG corporativo (Dialogflow CX) integrado a base de conhecimento com 10.000+ documentos (JSONs, planilhas e PDFs) — substituiu processo 100% manual de consulta por interface em linguagem natural',
+          en: 'Architected and delivered a corporate RAG chatbot (Dialogflow CX) integrated with a knowledge base of 10,000+ documents (JSONs, spreadsheets, and PDFs) — replaced a 100% manual consultation process with a natural language interface',
+        },
+        {
+          pt: 'Fine-tuning de modelos da OpenAI (da-vinci) para casos de uso específicos de domínio na primeira onda de adoção GenAI',
+          en: 'Fine-tuning of OpenAI models (da-vinci) for domain-specific use cases in the first wave of GenAI adoption',
+        },
+        {
+          pt: 'Construí workflows de integração entre plataformas usando Make.com e N8N para automação de entregas de projetos',
+          en: 'Built cross-platform integration workflows using Make.com and N8N to automate project deliveries',
+        },
+        {
+          pt: 'Treinei outros estagiários em tópicos técnicos em que eu tinha mais domínio',
+          en: 'Trained other interns on technical topics where I had more expertise',
+        },
+      ],
+      cvTech: 'Node.js, Dialogflow CX, RAG, OpenAI, GCP, Make, N8N, Pub/Sub, Cloud Functions',
+    },
+    {
+      role: { pt: 'Desenvolvedor Frontend', en: 'Frontend Developer' },
+      company: 'Next Fusion',
+      period: { pt: '2021 – jun 2023', en: '2021 – Jun 2023' },
+      duration: { pt: '~2 anos', en: '~2 years' },
+      type: { pt: 'Sócio', en: 'Co-founder' },
+      location: { pt: 'São Paulo', en: 'São Paulo' },
+      current: false,
+      bullets: [
+        {
+          pt: 'Entreguei ~20 sites institucionais e landing pages de ponta a ponta: reuniões com clientes, levantamento de requisitos, desenvolvimento e deploy',
+          en: 'Delivered ~20 corporate websites and landing pages end-to-end: client meetings, requirements gathering, development, and deploy',
+        },
+        {
+          pt: 'Agência de desenvolvimento de websites para diversos nichos e tipos de comércio, fundada com um sócio designer',
+          en: 'Web development agency for various business types and niches, co-founded with a designer partner',
+        },
+        {
+          pt: 'Desenvolvimento completo do frontend com React, HTML/CSS e WordPress seguindo as especificações de UI/UX do sócio designer',
+          en: 'Full frontend development with React, HTML/CSS, and WordPress following the UI/UX specs designed by the partner',
+        },
+        {
+          pt: 'Suporte para otimização de SEO nos sites',
+          en: 'SEO optimization support for client websites',
+        },
+        {
+          pt: 'Reuniões e suporte para agências de tráfego para implementação de tags e alterações chave em projetos existentes',
+          en: 'Meetings and support for traffic agencies to implement tags and key changes in existing projects',
+        },
+        {
+          pt: 'Captação de clientes a partir de tráfego orgânico (Instagram, conversas, indicações)',
+          en: 'Client acquisition through organic traffic (Instagram, conversations, referrals)',
+        },
+      ],
+      cvTech: 'React, JavaScript, HTML/CSS, WordPress, Figma',
+    },
+  ],
+
+  workProjects: [
+    {
+      title: { pt: 'Chatbot RAG Corporativo', en: 'Corporate RAG Chatbot' },
+      category: { pt: 'RAG & ENTERPRISE AI', en: 'RAG & ENTERPRISE AI' },
+      description: {
+        pt: 'Arquitetura e entrega de um chatbot conversacional corporativo interno utilizando Dialogflow CX integrado a uma base de conhecimento de 10.000+ documentos (JSONs, planilhas e PDFs). O sistema substituiu um processo manual de consulta de documentos por uma interface de linguagem natural, aplicando RAG para recuperação semântica de informações não estruturadas.',
+        en: 'Architecture and delivery of an internal corporate conversational chatbot using Dialogflow CX integrated with a knowledge base of 10,000+ documents (JSONs, spreadsheets, and PDFs). The system replaced a manual document consultation process with a natural language interface, applying RAG for semantic retrieval of unstructured information.',
+      },
+      cardTitle: 'Chatbot RAG Corporativo',
+      cardCategory: 'RAG & ENTERPRISE AI',
+      cardDescription:
+        'Arquitetura e entrega de um chatbot conversacional corporativo interno utilizando Dialogflow CX integrado a uma base de conhecimento de 10.000+ documentos (JSONs, planilhas e PDFs). O sistema substituiu um processo manual de consulta de documentos por uma interface de linguagem natural, aplicando RAG para recuperação semântica de informações não estruturadas.',
+      technologies: ['Dialogflow CX', 'RAG', 'Node.js', 'TypeScript', 'GCP', 'NLP'],
+    },
+    {
+      title: {
+        pt: 'Filtros Inteligentes — Agente NLP para Queries',
+        en: 'Intelligent Filters — NLP to Database Query Agent',
+      },
+      category: { pt: 'AI AGENT · TOOL USE', en: 'AI AGENT · TOOL USE' },
+      description: {
+        pt: 'Desenvolvimento de um agente de IA capaz de interpretar entradas de texto livre do usuário e convertê-las em queries estruturadas de MongoDB. O sistema entende a intenção do usuário, aplica a lógica de negócio e retorna os resultados filtrados — eliminando a necessidade de preenchimento manual de filtros. Integrado a produto interno em produção.',
+        en: 'Development of an AI agent capable of interpreting free-text user inputs and converting them into structured MongoDB queries. The system understands user intent, applies business logic, and returns filtered results — eliminating the need for manual filter input. Integrated into an internal production product.',
+      },
+      cardTitle: 'Intelligent Filters — NLP to Database Query Agent',
+      cardCategory: 'AI AGENT · TOOL USE',
+      cardDescription:
+        'Desenvolvimento de um agente de IA capaz de interpretar entradas de texto livre do usuário e convertê-las em queries estruturadas de MongoDB. O sistema entende a intenção do usuário, aplica a lógica de negócio e retorna os resultados filtrados — eliminando a necessidade de preenchimento manual de filtros. Integrado a produto interno em produção.',
+      technologies: ['OpenAI', 'MongoDB', 'Node.js', 'TypeScript', 'Windmill', 'AI Agent'],
+    },
+    {
+      title: { pt: 'Extrator Customizado com Document AI', en: 'Document AI Custom Extractor' },
+      category: { pt: 'IA & AUTOMAÇÃO', en: 'AI & AUTOMATION' },
+      description: {
+        pt: 'Arquitetura e implementação de um pipeline de extração de dados com Google Document AI para um cliente enterprise. Substituiu um processo 100% manual de validação operacional por um fluxo automatizado que identifica, extrai e valida campos específicos de documentos não estruturados com alta precisão. Solução projetada para reuso em outros clientes com a mesma necessidade.',
+        en: 'Architecture and implementation of a data extraction pipeline with Google Document AI for an enterprise client. Replaced a 100% manual operational validation process with an automated flow that identifies, extracts, and validates specific fields from unstructured documents with high accuracy. Solution designed for reuse across other clients with the same need.',
+      },
+      cardTitle: 'Document AI Custom Extractor',
+      cardCategory: 'IA & Automação',
+      cardDescription:
+        'Arquitetura e implementação de um pipeline de extração de dados com Google Document AI para um cliente enterprise. Substituiu um processo 100% manual de validação operacional por um fluxo automatizado que identifica, extrai e valida campos específicos de documentos não estruturados com alta precisão. Solução projetada para reuso em outros clientes com a mesma necessidade.',
+      technologies: ['Node.js', 'Google Document AI', 'TypeScript'],
+    },
+    {
+      title: { pt: 'Migração Massiva com Node Streams', en: 'Massive Migration with Node Streams' },
+      category: { pt: 'PERFORMANCE & DATA', en: 'PERFORMANCE & DATA' },
+      description: {
+        pt: 'Arquitetura e execução de pipeline de migração de 20.000+ documentos de múltiplas origens (Drive, OneDrive, S3, Local) para DocuSign. Utilização intensiva de Node.js Streams para controle de backpressure, evitando memory leaks. Implementação de observabilidade com Winston para retomada granular em caso de falha — tolerância a falhas sem reprocessamento do início. Solução construída para ser reutilizável em outros clientes com a mesma necessidade.',
+        en: 'Architecture and execution of a migration pipeline for 20,000+ documents from multiple sources (Drive, OneDrive, S3, Local) to DocuSign. Intensive use of Node.js Streams for backpressure control, preventing memory leaks. Observability implementation with Winston for granular recovery on failure — fault tolerance without reprocessing from scratch. Solution built to be reusable across other clients with the same need.',
+      },
+      cardTitle: 'Migração Massiva com Node Streams',
+      cardCategory: 'Performance & Data',
+      cardDescription:
+        'Arquitetura e execução de pipeline de migração de 20.000+ documentos de múltiplas origens (Drive, OneDrive, S3, Local) para DocuSign. Utilização intensiva de Node.js Streams para controle de backpressure, evitando memory leaks. Implementação de observabilidade com Winston para retomada granular em caso de falha — tolerância a falhas sem reprocessamento do início. Solução construída para ser reutilizável em outros clientes com a mesma necessidade.',
+      technologies: ['Node.js Streams', 'API Integrations', 'File Systems', 'Winston'],
+    },
+    {
+      title: { pt: 'Otimização com Redis', en: 'Redis Optimization' },
+      category: { pt: 'PERFORMANCE', en: 'PERFORMANCE' },
+      description: {
+        pt: 'Implementação estratégica de cache utilizando Hashsets e Sorted Lists para armazenar resultados de computações complexas. Redução drástica na latência e custos de banco de dados em endpoints de alta concorrência. Queries complexas com tempo de resposta reduzido de ~10s para ~2s (em alguns casos abaixo de 900ms).',
+        en: 'Strategic cache implementation using Hashsets and Sorted Lists to store results of complex computations. Drastic reduction in latency and database costs for high-concurrency endpoints. Complex queries with response time reduced from ~10s to ~2s (in some cases below 900ms).',
+      },
+      cardTitle: 'Otimização com Redis',
+      cardCategory: 'Performance',
+      cardDescription:
+        'Implementação estratégica de cache utilizando Hashsets e Sorted Lists para armazenar resultados de computações complexas. Redução drástica na latência e custos de banco de dados em endpoints de alta concorrência. Queries complexas com tempo de resposta reduzido de ~10s para ~2s (em alguns casos abaixo de 900ms).',
+      technologies: ['Redis', 'Caching Strategy', 'Backend Optimization'],
+    },
+    {
+      title: { pt: 'Versionamento de Triggers MongoDB', en: 'MongoDB Triggers Versioning' },
+      category: { pt: 'DEVOPS & INFRA', en: 'DEVOPS & INFRA' },
+      description: {
+        pt: 'Criação de um modelo proprietário para versionamento seguro de MongoDB Atlas Triggers. O sistema garante a sincronia entre o código da aplicação e as functions do banco, prevenindo erros de deploy e esquecimento de configurações críticas.',
+        en: 'Creation of a proprietary model for secure versioning of MongoDB Atlas Triggers. The system ensures synchronization between application code and database functions, preventing deploy errors and forgotten critical configurations.',
+      },
+      cardTitle: 'Versionamento de Triggers MongoDB',
+      cardCategory: 'DevOps & Infra',
+      cardDescription:
+        'Criação de um modelo proprietário para versionamento seguro de MongoDB Atlas Triggers. O sistema garante a sincronia entre o código da aplicação e as functions do banco, prevenindo erros de deploy e esquecimento de configurações críticas.',
+      technologies: ['MongoDB Atlas', 'Serverless Functions', 'CI/CD'],
+    },
+    {
+      title: { pt: 'Ensino para Estagiários', en: 'Intern Training' },
+      category: { pt: 'MENTORIA', en: 'MENTORSHIP' },
+      description: {
+        pt: 'Desenvolvimento de um projeto prático focado em raciocínio técnico para treinamento de estagiários. O ambiente simula desafios reais de backend, promovendo aprendizado mútuo e elevação da barra técnica do time.',
+        en: "Development of a practical project focused on technical reasoning for intern training. The environment simulates real backend challenges, promoting mutual learning and raising the team's technical bar.",
+      },
+      cardTitle: 'Ensino para Estagiários',
+      cardCategory: 'Mentoria',
+      cardDescription:
+        'Desenvolvimento de um projeto prático focado em raciocínio técnico para treinamento de estagiários. O ambiente simula desafios reais de backend, promovendo aprendizado mútuo e elevação da barra técnica do time.',
+      technologies: ['NodeJS Streams', 'Code Review', 'Best Practices'],
+    },
+  ],
+
+  cvProjects: [
+    {
+      name: {
+        pt: 'Agentistics — Dashboard de Analytics Local para Assistentes de Código com IA',
+        en: 'Agentistics — Local Analytics Dashboard for AI Coding Assistants',
+      },
+      description: {
+        pt: 'Construí um dashboard de analytics local-first que parseia sessões ~/.claude/ para exibir uso de tokens, custos (USD/BRL), métricas de agentes, heatmaps de atividade e breakdown por modelo. Inclui CLI com modo TUI, export OpenTelemetry e geração de relatórios PDF. Zero cloud, zero telemetria.',
+        en: 'Built a local-first analytics dashboard that parses ~/.claude/ sessions to surface token usage, costs (USD/BRL), agent metrics, activity heatmaps, and per-model breakdown. Includes a CLI with TUI mode, OpenTelemetry export, and PDF report generation. Zero cloud, zero telemetry.',
+      },
+      stack: 'TypeScript · Bun · React · Vite · Three.js · OpenTelemetry',
+    },
+    {
+      name: {
+        pt: 'DuckFlux — DSL Declarativa para Orquestração Multi-Agente',
+        en: 'DuckFlux — Declarative DSL for Multi-Agent Orchestration',
+      },
+      description: {
+        pt: 'Co-autor de uma engine DSL nativa em YAML para orquestração de pipelines de IA multi-agente. Inclui execução paralela, condicionais CEL, controle de fluxo por máquina de estados, suporte nativo a MCP, steps event-driven (emit/wait) e sub-workflows aninhados. Suporta Go CLI e runtimes Bun/Node.js.',
+        en: 'Co-author of a native YAML DSL engine for orchestrating multi-agent AI pipelines. Includes parallel execution, CEL conditionals, state-machine flow control, native MCP support, event-driven steps (emit/wait), and nested sub-workflows. Supports a Go CLI and Bun/Node.js runtimes.',
+      },
+      stack: 'TypeScript · Bun · Go · YAML DSL · MCP · LLM Orchestration',
+    },
+    {
+      name: {
+        pt: 'Embark — Framework CI/CD Zero-Config para Monorepos Assistidos por IA',
+        en: 'Embark — Zero-Config CI/CD Framework for AI-Assisted Monorepos',
+      },
+      description: {
+        pt: 'Construí um framework monorepo que auto-gera workflows GitHub Actions, Dockerfiles (via CLIs de IA: Claude, Gemini, Copilot, Codex) e pipelines de deploy Cloud Run / Netlify / Cloudflare a cada commit. Enforça gates de qualidade de código (77% de cobertura) via pre-push hooks.',
+        en: 'Built a monorepo framework that auto-generates GitHub Actions workflows, Dockerfiles (via AI CLIs: Claude, Gemini, Copilot, Codex), and Cloud Run / Netlify / Cloudflare deploy pipelines on every commit. Enforces code quality gates (77% coverage) via pre-push hooks.',
+      },
+      stack: 'TypeScript · Bun · GitHub Actions · Docker · GCP Cloud Run',
+    },
+    {
+      name: {
+        pt: 'Rede Neural — Modelo de Predição de Planos',
+        en: 'Neural Network — Plan Prediction Model',
+      },
+      description: {
+        pt: 'Treinei uma rede neural feedforward do zero como parte da pós-graduação em Engenharia de IA. Usei ativação ReLU, ajuste de pesos de neurônios e contagem de epochs para predizer qual plano de assinatura melhor se adequa a padrões de comportamento.',
+        en: 'Trained a feedforward neural network from scratch as part of the AI Engineering postgraduate program. Used ReLU activation, neuron weight tuning, and epoch counting to predict which subscription plan best fits behavior patterns.',
+      },
+      stack: 'JavaScript · Neural Networks · ReLU · Supervised Learning · Backpropagation',
+    },
+  ],
+
+  education: [
+    {
+      institution: 'UNIPDS',
+      degree: { pt: 'Pós-Graduação', en: 'Postgraduate' },
+      field: { pt: 'Engenharia de IA Aplicada', en: 'Applied AI Engineering' },
+      period: { pt: 'fev 2026 – mar 2027', en: 'Feb 2026 – Mar 2027' },
+      logo: '/unipds-logo.jpg',
+      current: true,
+      status: { pt: 'Em andamento', en: 'In progress' },
+    },
+    {
+      institution: 'Pontifícia Universidade Católica do Paraná',
+      degree: { pt: 'Tecnólogo', en: 'Technologist' },
+      field: {
+        pt: 'Análise e Desenvolvimento de Sistemas',
+        en: 'Systems Analysis and Development',
+      },
+      period: { pt: 'jul 2022 – jan 2025', en: 'Jul 2022 – Jan 2025' },
+      logo: '/pucpr-logo.jpg',
+      current: false,
+      status: { pt: '', en: '' },
+    },
+  ],
+
+  cvSkills: [
+    {
+      category: { pt: 'IA Generativa & ML', en: 'Generative AI & ML' },
+      items: {
+        pt: 'Pipelines RAG, Sistemas Multi-Agente, Agentes de IA com Tool Use, APIs de LLM (OpenAI, Claude, Gemini), Prompt Engineering, Fine-tuning, MCP (Model Context Protocol), Dialogflow CX, Document AI, TensorFlow',
+        en: 'RAG Pipelines, Multi-Agent Systems, AI Agents with Tool Use, LLM APIs (OpenAI, Claude, Gemini), Prompt Engineering, Fine-tuning, MCP (Model Context Protocol), Dialogflow CX, Document AI, TensorFlow',
+      },
+    },
+    {
+      category: { pt: 'Backend', en: 'Backend' },
+      items: {
+        pt: 'Node.js, TypeScript, Bun, Express.js, Elysia, REST APIs, Redis, Docker, Clean Architecture',
+        en: 'Node.js, TypeScript, Bun, Express.js, Elysia, REST APIs, Redis, Docker, Clean Architecture',
+      },
+    },
+    {
+      category: { pt: 'Bancos de Dados', en: 'Databases' },
+      items: {
+        pt: 'MongoDB (Atlas, Triggers, Edge Computing), Firestore, Redis, Bancos Vetoriais',
+        en: 'MongoDB (Atlas, Triggers, Edge Computing), Firestore, Redis, Vector Databases',
+      },
+    },
+    {
+      category: { pt: 'Cloud & DevOps', en: 'Cloud & DevOps' },
+      items: {
+        pt: 'GCP (Cloud Run, Functions, Pub/Sub, Scheduler, API Gateway), Cloudflare, GitHub Actions, CI/CD, Docker',
+        en: 'GCP (Cloud Run, Functions, Pub/Sub, Scheduler, API Gateway), Cloudflare, GitHub Actions, CI/CD, Docker',
+      },
+    },
+    {
+      category: { pt: 'Automação', en: 'Automation' },
+      items: { pt: 'N8N, Make, Windmill, Retool', en: 'N8N, Make, Windmill, Retool' },
+    },
+    {
+      category: { pt: 'Frontend', en: 'Frontend' },
+      items: {
+        pt: 'React.js, Vue, HTML/CSS/JS, Tailwind, Figma, WordPress',
+        en: 'React.js, Vue, HTML/CSS/JS, Tailwind, Figma, WordPress',
+      },
+    },
+  ],
+
+  techStack: [
+    {
+      title: 'Backend Core',
+      skills: [
+        'Node.js',
+        'TypeScript',
+        'Express.js',
+        'Elysia',
+        'Firebase',
+        'MongoDB',
+        'Clean Architecture',
+      ],
+    },
+    {
+      title: 'Stack Moderna',
+      skills: ['Bun', 'Redis', 'Docker', 'Zod', 'TypeBox', 'Serverless'],
+    },
+    {
+      title: 'Inteligência Artificial',
+      skills: [
+        'RAG Pipelines',
+        'Multi-agent Systems',
+        'LLM APIs (OpenAI · Claude · Gemini)',
+        'Prompt Engineering',
+        'Dialogflow CX',
+        'Document AI',
+        'MCP',
+        'Google AI Studio',
+        'TensorFlow',
+      ],
+    },
+    {
+      title: 'Infra & DevOps',
+      skills: [
+        'GitHub Actions',
+        'GCP',
+        'Cloudflare',
+        'Atlas Triggers',
+        'CI/CD Pipelines',
+        'Docker Compose',
+      ],
+    },
+  ],
+
+  lowCodeTools: [
+    {
+      category: 'Integração Backend',
+      tools: 'n8n, Make',
+      icon: 'workflow',
+      description: {
+        pt: 'Uso de ferramentas de integração low code como n8n e Make para integrações rápidas e criação de MVPs.',
+        en: 'Using low-code integration tools like n8n and Make for fast integrations and MVP creation.',
+      },
+    },
+    {
+      category: 'Frontend Ágil',
+      tools: 'Retool, Plasmic',
+      icon: 'layers',
+      description: {
+        pt: 'Uso de ferramentas low code front end como Retool e Plasmic para features pontuais e entregas de MVPs.',
+        en: 'Using low-code frontend tools like Retool and Plasmic for targeted features and MVP delivery.',
+      },
+    },
+    {
+      category: 'DevOps & Scripts',
+      tools: 'Windmill',
+      icon: 'zap',
+      description: {
+        pt: 'Uso de ferramentas low devops como Windmill para deploy de funcionalidades de forma ágil.',
+        en: 'Using low-code devops tools like Windmill for agile feature deployment.',
+      },
+    },
+  ],
+
+  mcpWorkflows: [
+    {
+      tool: 'Playwright via MCP',
+      icon: 'terminal',
+      description: {
+        pt: 'Execução de testes automatizados de interface em segundo plano enquanto consigo focar em outras tarefas em paralelo, garantindo um ganho de tempo significativo.',
+        en: 'Automated UI testing in the background while I focus on other tasks in parallel, ensuring significant time savings.',
+      },
+    },
+    {
+      tool: 'Notion via MCP',
+      icon: 'file',
+      description: {
+        pt: 'Geração automática de documentações técnicas estruturadas a partir do código fonte, facilitando o compartilhamento de conhecimento ágil com a equipe.',
+        en: 'Automatic generation of structured technical documentation from source code, enabling agile knowledge sharing with the team.',
+      },
+    },
+    {
+      tool: 'MongoDB via MCP',
+      icon: 'database',
+      description: {
+        pt: 'Análise de dados, inspeção de inconsistências e execução de queries complexas diretamente do ambiente de desenvolvimento sem a dificuldade de inferir o contexto para o modelo de IA.',
+        en: 'Data analysis, inconsistency inspection, and execution of complex queries directly from the development environment without the difficulty of inferring context for the AI model.',
+      },
+    },
+  ],
+
+  languages: {
+    pt: 'Português (Nativo), Inglês (Básico)',
+    en: 'Portuguese (Native), English (Basic)',
+  },
+};
+
+// ---------------------------------------------------------------------------
+// Locale-aware builders — used by the i18n locale files to derive their
+// `cv`, `career.items`, `projects.items`, `education.items`, and the low-code
+// / MCP description arrays from the single source of truth above.
+// ---------------------------------------------------------------------------
+
+export const buildCv = (l: Locale) => ({
+  fileName: 'Bryan_Soares_CV',
+  name: profile.personal.name,
+  title: pick(profile.personal.title, l),
+  location: pick(profile.personal.location, l),
+  phone: profile.personal.phone,
+  email: profile.personal.email,
+  website: profile.personal.website,
+  linkedin: profile.personal.linkedin,
+  github: profile.personal.github,
+  summary: pick(profile.summary, l),
+  tech: profile.experience.map((e) => e.cvTech),
+  projects: profile.cvProjects.map((p) => ({
+    name: pick(p.name, l),
+    description: pick(p.description, l),
+    stack: p.stack,
+  })),
+  skills: profile.cvSkills.map((s) => ({
+    category: pick(s.category, l),
+    items: pick(s.items, l),
+  })),
+  languages: pick(profile.languages, l),
+});
+
+export const buildCareerItems = (l: Locale) =>
+  profile.experience.map((e) => ({
+    role: pick(e.role, l),
+    company: e.company,
+    period: pick(e.period, l),
+    duration: pick(e.duration, l),
+    type: pick(e.type, l),
+    location: pick(e.location, l),
+    current: e.current,
+    bullets: e.bullets.map((b) => pick(b, l)),
+  }));
+
+export const buildProjectItems = (l: Locale) =>
+  profile.workProjects.map((p) => ({
+    title: pick(p.title, l),
+    category: pick(p.category, l),
+    description: pick(p.description, l),
+  }));
+
+export const buildEducationItems = (l: Locale) =>
+  profile.education.map((e) => ({
+    institution: e.institution,
+    degree: pick(e.degree, l),
+    field: pick(e.field, l),
+    period: pick(e.period, l),
+    logo: e.logo,
+    current: e.current,
+    status: pick(e.status, l),
+  }));
+
+export const buildLowCodeDescriptions = (l: Locale) =>
+  profile.lowCodeTools.map((t) => pick(t.description, l));
+
+export const buildMcpDescriptions = (l: Locale) =>
+  profile.mcpWorkflows.map((m) => pick(m.description, l));

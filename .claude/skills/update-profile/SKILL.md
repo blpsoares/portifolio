@@ -5,65 +5,54 @@ description: Update Bryan's portfolio content (CV, career, projects, education, 
 
 # Update Profile
 
-The portfolio's content lives in a few places. When the user updates ANY profile
-info, you must keep **all relevant sources in sync** — especially both locales
-(`pt` and `en`) and the AI's knowledge file.
+All of Bryan's profile / CV data now lives in **ONE place**:
 
-## Where each piece of data lives
+> **`src/data/profile.ts`**
 
-| Content | File(s) | Key |
-| --- | --- | --- |
-| **CV / PDF** (name, contact, summary, experience, projects, skills, education, languages) | `src/i18n/pt.ts` **and** `src/i18n/en.ts` | `cv` |
-| **Career timeline** (on page) | `src/i18n/pt.ts` + `src/i18n/en.ts` | `career.items[]` |
-| **Projects** (on-page text) | `src/i18n/pt.ts` + `src/i18n/en.ts` | `projects.items[]` |
-| **Projects** (technologies / structure) | `src/constants.tsx` | `PROJECTS` |
-| **Education** | `src/i18n/pt.ts` + `src/i18n/en.ts` | `education.items[]` |
-| **Skills / tech stack** | `src/constants.tsx` | `SKILLS` (+ `t.techstack.categories` labels) |
-| **Low-code / MCP cards** | `src/constants.tsx` (+ i18n descriptions) | `LOW_CODE_TOOLS`, `MCP_WORKFLOWS`, `mcp.descriptions`, `lowcode.descriptions` |
-| **Hero / About / Who-I-am copy** | `src/i18n/pt.ts` + `src/i18n/en.ts` | `hero`, `whoiam`, `about` |
-| **🤖 AI assistant's knowledge** | `functions/api/_context.ts` | `CV_CONTEXT` |
+Edit that file and everything derives from it automatically:
 
-## Golden rules
+- the on-page sections (career, projects, education, tech arsenal, low-code, MCP),
+- both locales (`pt` / `en`) in `src/i18n/pt.ts` and `src/i18n/en.ts`,
+- the generated **CV PDF** (`src/utils/generateCv.ts`),
+- the **AI assistant's knowledge** (`functions/api/_context.ts`).
 
-1. **Always edit BOTH `pt.ts` and `en.ts`.** Keys must stay identical across
-   locales; only the text differs (Portuguese vs English). Never add a key to one
-   without the other — it breaks the build/UX.
-2. **The CV PDF = the `cv` block.** Changing a job in `career.items` does NOT
-   change the PDF; update `cv.tech` / `cv.projects` / `cv.skills` too if relevant.
-3. **Update `functions/api/_context.ts` (`CV_CONTEXT`).** This is what the real
-   AI (`bra.ia`) cites. If you skip it, the assistant answers with stale info.
-   It's plain English prose — mirror the change there concisely.
-4. After edits, run **`bun run build`** and fix any TypeScript errors. Keep the
-   shape of existing objects (same fields).
+You should **not** need to touch `src/i18n/*.ts`, `src/constants.tsx`, or
+`functions/api/_context.ts` for a content change — they only re-map values out of
+`profile.ts`.
 
-## Typical tasks
+## How `profile.ts` is structured
 
-### Add or edit a job
-- `career.items[]` in `pt.ts` **and** `en.ts` (role, company, period, duration,
-  type, location, current, bullets[]). Set `current: true` only on the newest;
-  set the previous current one to `false`.
-- If it changes the headline experience, update `cv.summary`, `cv.tech`, and
-  `CV_CONTEXT` (EXPERIENCE section) accordingly.
+It exports a single `profile` object. Bilingual text uses the `I18nText` shape
+`{ pt: "...", en: "..." }`; language-neutral values are plain strings.
 
-### Add a project
-- `PROJECTS` in `src/constants.tsx` (technologies + order).
-- `projects.items[]` in `pt.ts` + `en.ts` (title, category, description) — keep
-  the array length aligned with `PROJECTS`.
-- Mention it in `CV_CONTEXT` (KEY PROJECTS) if notable.
+| What you want to change | Edit in `profile.ts` |
+| --- | --- |
+| Contact / name / title / location | `personal` |
+| CV summary | `summary` (bilingual) |
+| A job (on page **and** CV PDF) | `experience[]` — `role`, `company`, `period`, `duration`, `type`, `location`, `current`, `bullets[]` (each bilingual), and `cvTech` (the tech line under the role in the PDF) |
+| On-page work projects | `workProjects[]` — bilingual `title`/`category`/`description` (used on the page) + `cardTitle`/`cardCategory`/`cardDescription`/`technologies` (the `PROJECTS` card) |
+| CV PDF projects (Agentistics, DuckFlux, …) | `cvProjects[]` (distinct from the on-page work projects) |
+| Education | `education[]` |
+| CV PDF skill groups | `cvSkills[]` (distinct from the on-page Tech Arsenal) |
+| On-page Tech Arsenal | `techStack[]` |
+| Low-code cards | `lowCodeTools[]` (icon + bilingual description) |
+| MCP cards | `mcpWorkflows[]` (icon + bilingual description) |
+| Languages | `languages` (bilingual) |
 
-### Add a skill / tech
-- `SKILLS` in `src/constants.tsx` (under the right category).
-- If it's a headline AI/backend skill, add to `cv.skills` (pt+en) and
-  `CV_CONTEXT` (SKILLS).
+Notes:
+- The CV PDF projects/skills are **intentionally different** from the on-page
+  work projects / Tech Arsenal — both sets live in `profile.ts`. Keep both.
+- Set `current: true` only on the newest job; flip the previous one to `false`.
+- Static UI labels (section headings, `techLabel`, nav, hero, about, etc.) are
+  NOT profile data — they stay as plain strings in `src/i18n/pt.ts` / `en.ts`.
 
-### Update contact / education / summary
-- `cv` block (pt+en) for contact/summary; `education.items[]` (pt+en) for studies.
-- Reflect in `CV_CONTEXT`.
+## After editing
 
-## Final checklist before finishing
-- [ ] Edited both `pt.ts` and `en.ts` (keys identical).
-- [ ] Updated `cv` block if it affects the PDF.
-- [ ] Updated `src/constants.tsx` if structure/skills/tech changed.
-- [ ] Updated `functions/api/_context.ts` `CV_CONTEXT` so the AI stays current.
+Run **`bun run build`** and fix any TypeScript errors. The shapes are typed, so
+the build will catch a missing `pt`/`en` side or a wrong field.
+
+## Final checklist
+
+- [ ] Edited `src/data/profile.ts` only (kept both `pt` and `en` sides of any `I18nText`).
+- [ ] If it's a job, updated its `bullets` and `cvTech`; for a headline change also adjust `summary`.
 - [ ] `bun run build` passes.
-- [ ] Committed and pushed.
