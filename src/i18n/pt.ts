@@ -45,7 +45,10 @@ const pt = {
     hint: "← converse com a IA",
     thinking: "raciocinando",
     toolRunning: "executando…",
-    disclaimer: "Agente determinístico, roda 100% no seu navegador.",
+    disclaimer: "Sugestões respondem na hora; perguntas livres usam IA.",
+    limitReached:
+      "Limite de uso da IA atingido. Tente de novo em instantes — ou use as sugestões abaixo.",
+    inputBlocked: "IA indisponível no momento — use as sugestões",
     suggestions: [
       "Por que contratar o Bryan?",
       "Mostre os projetos de IA",

@@ -45,7 +45,10 @@ const en = {
     hint: "← talk to the AI",
     thinking: "reasoning",
     toolRunning: "executing…",
-    disclaimer: "Deterministic agent, runs 100% in your browser.",
+    disclaimer: "Suggestions answer instantly; free-typed questions use AI.",
+    limitReached:
+      "AI usage limit reached. Try again shortly — or use the suggestions below.",
+    inputBlocked: "AI unavailable right now — use the suggestions",
     suggestions: [
       "Why hire Bryan?",
       "Show me the AI projects",
