@@ -38,7 +38,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <script>
       tailwind.config = {
         darkMode: 'class',
@@ -46,6 +46,8 @@
           extend: {
             fontFamily: {
               sans: ['Inter', 'sans-serif'],
+              display: ['Space Grotesk', 'Inter', 'sans-serif'],
+              mono: ['JetBrains Mono', 'ui-monospace', 'monospace'],
             },
             colors: {
               brand: {
@@ -61,7 +63,83 @@
                 900: '#134e4a',
                 950: '#042f2e',
               }
-            }
+            },
+            keyframes: {
+              'fade-in-up': {
+                '0%': { opacity: '0', transform: 'translateY(16px)' },
+                '100%': { opacity: '1', transform: 'translateY(0)' },
+              },
+              'blink': {
+                '0%, 49%': { opacity: '1' },
+                '50%, 100%': { opacity: '0' },
+              },
+              'float': {
+                '0%, 100%': { transform: 'translateY(0)' },
+                '50%': { transform: 'translateY(-10px)' },
+              },
+              'glow-pulse': {
+                '0%, 100%': { opacity: '0.6', boxShadow: '0 0 0 0 rgba(45,212,191,0)' },
+                '50%': { opacity: '1', boxShadow: '0 0 24px 2px rgba(45,212,191,0.45)' },
+              },
+              'scan': {
+                '0%': { transform: 'translateY(-100%)', opacity: '0' },
+                '50%': { opacity: '0.8' },
+                '100%': { transform: 'translateY(2400%)', opacity: '0' },
+              },
+              'gradient-shift': {
+                '0%, 100%': { backgroundPosition: '0% 50%' },
+                '50%': { backgroundPosition: '100% 50%' },
+              },
+              'boot-line': {
+                '0%': { opacity: '0', transform: 'translateX(-6px)' },
+                '100%': { opacity: '1', transform: 'translateX(0)' },
+              },
+              'aurora-drift': {
+                '0%, 100%': { transform: 'translate3d(0,0,0) scale(1)' },
+                '33%': { transform: 'translate3d(4%, -3%, 0) scale(1.1)' },
+                '66%': { transform: 'translate3d(-3%, 4%, 0) scale(0.95)' },
+              },
+              'grid-pan': {
+                '0%': { backgroundPosition: '0 0' },
+                '100%': { backgroundPosition: '60px 60px' },
+              },
+              'spin-slow': {
+                '0%': { transform: 'rotate(0deg)' },
+                '100%': { transform: 'rotate(360deg)' },
+              },
+              'spin-rev': {
+                '0%': { transform: 'rotate(360deg)' },
+                '100%': { transform: 'rotate(0deg)' },
+              },
+              'orb-bob': {
+                '0%, 100%': { transform: 'translateY(0)' },
+                '50%': { transform: 'translateY(-6px)' },
+              },
+              'pulse-ring': {
+                '0%': { transform: 'scale(0.8)', opacity: '0.7' },
+                '100%': { transform: 'scale(2.2)', opacity: '0' },
+              },
+              'shimmer': {
+                '0%': { backgroundPosition: '-200% 0' },
+                '100%': { backgroundPosition: '200% 0' },
+              },
+            },
+            animation: {
+              'fade-in-up': 'fade-in-up 0.7s ease-out both',
+              'blink': 'blink 1s step-end infinite',
+              'float': 'float 6s ease-in-out infinite',
+              'glow-pulse': 'glow-pulse 3s ease-in-out infinite',
+              'scan': 'scan 4s linear infinite',
+              'gradient-shift': 'gradient-shift 6s ease infinite',
+              'boot-line': 'boot-line 0.35s ease-out both',
+              'aurora-drift': 'aurora-drift 18s ease-in-out infinite',
+              'grid-pan': 'grid-pan 8s linear infinite',
+              'spin-slow': 'spin-slow 18s linear infinite',
+              'spin-rev': 'spin-rev 12s linear infinite',
+              'orb-bob': 'orb-bob 5s ease-in-out infinite',
+              'pulse-ring': 'pulse-ring 2.6s ease-out infinite',
+              'shimmer': 'shimmer 2.5s linear infinite',
+            },
           },
         },
       }
@@ -80,6 +158,140 @@
       .hide-scrollbar {
         -ms-overflow-style: none;
         scrollbar-width: none;
+      }
+
+      /* Animated gradient text for the hero headline + accents */
+      .gradient-animate {
+        background-size: 200% 200%;
+        animation: gradient-shift 6s ease infinite;
+      }
+
+      /* Temporary highlight pulse applied by the AI agent when it scrolls
+         the visitor to a section. Lasts ~1.8s then removes itself. */
+      @keyframes agent-highlight-pulse {
+        0% {
+          box-shadow: 0 0 0 0 rgba(45, 212, 191, 0.0);
+          outline-color: rgba(45, 212, 191, 0.0);
+        }
+        15% {
+          box-shadow: 0 0 0 4px rgba(45, 212, 191, 0.35), 0 0 40px 6px rgba(45, 212, 191, 0.35);
+          outline-color: rgba(45, 212, 191, 0.9);
+        }
+        100% {
+          box-shadow: 0 0 0 0 rgba(45, 212, 191, 0.0);
+          outline-color: rgba(45, 212, 191, 0.0);
+        }
+      }
+      .agent-highlight {
+        animation: agent-highlight-pulse 1.8s ease-out forwards;
+        outline: 2px solid transparent;
+        outline-offset: 6px;
+        border-radius: 1rem;
+        scroll-margin-top: 6rem;
+      }
+
+      /* Aurora glow layer behind the hero */
+      .hero-aurora {
+        background:
+          radial-gradient(40% 50% at 75% 25%, rgba(45, 212, 191, 0.18), transparent 70%),
+          radial-gradient(45% 55% at 20% 30%, rgba(16, 185, 129, 0.12), transparent 70%);
+        filter: blur(20px);
+      }
+      :root.dark .hero-aurora {
+        background:
+          radial-gradient(40% 50% at 75% 25%, rgba(45, 212, 191, 0.22), transparent 70%),
+          radial-gradient(45% 55% at 20% 30%, rgba(16, 185, 129, 0.14), transparent 70%);
+      }
+
+      /* ============================================================
+         IMMERSIVE DESIGN SYSTEM — "Neural Futurism"
+         ============================================================ */
+
+      /* Animated mesh-gradient field — the living, breathing backdrop */
+      .bg-mesh {
+        background:
+          radial-gradient(35% 45% at 15% 20%, rgba(45, 212, 191, 0.10), transparent 60%),
+          radial-gradient(40% 50% at 85% 15%, rgba(16, 185, 129, 0.10), transparent 60%),
+          radial-gradient(45% 55% at 75% 85%, rgba(13, 148, 136, 0.10), transparent 60%),
+          radial-gradient(40% 45% at 20% 90%, rgba(45, 212, 191, 0.08), transparent 60%);
+      }
+      :root.dark .bg-mesh {
+        background:
+          radial-gradient(35% 45% at 15% 20%, rgba(45, 212, 191, 0.16), transparent 60%),
+          radial-gradient(40% 50% at 85% 15%, rgba(16, 185, 129, 0.14), transparent 60%),
+          radial-gradient(45% 55% at 75% 85%, rgba(13, 148, 136, 0.16), transparent 60%),
+          radial-gradient(40% 45% at 20% 90%, rgba(45, 212, 191, 0.12), transparent 60%);
+      }
+
+      /* Perspective tech grid that slowly drifts */
+      .bg-grid {
+        background-image:
+          linear-gradient(rgba(100, 116, 139, 0.4) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(100, 116, 139, 0.4) 1px, transparent 1px);
+        background-size: 60px 60px;
+        mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 30%, transparent 75%);
+        -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 30%, transparent 75%);
+      }
+
+      /* Clean hairline border — crisp at any size, zero artifacts.
+         Replaces the old masked-gradient technique that rendered buggy. */
+      .gradient-border {
+        border: 1px solid rgba(15, 23, 42, 0.10);
+        transition: border-color 0.3s ease;
+      }
+      :root.dark .gradient-border {
+        border-color: rgba(148, 163, 184, 0.16);
+      }
+      .gradient-border:hover {
+        border-color: rgba(45, 212, 191, 0.45);
+      }
+
+      /* Mouse-tracking spotlight glow (vars set via JS in GlowCard) */
+      .spotlight::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+        opacity: 0;
+        transition: opacity 0.4s ease;
+        background: radial-gradient(
+          280px circle at var(--mx, 50%) var(--my, 50%),
+          rgba(45, 212, 191, 0.16),
+          transparent 60%);
+        pointer-events: none;
+      }
+      .spotlight:hover::after { opacity: 1; }
+
+      /* Holographic gradient text */
+      .holo-text {
+        background: linear-gradient(120deg, #2dd4bf, #5eead4, #34d399, #2dd4bf);
+        background-size: 250% 250%;
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: gradient-shift 6s ease infinite;
+      }
+
+      /* Shimmering placeholder / accent bar */
+      .shimmer-bar {
+        background: linear-gradient(90deg, transparent, rgba(45, 212, 191, 0.5), transparent);
+        background-size: 200% 100%;
+        animation: shimmer 2.5s linear infinite;
+      }
+
+      /* Frosted glass panel */
+      .glass {
+        background: rgba(255, 255, 255, 0.6);
+        backdrop-filter: blur(16px) saturate(140%);
+      }
+      :root.dark .glass {
+        background: rgba(2, 6, 23, 0.55);
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .gradient-animate, .agent-highlight, .holo-text, .gradient-border::before,
+        .shimmer-bar, .bg-grid { animation: none !important; }
+        *, *::before, *::after { scroll-behavior: auto !important; }
       }
     </style>
   </head>
