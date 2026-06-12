@@ -38,7 +38,7 @@ const offset = (dir: Direction) => {
 const Reveal: React.FC<RevealProps> = ({
   children,
   className = '',
-  from = 'up',
+  from = 'up' as Direction,
   delay = 0,
   once = true,
 }) => {
