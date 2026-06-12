@@ -213,7 +213,7 @@ const AgentChat: React.FC<AgentChatProps> = ({ chat, suggestions, contextNote })
       )}
 
       {/* INPUT */}
-      <div className="p-3">
+      <div className="p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
         {contextNote && (
           <div className="px-1 pb-1.5 text-[10px] font-mono text-brand-600 dark:text-brand-400">{contextNote}</div>
         )}
