@@ -158,6 +158,7 @@ const en = {
   },
   career: {
     title: "Career",
+    current: "Current",
     items: [
       {
         role: "Senior Backend Developer",
@@ -268,6 +269,91 @@ const en = {
     pageSubtitle:
       "Every project listed here was built with AI-assisted development and is open source. Click on any preview to visit the live site.",
     errorLoading: "Failed to load projects. Please try again later.",
+  },
+  cv: {
+    fileName: "Bryan_Soares_CV",
+    name: "Bryan Soares",
+    title: "Software Developer · AI Engineer",
+    location: "São Paulo, Brazil",
+    phone: "(11) 93045-6696",
+    email: "bryanluccas@hotmail.com",
+    website: "blpsoares.dev",
+    linkedin: "linkedin.com/in/blpsoares",
+    github: "github.com/blpsoares",
+    summary:
+      "Software Developer with 5+ years of experience in software development, with the last 2 years focused on applied Generative AI. I've built RAG pipelines, AI agents, MCP servers for LLM integration, and multi-agent orchestration solutions for real business problems — from corporate chatbots over 10,000+ document knowledge bases to AI-powered smart search in production. Currently pursuing a Postgraduate degree in Applied AI Engineering.",
+    sections: {
+      experience: "Professional Experience",
+      projects: "Open Source & Personal Projects",
+      skills: "Technical Skills",
+      education: "Education",
+      languages: "Languages",
+    },
+    techLabel: "Tech",
+    tech: [
+      "Node.js, TypeScript, MCP, Gemini, Anthropic, OpenAI, GitHub Copilot, MongoDB, Docker, N8N, Windmill, Cloudflare",
+      "Node.js, TypeScript, MongoDB, Document AI, OpenAI, Windmill, Docker",
+      "Node.js, TypeScript, GCP, Docker, Node Streams, Winston, APIs",
+      "Node.js, Dialogflow CX, RAG, OpenAI, GCP, Make, N8N, Pub/Sub, Cloud Functions",
+      "React, JavaScript, HTML/CSS, WordPress, Figma",
+    ],
+    projects: [
+      {
+        name: "Agentistics — Local Analytics Dashboard for AI Coding Assistants",
+        description:
+          "Built a local-first analytics dashboard that parses ~/.claude/ sessions to surface token usage, costs (USD/BRL), agent metrics, activity heatmaps, and per-model breakdown. Includes a CLI with TUI mode, OpenTelemetry export, and PDF report generation. Zero cloud, zero telemetry.",
+        stack: "TypeScript · Bun · React · Vite · Three.js · OpenTelemetry",
+      },
+      {
+        name: "DuckFlux — Declarative DSL for Multi-Agent Orchestration",
+        description:
+          "Co-author of a native YAML DSL engine for orchestrating multi-agent AI pipelines. Includes parallel execution, CEL conditionals, state-machine flow control, native MCP support, event-driven steps (emit/wait), and nested sub-workflows. Supports a Go CLI and Bun/Node.js runtimes.",
+        stack: "TypeScript · Bun · Go · YAML DSL · MCP · LLM Orchestration",
+      },
+      {
+        name: "Embark — Zero-Config CI/CD Framework for AI-Assisted Monorepos",
+        description:
+          "Built a monorepo framework that auto-generates GitHub Actions workflows, Dockerfiles (via AI CLIs: Claude, Gemini, Copilot, Codex), and Cloud Run / Netlify / Cloudflare deploy pipelines on every commit. Enforces code quality gates (77% coverage) via pre-push hooks.",
+        stack: "TypeScript · Bun · GitHub Actions · Docker · GCP Cloud Run",
+      },
+      {
+        name: "Neural Network — Plan Prediction Model",
+        description:
+          "Trained a feedforward neural network from scratch as part of the AI Engineering postgraduate program. Used ReLU activation, neuron weight tuning, and epoch counting to predict which subscription plan best fits behavior patterns.",
+        stack: "JavaScript · Neural Networks · ReLU · Supervised Learning · Backpropagation",
+      },
+    ],
+    skills: [
+      {
+        category: "Generative AI & ML",
+        items:
+          "RAG Pipelines, Multi-Agent Systems, AI Agents with Tool Use, LLM APIs (OpenAI, Claude, Gemini), Prompt Engineering, Fine-tuning, MCP (Model Context Protocol), Dialogflow CX, Document AI, TensorFlow",
+      },
+      {
+        category: "Backend",
+        items:
+          "Node.js, TypeScript, Bun, Express.js, Elysia, REST APIs, Redis, Docker, Clean Architecture",
+      },
+      {
+        category: "Databases",
+        items:
+          "MongoDB (Atlas, Triggers, Edge Computing), Firestore, Redis, Vector Databases",
+      },
+      {
+        category: "Cloud & DevOps",
+        items:
+          "GCP (Cloud Run, Functions, Pub/Sub, Scheduler, API Gateway), Cloudflare, GitHub Actions, CI/CD, Docker",
+      },
+      {
+        category: "Automation",
+        items: "N8N, Make, Windmill, Retool",
+      },
+      {
+        category: "Frontend",
+        items: "React.js, Vue, HTML/CSS/JS, Tailwind, Figma, WordPress",
+      },
+    ],
+    languages: "Portuguese (Native), English (Basic)",
   },
   footer: {
     rights: "All rights reserved.",
