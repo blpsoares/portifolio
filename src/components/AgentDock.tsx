@@ -1,11 +1,14 @@
-import React, { useCallback, useRef, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { X, Sparkles, Eye } from 'lucide-react';
+import React, { useCallback, useRef, useState, Suspense, lazy } from 'react';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
+import { X, Eye } from 'lucide-react';
 import { useI18n } from '../i18n';
 import { useAgentChat } from '../agent/useAgentChat';
 import { useActiveSection } from '../hooks/useActiveSection';
 import AgentChat from './AgentChat';
 import AiOrb from './ui/AiOrb';
+
+// Same lazy chunk as the hero globe — reused, no extra download.
+const NeuralGlobe = lazy(() => import('./hero/NeuralGlobe'));
 
 const DEFAULT_SIZE = { w: 420, h: 640 };
 const clamp = (v: number, min: number, max: number) => Math.min(Math.max(v, min), max);
@@ -20,6 +23,7 @@ const AgentDock: React.FC = () => {
   const [open, setOpen] = useState(false);
   const chat = useAgentChat({ autoBoot: false });
   const active = useActiveSection();
+  const reduce = useReducedMotion();
 
   const [size, setSize] = useState(() => {
     if (typeof window !== 'undefined') {
@@ -104,31 +108,32 @@ const AgentDock: React.FC = () => {
               style={{ width: size.w, height: size.h }}
               className="group/panel relative flex flex-col rounded-3xl glass border border-slate-200/80 dark:border-slate-700/60 shadow-2xl shadow-slate-900/20 dark:shadow-black/40 overflow-hidden max-sm:!w-auto max-sm:!h-[86dvh] max-sm:!rounded-b-none max-sm:!border-x-0 max-sm:!border-b-0"
             >
-              {/* RESIZE — draggable edges (desktop), invisible until hovered */}
+              {/* RESIZE — visible grabbers on the straight edges (desktop) */}
               <div
                 onPointerDown={(e) => startResize(e, 'top')}
-                className="hidden sm:block absolute top-0 left-5 right-5 h-1.5 z-30 cursor-ns-resize"
-                aria-hidden="true"
-              />
+                role="separator"
+                aria-label="Resize height"
+                className="group/rzt hidden sm:flex absolute top-0 inset-x-0 h-3 z-30 cursor-ns-resize items-start justify-center"
+              >
+                <span className="mt-1 h-1 w-10 rounded-full bg-slate-400/60 dark:bg-slate-500/70 group-hover/rzt:bg-brand-500 transition-colors" />
+              </div>
               <div
                 onPointerDown={(e) => startResize(e, 'left')}
-                className="hidden sm:block absolute left-0 top-5 bottom-5 w-1.5 z-30 cursor-ew-resize"
-                aria-hidden="true"
-              />
-              <div
-                onPointerDown={(e) => startResize(e, 'corner')}
                 role="separator"
-                aria-label="Resize"
-                className="hidden sm:flex absolute top-0 left-0 w-5 h-5 z-30 cursor-nwse-resize items-start justify-start p-1.5"
+                aria-label="Resize width"
+                className="group/rzl hidden sm:flex absolute left-0 inset-y-0 w-3 z-30 cursor-ew-resize items-center justify-start"
               >
-                <span className="w-2 h-2 border-l-2 border-t-2 border-slate-400/0 group-hover/panel:border-slate-400/50 dark:group-hover/panel:border-slate-500/60 rounded-tl-[3px] transition-colors" />
+                <span className="ml-1 w-1 h-10 rounded-full bg-slate-400/60 dark:bg-slate-500/70 group-hover/rzl:bg-brand-500 transition-colors" />
               </div>
 
               {/* HEADER */}
               <div className="shrink-0 flex items-center gap-3 px-4 py-3 pl-5 border-b border-slate-200/70 dark:border-slate-800/70">
-                <div className="relative">
-                  <div className="w-9 h-9 rounded-full bg-gradient-to-br from-brand-400 to-emerald-600 grid place-items-center shadow-sm shadow-brand-500/30">
-                    <Sparkles size={16} className="text-white" />
+                {/* The neural brain IS bra.ia's avatar — animated, reacts to chat */}
+                <div className="relative shrink-0">
+                  <div className="w-10 h-10 rounded-full overflow-hidden bg-slate-900/40 dark:bg-black/40 ring-1 ring-brand-500/40">
+                    <Suspense fallback={<AiOrb size={40} pulse={false} />}>
+                      <NeuralGlobe reducedMotion={!!reduce} compact />
+                    </Suspense>
                   </div>
                   <span
                     className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-emerald-500 ring-2 ring-white dark:ring-slate-900"
@@ -139,6 +144,7 @@ const AgentDock: React.FC = () => {
                   <p className="text-sm font-semibold text-slate-900 dark:text-white truncate">{t.agent.cta}</p>
                   <p className="text-[11px] text-emerald-600 dark:text-emerald-400">{t.agent.online}</p>
                 </div>
+
                 <button
                   type="button"
                   onClick={() => setOpen(false)}

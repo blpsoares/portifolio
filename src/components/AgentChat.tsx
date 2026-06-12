@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { Sparkles, Send, Wrench, ArrowDown } from 'lucide-react';
+import { Send, Wrench, ArrowDown } from 'lucide-react';
 import { useI18n } from '../i18n';
 import type { useAgentChat } from '../agent/useAgentChat';
 import AiOrb from './ui/AiOrb';
@@ -15,15 +15,6 @@ interface AgentChatProps {
 
 /** "openai/gpt-oss-120b:free" -> "gpt-oss-120b" */
 const prettyModel = (id: string) => id.split('/').pop()?.replace(':free', '') ?? id;
-
-const Avatar: React.FC = () => (
-  <div
-    className="shrink-0 w-7 h-7 rounded-full bg-gradient-to-br from-brand-400 to-emerald-600 grid place-items-center shadow-sm shadow-brand-500/30"
-    aria-hidden="true"
-  >
-    <Sparkles size={13} className="text-white" />
-  </div>
-);
 
 const TypingDots: React.FC = () => (
   <span className="inline-flex items-center gap-1 py-1" aria-hidden="true">
@@ -46,26 +37,40 @@ const AgentChat: React.FC<AgentChatProps> = ({ chat, suggestions, contextNote })
   const { t } = useI18n();
   const { booted, messages, input, setInput, busy, send } = chat;
   const scrollRef = useRef<HTMLDivElement>(null);
-  const [atBottom, setAtBottom] = useState(true);
+  const autoFollow = useRef(true);
+  const lastTop = useRef(0);
+  const [showJump, setShowJump] = useState(false);
 
   const empty = messages.length === 0;
-
-  const computeAtBottom = useCallback(() => {
-    const el = scrollRef.current;
-    if (!el) return;
-    setAtBottom(el.scrollHeight - el.scrollTop - el.clientHeight < 80);
-  }, []);
 
   const scrollToBottom = useCallback((behavior: ScrollBehavior = 'smooth') => {
     const el = scrollRef.current;
     if (el) el.scrollTo({ top: el.scrollHeight, behavior });
-    setAtBottom(true);
+    autoFollow.current = true;
+    setShowJump(false);
   }, []);
 
-  // Auto-follow only when the user is already at the bottom.
+  // Direction-aware: scrolling UP releases the auto-follow (so you can read
+  // history while it streams); returning to the bottom re-engages it.
+  const handleScroll = useCallback(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const top = el.scrollTop;
+    const atBottom = el.scrollHeight - top - el.clientHeight < 48;
+    if (top < lastTop.current - 2 && !atBottom) {
+      autoFollow.current = false;
+      setShowJump(true);
+    } else if (atBottom) {
+      autoFollow.current = true;
+      setShowJump(false);
+    }
+    lastTop.current = top;
+  }, []);
+
+  // Follow new content only while the user hasn't scrolled away.
   useEffect(() => {
-    if (atBottom) scrollToBottom('auto');
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const el = scrollRef.current;
+    if (el && autoFollow.current) el.scrollTop = el.scrollHeight;
   }, [messages]);
 
   return (
@@ -74,7 +79,7 @@ const AgentChat: React.FC<AgentChatProps> = ({ chat, suggestions, contextNote })
       <div className="relative flex-1 min-h-0">
         <div
           ref={scrollRef}
-          onScroll={computeAtBottom}
+          onScroll={handleScroll}
           className="absolute inset-0 overflow-y-auto hide-scrollbar px-4 py-4"
           aria-live="polite"
         >
@@ -114,9 +119,7 @@ const AgentChat: React.FC<AgentChatProps> = ({ chat, suggestions, contextNote })
                   </div>
                 </div>
               ) : (
-                <div key={m.id} className="flex gap-2.5">
-                  <Avatar />
-                  <div className="flex-1 min-w-0 space-y-1.5">
+                <div key={m.id} className="min-w-0 space-y-1.5">
                     {m.reasoning && m.reasoning.length > 0 && m.streaming && !m.text && (
                       <div className="space-y-1 pt-0.5">
                         {m.reasoning.map((line, i) => (
@@ -175,7 +178,6 @@ const AgentChat: React.FC<AgentChatProps> = ({ chat, suggestions, contextNote })
                           : t.agent.sourceLocal}
                       </div>
                     )}
-                  </div>
                 </div>
               ),
             )}
@@ -183,7 +185,7 @@ const AgentChat: React.FC<AgentChatProps> = ({ chat, suggestions, contextNote })
         </div>
 
         {/* JUMP TO LATEST */}
-        {!atBottom && !empty && (
+        {showJump && !empty && (
           <button
             type="button"
             onClick={() => scrollToBottom('smooth')}
@@ -230,7 +232,7 @@ const AgentChat: React.FC<AgentChatProps> = ({ chat, suggestions, contextNote })
             placeholder={t.agent.placeholder}
             aria-label={t.agent.placeholder}
             disabled={!booted}
-            className="flex-1 min-w-0 bg-transparent text-sm text-slate-800 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none disabled:opacity-50"
+            className="flex-1 min-w-0 bg-transparent text-base sm:text-sm text-slate-800 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none disabled:opacity-50"
           />
           <button
             type="submit"

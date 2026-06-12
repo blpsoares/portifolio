@@ -30,11 +30,11 @@ interface LinkData {
   b: number;
 }
 
-function buildNodes(): NodeData[] {
+function buildNodes(count: number): NodeData[] {
   const nodes: NodeData[] = [];
   const golden = Math.PI * (3 - Math.sqrt(5));
-  for (let i = 0; i < NODE_COUNT; i++) {
-    const y = 1 - (i / (NODE_COUNT - 1)) * 2;
+  for (let i = 0; i < count; i++) {
+    const y = 1 - (i / (count - 1)) * 2;
     const r = Math.sqrt(1 - y * y);
     const theta = golden * i;
     const x = Math.cos(theta) * r;
@@ -45,10 +45,10 @@ function buildNodes(): NodeData[] {
   return nodes;
 }
 
-function buildLinks(nodes: NodeData[]): LinkData[] {
+function buildLinks(nodes: NodeData[], maxLinks: number): LinkData[] {
   const links: LinkData[] = [];
-  for (let i = 0; i < nodes.length && links.length < MAX_LINKS; i++) {
-    for (let j = i + 1; j < nodes.length && links.length < MAX_LINKS; j++) {
+  for (let i = 0; i < nodes.length && links.length < maxLinks; i++) {
+    for (let j = i + 1; j < nodes.length && links.length < maxLinks; j++) {
       if (nodes[i].pos.distanceTo(nodes[j].pos) < MAX_LINK_DIST) {
         links.push({ a: i, b: j });
       }
@@ -57,12 +57,11 @@ function buildLinks(nodes: NodeData[]): LinkData[] {
   return links;
 }
 
-const Network: React.FC<{ reduced: boolean }> = ({ reduced }) => {
+const Network: React.FC<{ reduced: boolean; compact?: boolean }> = ({ reduced, compact = false }) => {
   const group = useRef<THREE.Group>(null);
   const linesMat = useRef<THREE.LineBasicMaterial>(null);
   const pointsMat = useRef<THREE.PointsMaterial>(null);
   const pulseMat = useRef<THREE.PointsMaterial>(null);
-  const coreMat = useRef<THREE.MeshBasicMaterial>(null);
   const { gl } = useThree();
 
   // Drag + inertia state.
@@ -77,9 +76,9 @@ const Network: React.FC<{ reduced: boolean }> = ({ reduced }) => {
   const proc = useRef(0);
 
   const { nodes, links } = useMemo(() => {
-    const n = buildNodes();
-    return { nodes: n, links: buildLinks(n) };
-  }, []);
+    const n = buildNodes(compact ? 70 : NODE_COUNT);
+    return { nodes: n, links: buildLinks(n, compact ? 120 : MAX_LINKS) };
+  }, [compact]);
 
   const pointsGeo = useMemo(() => {
     const g = new THREE.BufferGeometry();
@@ -110,7 +109,7 @@ const Network: React.FC<{ reduced: boolean }> = ({ reduced }) => {
     return g;
   }, [links, nodes]);
 
-  const PULSE_COUNT = reduced ? 0 : 18;
+  const PULSE_COUNT = reduced ? 0 : compact ? 8 : 18;
   const pulses = useMemo(
     () =>
       Array.from({ length: PULSE_COUNT }, () => ({
@@ -134,7 +133,7 @@ const Network: React.FC<{ reduced: boolean }> = ({ reduced }) => {
 
   // Click + drag to rotate (with inertia). DOM-level so the whole canvas drags.
   useEffect(() => {
-    if (reduced) return;
+    if (reduced || compact) return;
     const el = gl.domElement;
     let lastX = 0;
     let lastY = 0;
@@ -199,14 +198,13 @@ const Network: React.FC<{ reduced: boolean }> = ({ reduced }) => {
     g.rotation.x = rotX.current;
     g.rotation.y = rotY.current;
 
-    // Breathing — stronger while thinking.
-    const breathe = 1 + Math.sin(state.clock.elapsedTime * (0.6 + p * 1.4)) * (0.012 + p * 0.03);
+    // Gentle breathing — small enough to never clip against the canvas.
+    const breathe = 1 + Math.sin(state.clock.elapsedTime * (0.6 + p * 1.4)) * (0.006 + p * 0.012);
     g.scale.setScalar(breathe);
 
     // Materials light up while thinking.
     if (linesMat.current) linesMat.current.opacity = 0.22 + p * 0.4;
     if (pointsMat.current) pointsMat.current.size = 0.085 + p * 0.05;
-    if (coreMat.current) coreMat.current.opacity = 0.05 + p * 0.32;
     if (pulseMat.current) pulseMat.current.size = 0.16 + p * 0.16;
 
     // Travelling pulses — zoom along the links while thinking.
@@ -266,37 +264,27 @@ const Network: React.FC<{ reduced: boolean }> = ({ reduced }) => {
           />
         </points>
       )}
-
-      <mesh>
-        <sphereGeometry args={[RADIUS * 0.55, 24, 24]} />
-        <meshBasicMaterial
-          ref={coreMat}
-          color={TEAL}
-          transparent
-          opacity={0.05}
-          blending={THREE.AdditiveBlending}
-          depthWrite={false}
-        />
-      </mesh>
     </group>
   );
 };
 
 interface NeuralGlobeProps {
   reducedMotion?: boolean;
+  /** smaller node/link/pulse counts + no drag — for the chat header */
+  compact?: boolean;
 }
 
-const NeuralGlobe: React.FC<NeuralGlobeProps> = ({ reducedMotion = false }) => {
+const NeuralGlobe: React.FC<NeuralGlobeProps> = ({ reducedMotion = false, compact = false }) => {
   return (
     <Canvas
       dpr={[1, 1.5]}
-      camera={{ position: [0, 0, 6.2], fov: 45 }}
+      camera={{ position: [0, 0, compact ? 5.6 : 7.8], fov: 45 }}
       gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
       frameloop={reducedMotion ? 'demand' : 'always'}
-      style={{ background: 'transparent', touchAction: 'none' }}
+      style={{ background: 'transparent', touchAction: compact ? 'auto' : 'none' }}
     >
       <ambientLight intensity={0.6} />
-      <Network reduced={reducedMotion} />
+      <Network reduced={reducedMotion} compact={compact} />
     </Canvas>
   );
 };
