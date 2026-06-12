@@ -108,24 +108,22 @@ const AgentDock: React.FC = () => {
               style={{ width: size.w, height: size.h }}
               className="group/panel relative flex flex-col rounded-3xl glass border border-slate-200/80 dark:border-slate-700/60 shadow-2xl shadow-slate-900/20 dark:shadow-black/40 overflow-hidden max-sm:!w-auto max-sm:!h-[86dvh] max-sm:!rounded-b-none max-sm:!border-x-0 max-sm:!border-b-0"
             >
-              {/* RESIZE — draggable edges (desktop), invisible until hovered */}
+              {/* RESIZE — visible grabbers on the straight edges (desktop) */}
               <div
                 onPointerDown={(e) => startResize(e, 'top')}
-                className="hidden sm:block absolute top-0 left-5 right-5 h-1.5 z-30 cursor-ns-resize"
-                aria-hidden="true"
-              />
+                role="separator"
+                aria-label="Resize height"
+                className="group/rzt hidden sm:flex absolute top-0 inset-x-0 h-3 z-30 cursor-ns-resize items-start justify-center"
+              >
+                <span className="mt-1 h-1 w-10 rounded-full bg-slate-400/60 dark:bg-slate-500/70 group-hover/rzt:bg-brand-500 transition-colors" />
+              </div>
               <div
                 onPointerDown={(e) => startResize(e, 'left')}
-                className="hidden sm:block absolute left-0 top-5 bottom-5 w-1.5 z-30 cursor-ew-resize"
-                aria-hidden="true"
-              />
-              <div
-                onPointerDown={(e) => startResize(e, 'corner')}
                 role="separator"
-                aria-label="Resize"
-                className="hidden sm:flex absolute top-0 left-0 w-5 h-5 z-30 cursor-nwse-resize items-start justify-start p-1.5"
+                aria-label="Resize width"
+                className="group/rzl hidden sm:flex absolute left-0 inset-y-0 w-3 z-30 cursor-ew-resize items-center justify-start"
               >
-                <span className="w-2 h-2 border-l-2 border-t-2 border-slate-400/0 group-hover/panel:border-slate-400/50 dark:group-hover/panel:border-slate-500/60 rounded-tl-[3px] transition-colors" />
+                <span className="ml-1 w-1 h-10 rounded-full bg-slate-400/60 dark:bg-slate-500/70 group-hover/rzl:bg-brand-500 transition-colors" />
               </div>
 
               {/* HEADER */}
