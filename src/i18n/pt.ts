@@ -45,6 +45,7 @@ const pt = {
     hint: "← converse com a IA",
     thinking: "raciocinando",
     toolRunning: "executando…",
+    toolDone: "concluído",
     disclaimer: "Sugestões respondem na hora; perguntas livres usam IA.",
     limitReached:
       "Limite de uso da IA atingido. Tente de novo em instantes, ou use as sugestões abaixo.",

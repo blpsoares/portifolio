@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { Send, Wrench, ArrowDown } from 'lucide-react';
+import { Send, Wrench, ArrowDown, Check } from 'lucide-react';
 import { useI18n } from '../i18n';
 import type { useAgentChat } from '../agent/useAgentChat';
 import AiOrb from './ui/AiOrb';
@@ -136,11 +136,15 @@ const AgentChat: React.FC<AgentChatProps> = ({ chat, suggestions, contextNote })
 
                     {m.tool && (
                       <div className="inline-flex items-center gap-1.5 rounded-lg bg-brand-500/10 border border-brand-500/20 px-2 py-1 text-[11px] text-brand-700 dark:text-brand-300 animate-boot-line">
-                        <Wrench size={11} className="shrink-0" aria-hidden="true" />
+                        {m.tool.done ? (
+                          <Check size={12} className="shrink-0 text-emerald-500" aria-hidden="true" />
+                        ) : (
+                          <Wrench size={11} className="shrink-0" aria-hidden="true" />
+                        )}
                         <code className="font-mono">
                           {m.tool.name}(<span className="opacity-80">"{m.tool.arg}"</span>)
                         </code>
-                        <span className="opacity-60">↳ {t.agent.toolRunning}</span>
+                        <span className="opacity-60">↳ {m.tool.done ? t.agent.toolDone : t.agent.toolRunning}</span>
                       </div>
                     )}
 

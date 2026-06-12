@@ -45,6 +45,7 @@ const en = {
     hint: "← talk to the AI",
     thinking: "reasoning",
     toolRunning: "executing…",
+    toolDone: "done",
     disclaimer: "Suggestions answer instantly; free-typed questions use AI.",
     limitReached:
       "AI usage limit reached. Try again shortly, or use the suggestions below.",
