@@ -38,11 +38,11 @@ interface ChatBody {
  * https://openrouter.ai/models?max_price=0
  */
 const DEFAULT_MODELS = [
-  'deepseek/deepseek-chat-v3-0324:free',
+  'openai/gpt-oss-120b:free',
   'meta-llama/llama-3.3-70b-instruct:free',
-  'qwen/qwen-2.5-72b-instruct:free',
-  'google/gemini-2.0-flash-exp:free',
-  'mistralai/mistral-small-3.1-24b-instruct:free',
+  'qwen/qwen3-next-80b-a3b-instruct:free',
+  'nvidia/nemotron-3-super-120b-a12b:free',
+  'google/gemma-4-31b-it:free',
 ];
 
 const resolveModels = (env: Env): string[] => {
