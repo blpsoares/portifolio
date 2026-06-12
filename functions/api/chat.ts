@@ -12,6 +12,9 @@ import { buildSystemPrompt } from './_context';
 
 interface Env {
   OPENROUTER_API_KEY?: string;
+  /** Comma-separated ordered list of models (preferred). */
+  OPENROUTER_MODELS?: string;
+  /** Single model (legacy / fallback if OPENROUTER_MODELS unset). */
   OPENROUTER_MODEL?: string;
   // Optional KV binding named RATE_LIMIT for cross-edge rate limiting.
   RATE_LIMIT?: {
@@ -26,7 +29,31 @@ interface ChatBody {
   locale?: string;
 }
 
-const DEFAULT_MODEL = 'deepseek/deepseek-chat-v3-0324:free';
+/**
+ * Ordered list of free models. OpenRouter routes through them with automatic
+ * fallback (route: "fallback"): if one is down / busy / rate-limited it tries
+ * the next. Only when ALL fail does the request error and the frontend drops to
+ * the local deterministic agent. Override via the OPENROUTER_MODELS env var
+ * (comma-separated) — free model ids rotate over time, so keep it fresh from
+ * https://openrouter.ai/models?max_price=0
+ */
+const DEFAULT_MODELS = [
+  'deepseek/deepseek-chat-v3-0324:free',
+  'meta-llama/llama-3.3-70b-instruct:free',
+  'qwen/qwen-2.5-72b-instruct:free',
+  'google/gemini-2.0-flash-exp:free',
+  'mistralai/mistral-small-3.1-24b-instruct:free',
+];
+
+const resolveModels = (env: Env): string[] => {
+  const raw = env.OPENROUTER_MODELS || env.OPENROUTER_MODEL || '';
+  const list = raw
+    .split(',')
+    .map((s) => s.trim())
+    .filter(Boolean);
+  return list.length ? list : DEFAULT_MODELS;
+};
+
 const MAX_QUERY_CHARS = 1200;
 const MAX_JOB_CHARS = 6000;
 const MAX_TOKENS = 700;
@@ -93,7 +120,9 @@ export async function onRequestPost(context: {
         'X-Title': 'blpsoares.dev portfolio assistant',
       },
       body: JSON.stringify({
-        model: env.OPENROUTER_MODEL || DEFAULT_MODEL,
+        // Multi-model fallback: tries each in order until one responds.
+        models: resolveModels(env),
+        route: 'fallback',
         stream: true,
         temperature: 0.4,
         max_tokens: MAX_TOKENS,

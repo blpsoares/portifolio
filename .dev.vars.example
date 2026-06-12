@@ -7,6 +7,10 @@
 
 OPENROUTER_API_KEY=sk-or-your-key-here
 
-# Optional — defaults to a free model if unset.
-# Examples: deepseek/deepseek-chat-v3-0324:free, meta-llama/llama-3.3-70b-instruct:free
-OPENROUTER_MODEL=deepseek/deepseek-chat-v3-0324:free
+# Optional — ordered, comma-separated list of FREE models. OpenRouter tries them
+# in order with automatic fallback (route: "fallback"): when one is down / busy /
+# rate-limited it moves to the next. Only when ALL fail does the site drop to the
+# local deterministic agent. Free model ids rotate — refresh from
+# https://openrouter.ai/models?max_price=0
+# If unset, the function uses a sensible built-in default list.
+OPENROUTER_MODELS=deepseek/deepseek-chat-v3-0324:free,meta-llama/llama-3.3-70b-instruct:free,qwen/qwen-2.5-72b-instruct:free,google/gemini-2.0-flash-exp:free,mistralai/mistral-small-3.1-24b-instruct:free
