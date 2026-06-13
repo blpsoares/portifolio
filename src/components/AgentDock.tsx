@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState, Suspense, lazy } from 'react';
+import React, { useCallback, useRef, useState, useEffect, Suspense, lazy } from 'react';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { X, Eye } from 'lucide-react';
 import { useI18n } from '../i18n';
@@ -6,6 +6,8 @@ import { useAgentChat } from '../agent/useAgentChat';
 import { useActiveSection } from '../hooks/useActiveSection';
 import AgentChat from './AgentChat';
 import AiOrb from './ui/AiOrb';
+// ===== TRACK A — single additive listener so the Command Palette can open the dock =====
+import { onOpenAgentDock } from '../agent/dockControls';
 
 // Same lazy chunk as the hero globe — reused, no extra download.
 const NeuralGlobe = lazy(() => import('./hero/NeuralGlobe'));
@@ -38,6 +40,9 @@ const AgentDock: React.FC = () => {
   });
   const sizeRef = useRef(size);
   sizeRef.current = size;
+
+  // ===== TRACK A — additive only: open the dock on external request (Command Palette). =====
+  useEffect(() => onOpenAgentDock(() => setOpen(true)), []);
 
   const startResize = useCallback((e: React.PointerEvent, dir: 'top' | 'left' | 'corner') => {
     e.preventDefault();

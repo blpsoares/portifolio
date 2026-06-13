@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Moon, Sun, Menu, X, Globe, ChevronDown, Download, Loader2 } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Moon, Sun, Menu, X, Globe, ChevronDown, Download, Loader2, Command } from 'lucide-react';
 import { useI18n } from '../i18n';
 import { useCvDownload } from '../hooks/useCvDownload';
+// ===== TRACK A — magnetic CTA + Command Palette trigger =====
+import { useMagnetic } from '../hooks/useMagnetic';
+import { useCommandPaletteControls } from '../hooks/useCommandPalette';
 
 interface NavbarProps {
   isDarkMode: boolean;
@@ -25,6 +29,9 @@ const Navbar: React.FC<NavbarProps> = ({ isDarkMode, toggleTheme }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { locale, setLocale, t } = useI18n();
   const { generating, downloadCv } = useCvDownload();
+  // ===== TRACK A — magnetic CV button + Command Palette opener =====
+  const cvMagnet = useMagnetic<HTMLButtonElement>({ strength: 8, radius: 90 });
+  const { open: openCommandPalette } = useCommandPaletteControls();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -135,10 +142,24 @@ const Navbar: React.FC<NavbarProps> = ({ isDarkMode, toggleTheme }) => {
               </button>
             ),
           )}
+          {/* ===== TRACK A — Command Palette chip (⌘K) ===== */}
           <button
+            onClick={openCommandPalette}
+            className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-full bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors text-[11px] font-medium focus:outline-none focus:ring-2 focus:ring-brand-500"
+            aria-label={t.cmdk.title}
+            aria-keyshortcuts="Meta+K Control+K"
+          >
+            <Command size={12} aria-hidden="true" />
+            <span className="font-mono">K</span>
+          </button>
+          <motion.button
+            ref={cvMagnet.ref}
+            onMouseMove={cvMagnet.onMouseMove}
+            onMouseLeave={cvMagnet.onMouseLeave}
+            style={cvMagnet.style}
             onClick={() => downloadCv()}
             disabled={generating}
-            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-brand-600 hover:bg-brand-700 text-white text-xs font-semibold transition-all hover:scale-[1.03] active:scale-[0.97] disabled:opacity-70 disabled:cursor-wait shadow-sm shadow-brand-600/20 whitespace-nowrap"
+            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-brand-600 hover:bg-brand-700 text-white text-xs font-semibold transition-colors active:scale-[0.97] disabled:opacity-70 disabled:cursor-wait shadow-sm shadow-brand-600/20 whitespace-nowrap"
             aria-label={t.footer.downloadCv}
           >
             {generating ? (
@@ -147,7 +168,7 @@ const Navbar: React.FC<NavbarProps> = ({ isDarkMode, toggleTheme }) => {
               <Download size={14} />
             )}
             CV
-          </button>
+          </motion.button>
           <div className="w-px h-6 bg-slate-200 dark:bg-slate-800"></div>
           <button
             onClick={toggleLocale}
@@ -168,6 +189,14 @@ const Navbar: React.FC<NavbarProps> = ({ isDarkMode, toggleTheme }) => {
 
         {/* Mobile Toggle */}
         <div className="md:hidden flex items-center gap-3">
+          {/* ===== TRACK A — Command Palette chip (mobile) ===== */}
+          <button
+            onClick={openCommandPalette}
+            className="p-2 rounded-full bg-slate-100 dark:bg-slate-900 text-slate-700 dark:text-slate-300"
+            aria-label={t.cmdk.title}
+          >
+            <Command size={16} aria-hidden="true" />
+          </button>
           <button
             onClick={toggleLocale}
             className="flex items-center gap-1 px-2 py-1.5 rounded-full bg-slate-100 dark:bg-slate-900 text-slate-700 dark:text-slate-300 text-xs font-semibold uppercase"
