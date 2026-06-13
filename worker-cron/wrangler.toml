@@ -1,0 +1,24 @@
+# Standalone cron Worker that auto-rotates the free-model list into KV.
+# Deployed SEPARATELY from the Pages app:  wrangler deploy  (run in this dir).
+#
+# It shares the `MODELS` KV namespace with the Pages app so the chat function
+# can read the freshly-rotated list. Create the namespace once and reuse its id
+# in both this file and the Pages binding:
+#   wrangler kv namespace create MODELS
+
+name = "portfolio-models-cron"
+main = "index.ts"
+compatibility_date = "2024-09-23"
+
+# Every 6 hours.
+[triggers]
+crons = ["0 */6 * * *"]
+
+# Shared KV namespace. Replace <MODELS_KV_NAMESPACE_ID> with the id printed by
+# `wrangler kv namespace create MODELS`.
+[[kv_namespaces]]
+binding = "MODELS"
+id = "<MODELS_KV_NAMESPACE_ID>"
+
+# OPENROUTER_API_KEY is optional (the model catalog is public). If you want
+# account-aware availability, set it as a secret:  wrangler secret put OPENROUTER_API_KEY

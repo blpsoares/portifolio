@@ -4,7 +4,80 @@ import { useCvDownload } from '../hooks/useCvDownload';
 import { matchIntent, type AgentAction } from './engine';
 import { cannedReply } from './canned';
 import { setAgentState } from './bus';
-import { streamAiReply, AiUnavailable } from './chatClient';
+import { streamAiReply, AiUnavailable, type AiToolCall } from './chatClient';
+import type { Translations } from '../i18n';
+
+/** Whitelisted section ids the model may navigate to (matches the server enum). */
+const SECTIONS = new Set([
+  'profile',
+  'about',
+  'stack',
+  'lowcode',
+  'mcp',
+  'projects',
+  'career',
+  'education',
+  'learning',
+  'ai-usage',
+]);
+
+/** A resolved, client-executable tool call: chip metadata + the action to run. */
+interface ResolvedToolCall {
+  name: string;
+  arg: string;
+  action: AgentAction;
+}
+
+/**
+ * Sanitize a model-emitted tool call on the CLIENT and map it to an
+ * AgentAction. Anything outside the whitelist (unknown tool, bad section,
+ * malformed JSON) returns null and is ignored — the model can never drive the
+ * page outside the allowed set.
+ */
+function resolveToolCall(call: AiToolCall, t: Translations): ResolvedToolCall | null {
+  let args: Record<string, unknown> = {};
+  try {
+    const parsed: unknown = call.arguments ? JSON.parse(call.arguments) : {};
+    if (parsed && typeof parsed === 'object') args = parsed as Record<string, unknown>;
+  } catch {
+    /* keep empty args — some tools take none */
+  }
+
+  switch (call.name) {
+    case 'navigate_to_section': {
+      const section = typeof args.section === 'string' ? args.section : '';
+      if (!SECTIONS.has(section)) return null;
+      return {
+        name: 'scroll_to_section',
+        arg: section,
+        action: { type: 'scroll', target: section },
+      };
+    }
+    case 'download_cv': {
+      const lang = args.language === 'pt' || args.language === 'en' ? args.language : undefined;
+      return {
+        name: 'download_cv',
+        arg: lang ?? '',
+        action: { type: 'download_cv', locale: lang },
+      };
+    }
+    case 'open_link': {
+      const target = typeof args.target === 'string' ? args.target : '';
+      const url =
+        target === 'linkedin'
+          ? 'https://linkedin.com/in/blpsoares'
+          : target === 'github'
+            ? `https://${t.cv.github}`
+            : target === 'email'
+              ? `mailto:${t.cv.email}`
+              : '';
+      if (!url) return null;
+      return { name: 'open_url', arg: target, action: { type: 'open_url', url } };
+    }
+    default:
+      return null;
+  }
+}
 
 /** Small awaitable delay used to pace the "agent" output. */
 const sleep = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
@@ -164,16 +237,19 @@ export function useAgentChat(options: { autoBoot?: boolean } = {}) {
       }
 
       // ===== 1) Free-typed questions → real AI =====
+      // A single minimal placeholder line. Real reasoning (when the model
+      // streams it) REPLACES this; plain models keep just this line until the
+      // answer starts. We never invent multi-line fake "thoughts".
+      const placeholder = L('conectando ao modelo…', 'connecting to the model…');
+      let hasRealReasoning = false;
+      // Track whether the model itself drove the page, so we only fall back to
+      // the deterministic detector when it did NOT (non-tool models).
+      let modelActed = false;
+      // Buffer incremental reasoning so we render readable lines, not tokens.
+      let reasoningBuf = '';
+
       try {
-        const thinking = [
-          L('conectando ao modelo…', 'connecting to the model…'),
-          L('recuperando contexto do CV…', 'retrieving CV context…'),
-        ];
-        for (const line of thinking) {
-          await sleep(360);
-          if (!aliveRef.current) return;
-          patch(agentId, (m) => ({ ...m, reasoning: [...(m.reasoning ?? []), line] }));
-        }
+        patch(agentId, (m) => ({ ...m, reasoning: [placeholder] }));
 
         await streamAiReply({
           query,
@@ -182,20 +258,60 @@ export function useAgentChat(options: { autoBoot?: boolean } = {}) {
             if (!aliveRef.current) return;
             patch(agentId, (m) => ({ ...m, model }));
           },
+          onReasoning: (delta) => {
+            if (!aliveRef.current) return;
+            // First real reasoning token wipes the placeholder.
+            if (!hasRealReasoning) {
+              hasRealReasoning = true;
+              reasoningBuf = '';
+            }
+            reasoningBuf += delta;
+            // Split into non-empty lines; the last (possibly partial) line is
+            // shown live too so streaming feels continuous.
+            const lines = reasoningBuf
+              .split('\n')
+              .map((s) => s.trim())
+              .filter(Boolean);
+            patch(agentId, (m) => ({ ...m, reasoning: lines }));
+          },
+          onToolCall: (call) => {
+            if (!aliveRef.current) return;
+            const resolved = resolveToolCall(call, t);
+            if (!resolved) return; // outside whitelist → ignored
+            modelActed = true;
+            patch(agentId, (m) => ({ ...m, tool: { name: resolved.name, arg: resolved.arg } }));
+            runAction(resolved.action);
+            patch(agentId, (m) =>
+              m.tool ? { ...m, tool: { ...m.tool, done: true } } : m,
+            );
+          },
           onChunk: (delta) => {
             if (!aliveRef.current) return;
             patch(agentId, (m) => ({ ...m, text: m.text + delta, source: 'ai' }));
           },
         });
 
-        // The LLM answers in words but can't drive the page. Honor explicit
-        // side-effect requests (download CV, open contact link) via the
-        // deterministic detector — without hijacking with scrolls.
-        const det = matchIntent(query, t, locale);
-        if (det.tool && (det.tool.action.type === 'download_cv' || det.tool.action.type === 'open_url')) {
-          runAction(det.tool.action);
+        // FALLBACK for models without tool support: if the model never emitted
+        // a usable tool call, honor explicit side-effect requests (download CV,
+        // open contact link) via the deterministic detector — without
+        // hijacking the conversation with scrolls.
+        if (!modelActed) {
+          const det = matchIntent(query, t, locale);
+          if (
+            det.tool &&
+            (det.tool.action.type === 'download_cv' || det.tool.action.type === 'open_url')
+          ) {
+            runAction(det.tool.action);
+          }
         }
-        patch(agentId, (m) => ({ ...m, streaming: false, source: 'ai' }));
+        // If no real reasoning ever arrived, clear the placeholder so nothing
+        // fake lingers next to the final answer.
+        patch(agentId, (m) => ({
+          ...m,
+          reasoning: hasRealReasoning ? m.reasoning : [],
+          streaming: false,
+          source: 'ai',
+        }));
         setAgentState('idle');
         if (aliveRef.current) setBusy(false);
         return;
@@ -232,6 +348,17 @@ export function useAgentChat(options: { autoBoot?: boolean } = {}) {
     [busy, locale, t, runAction, patch],
   );
 
+  // Used by clickable grounding citations ([[section:<id>]]) rendered inside
+  // answers. Whitelisted client-side so a malformed token never scrolls
+  // anywhere unexpected.
+  const scrollToSection = useCallback(
+    (section: string) => {
+      if (!SECTIONS.has(section)) return;
+      runAction({ type: 'scroll', target: section });
+    },
+    [runAction],
+  );
+
   return {
     bootLines,
     booted,
@@ -241,6 +368,7 @@ export function useAgentChat(options: { autoBoot?: boolean } = {}) {
     busy,
     limited,
     send,
+    scrollToSection,
     hasStarted: messages.length > 0,
   };
 }
