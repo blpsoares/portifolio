@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
 import { Moon, Sun, Menu, X, Globe, ChevronDown, Download, Loader2, Command } from 'lucide-react';
 import { useI18n } from '../i18n';
 import { useCvDownload } from '../hooks/useCvDownload';
-// ===== TRACK A — magnetic CTA + Command Palette trigger =====
-import { useMagnetic } from '../hooks/useMagnetic';
+// ===== TRACK A — Command Palette trigger =====
 import { useCommandPaletteControls } from '../hooks/useCommandPalette';
 
 interface NavbarProps {
@@ -29,8 +27,7 @@ const Navbar: React.FC<NavbarProps> = ({ isDarkMode, toggleTheme }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { locale, setLocale, t } = useI18n();
   const { generating, downloadCv } = useCvDownload();
-  // ===== TRACK A — magnetic CV button + Command Palette opener =====
-  const cvMagnet = useMagnetic<HTMLButtonElement>({ strength: 8, radius: 90 });
+  // ===== TRACK A — Command Palette opener =====
   const { open: openCommandPalette } = useCommandPaletteControls();
 
   useEffect(() => {
@@ -152,11 +149,7 @@ const Navbar: React.FC<NavbarProps> = ({ isDarkMode, toggleTheme }) => {
             <Command size={12} aria-hidden="true" />
             <span className="font-mono">K</span>
           </button>
-          <motion.button
-            ref={cvMagnet.ref}
-            onMouseMove={cvMagnet.onMouseMove}
-            onMouseLeave={cvMagnet.onMouseLeave}
-            style={cvMagnet.style}
+          <button
             onClick={() => downloadCv()}
             disabled={generating}
             className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-brand-600 hover:bg-brand-700 text-white text-xs font-semibold transition-colors active:scale-[0.97] disabled:opacity-70 disabled:cursor-wait shadow-sm shadow-brand-600/20 whitespace-nowrap"
@@ -168,7 +161,7 @@ const Navbar: React.FC<NavbarProps> = ({ isDarkMode, toggleTheme }) => {
               <Download size={14} />
             )}
             CV
-          </motion.button>
+          </button>
           <div className="w-px h-6 bg-slate-200 dark:bg-slate-800"></div>
           <button
             onClick={toggleLocale}
