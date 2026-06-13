@@ -25,7 +25,7 @@ const en = {
   },
   hero: {
     badge: "AI Engineer · Software Developer",
-    title1: "Robust Systems.",
+    title1: "From Idea to Production.",
     title2: "Applied Intelligence.",
     subtitle_prefix: "",
     subtitle_highlight: "AI Engineer and Software Developer.",

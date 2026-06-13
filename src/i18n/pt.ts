@@ -25,7 +25,7 @@ const pt = {
   },
   hero: {
     badge: "AI Engineer \u00b7 Software Developer",
-    title1: "Sistemas Robustos.",
+    title1: "Da Ideia à Produção.",
     title2: "Intelig\u00eancia Aplicada.",
     subtitle_prefix: "",
     subtitle_highlight: "AI Engineer e Software Developer.",
