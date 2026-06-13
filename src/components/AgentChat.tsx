@@ -35,7 +35,7 @@ const TypingDots: React.FC = () => (
  */
 const AgentChat: React.FC<AgentChatProps> = ({ chat, suggestions, contextNote }) => {
   const { t } = useI18n();
-  const { booted, messages, input, setInput, busy, limited, send } = chat;
+  const { booted, messages, input, setInput, busy, limited, send, scrollToSection } = chat;
   const scrollRef = useRef<HTMLDivElement>(null);
   const autoFollow = useRef(true);
   const lastTop = useRef(0);
@@ -152,7 +152,12 @@ const AgentChat: React.FC<AgentChatProps> = ({ chat, suggestions, contextNote })
                       <div className="inline-block max-w-full rounded-2xl rounded-tl-md bg-slate-100 dark:bg-slate-800/70 text-slate-800 dark:text-slate-100 px-3.5 py-2.5 text-sm leading-relaxed break-words">
                         {m.text ? (
                           <div className="markdown-body">
-                            <Markdown>{m.text}</Markdown>
+                            <Markdown
+                              onCite={scrollToSection}
+                              citationLabels={t.agent.citationLabels}
+                            >
+                              {m.text}
+                            </Markdown>
                             {m.streaming && (
                               <span
                                 className="inline-block w-1.5 h-4 bg-brand-400 align-text-bottom ml-0.5 animate-blink"

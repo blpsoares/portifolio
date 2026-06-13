@@ -74,6 +74,20 @@ const en = {
     sourceAiHint: "Answer from a real LLM via OpenRouter",
     sourceLocalHint: "Rule-based engine in your browser, no LLM, no cost",
     unavailable: "The assistant is unavailable right now, please try again shortly.",
+    // Localized labels for clickable grounding citations ([[section:<id>]]).
+    // Keys are the whitelisted section ids; the chip text is prefixed with "↳".
+    citationLabels: {
+      profile: "Profile",
+      about: "About",
+      stack: "Tech stack",
+      lowcode: "Low-code",
+      mcp: "MCP",
+      projects: "Projects",
+      career: "Career",
+      education: "Education",
+      learning: "Learning",
+      "ai-usage": "AI usage",
+    } as Record<string, string>,
     contextSuggestions: {
       profile: ["Why hire Bryan?", "Summarize his career", "Download CV"],
       about: ["Who is Bryan?", "What's his edge?", "AI focus?"],

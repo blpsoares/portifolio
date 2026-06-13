@@ -75,6 +75,20 @@ const pt = {
     sourceLocalHint: "Motor de regras no navegador, sem LLM, sem custo",
     unavailable:
       "O assistente está indisponível no momento. Tente novamente em instantes.",
+    // Localized labels for clickable grounding citations ([[section:<id>]]).
+    // Keys are the whitelisted section ids; the chip text is prefixed with "↳".
+    citationLabels: {
+      profile: "Perfil",
+      about: "Sobre",
+      stack: "Stack técnica",
+      lowcode: "Low-code",
+      mcp: "MCP",
+      projects: "Projetos",
+      career: "Carreira",
+      education: "Formação",
+      learning: "Aprendizado",
+      "ai-usage": "Uso de IA",
+    } as Record<string, string>,
     contextSuggestions: {
       profile: ["Por que contratar o Bryan?", "Resuma a carreira", "Baixar CV"],
       about: ["Quem é o Bryan?", "Qual o diferencial dele?", "Foco em IA?"],
