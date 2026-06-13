@@ -3,6 +3,9 @@ import { motion, useMotionValue, useSpring, useTransform, useScroll, useReducedM
 import { ArrowRight, Github, Linkedin, Mail, ChevronDown, Download, Loader2, Circle } from 'lucide-react';
 import { useI18n } from '../i18n';
 import { useCvDownload } from '../hooks/useCvDownload';
+// ===== TRACK A — interactions: magnetic CTA + decrypt headline =====
+import { useMagnetic } from '../hooks/useMagnetic';
+import DecryptText from './ui/DecryptText';
 
 // Heavy three.js visual — code-split so it never blocks first paint.
 const NeuralGlobe = lazy(() => import('./hero/NeuralGlobe'));
@@ -19,6 +22,8 @@ const Hero: React.FC = () => {
   const { generating, downloadCv } = useCvDownload();
   const reduce = useReducedMotion();
   const ref = useRef<HTMLElement>(null);
+  // ===== TRACK A — magnetic primary CTA (springs back on leave) =====
+  const magnet = useMagnetic<HTMLButtonElement>({ strength: 10, radius: 110 });
 
   // Only mount the heavy 3D globe on tablet/desktop — phones stay light and
   // never download the three.js chunk.
@@ -109,7 +114,8 @@ const Hero: React.FC = () => {
           <h1 className="font-display text-[clamp(2.25rem,5.5vw,4.25rem)] font-bold tracking-tight text-slate-900 dark:text-white leading-[1.03]">
             {t.hero.title1}
             <br />
-            <span className="holo-text">{t.hero.title2}</span>
+            {/* ===== TRACK A — decrypt reveal (one-time on mount) ===== */}
+            <DecryptText text={t.hero.title2} className="holo-text" />
           </h1>
 
           <p className="text-lg md:text-xl text-slate-600 dark:text-slate-400 max-w-2xl leading-relaxed font-light">
@@ -119,13 +125,17 @@ const Hero: React.FC = () => {
           </p>
 
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 pt-1">
-            <button
+            <motion.button
+              ref={magnet.ref}
+              onMouseMove={magnet.onMouseMove}
+              onMouseLeave={magnet.onMouseLeave}
+              style={magnet.style}
               onClick={() => document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' })}
-              className="group w-full sm:w-auto px-6 py-3.5 bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-semibold rounded-xl hover:bg-slate-800 dark:hover:bg-slate-100 transition-all shadow-lg shadow-slate-900/10 dark:shadow-brand-500/20 flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-[0.98]"
+              className="group w-full sm:w-auto px-6 py-3.5 bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-semibold rounded-xl hover:bg-slate-800 dark:hover:bg-slate-100 transition-colors shadow-lg shadow-slate-900/10 dark:shadow-brand-500/20 flex items-center justify-center gap-2"
             >
               {t.hero.cta}
               <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
-            </button>
+            </motion.button>
 
             <button
               onClick={() => downloadCv()}
