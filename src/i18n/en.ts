@@ -26,7 +26,7 @@ const en = {
   hero: {
     badge: "AI Engineer · Software Developer",
     title1: "From Idea to Production.",
-    title2: "Applied Intelligence.",
+    title2: ["Applied Intelligence.", "AI Agents.", "GenAI in Production."],
     subtitle_prefix: "",
     subtitle_highlight: "AI Engineer and Software Developer.",
     subtitle_suffix:
