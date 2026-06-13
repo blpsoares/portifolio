@@ -4,8 +4,6 @@ import { Terminal, FileText, Database } from 'lucide-react';
 import SectionShell from './ui/SectionShell';
 import GlowCard from './ui/GlowCard';
 import Reveal from './ui/Reveal';
-// ===== TRACK A — count-up impact metrics =====
-import CountUpStat from './ui/CountUpStat';
 import { useI18n } from '../i18n';
 
 const iconMap = {
@@ -56,14 +54,6 @@ const McpSection: React.FC = () => {
           );
         })}
       </div>
-
-      {/* ===== TRACK A — count-up impact metrics from real AI/MCP work ===== */}
-      <Reveal from="up" delay={0.1}>
-        <div className="relative z-10 mt-10 grid grid-cols-2 gap-6 sm:gap-8">
-          <CountUpStat to={10000} suffix="+" label={t.stats.docsKnowledgeBase} />
-          <CountUpStat to={96} suffix="%" label={t.stats.extractionAccuracy} />
-        </div>
-      </Reveal>
     </SectionShell>
   );
 };

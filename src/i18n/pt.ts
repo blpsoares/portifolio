@@ -103,15 +103,6 @@ const pt = {
       "ai-usage": ["Como ele usa IA no dia a dia?", "Por que contratar o Bryan?", "Resuma a carreira"],
     } as Record<string, string[]>,
   },
-  stats: {
-    yearsExperience: "Anos de experiência",
-    docsKnowledgeBase: "Docs na base RAG",
-    docsMigrated: "Documentos migrados",
-    extractionAccuracy: "Acurácia no Document AI",
-    rolesHeld: "Cargos profissionais",
-    latencyBefore: "Latência antes (s)",
-    latencyAfter: "Latência depois (s)",
-  },
   whoiam: {
     title: "Quem sou",
     p1_start:
