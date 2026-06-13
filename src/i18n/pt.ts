@@ -89,6 +89,15 @@ const pt = {
       "ai-usage": ["Como ele usa IA no dia a dia?", "Por que contratar o Bryan?", "Resuma a carreira"],
     } as Record<string, string[]>,
   },
+  stats: {
+    yearsExperience: "Anos de experiência",
+    docsKnowledgeBase: "Docs na base RAG",
+    docsMigrated: "Documentos migrados",
+    extractionAccuracy: "Acurácia no Document AI",
+    rolesHeld: "Cargos profissionais",
+    latencyBefore: "Latência antes (s)",
+    latencyAfter: "Latência depois (s)",
+  },
   whoiam: {
     title: "Quem sou",
     p1_start:
@@ -197,6 +206,26 @@ const pt = {
   footer: {
     rights: "Todos os direitos reservados.",
     downloadCv: "Download CV",
+  },
+  cmdk: {
+    title: "Paleta de Comandos",
+    trigger: "Comando rápido",
+    placeholder: "Buscar seções e ações…",
+    empty: "Nenhum resultado encontrado.",
+    groupNavigation: "Ir para",
+    groupActions: "Ação",
+    downloadCvEn: "Baixar CV (EN)",
+    downloadCvPt: "Baixar CV (PT)",
+    themeDark: "Mudar para tema escuro",
+    themeLight: "Mudar para tema claro",
+    languageEn: "Mudar idioma para Inglês",
+    languagePt: "Mudar idioma para Português",
+    openChat: "Abrir chat com IA",
+    openLinkedin: "Abrir LinkedIn",
+    openGithub: "Abrir GitHub",
+    hintNavigate: "Navegar",
+    hintSelect: "Selecionar",
+    hintClose: "Fechar",
   },
 };
 

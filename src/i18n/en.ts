@@ -88,6 +88,15 @@ const en = {
       "ai-usage": ["How does he use AI daily?", "Why hire Bryan?", "Summarize his career"],
     } as Record<string, string[]>,
   },
+  stats: {
+    yearsExperience: "Years of experience",
+    docsKnowledgeBase: "Docs in RAG knowledge base",
+    docsMigrated: "Documents migrated",
+    extractionAccuracy: "Document AI accuracy",
+    rolesHeld: "Professional roles",
+    latencyBefore: "Latency before (s)",
+    latencyAfter: "Latency after (s)",
+  },
   whoiam: {
     title: "Who I am",
     p1_start:
@@ -196,6 +205,26 @@ const en = {
   footer: {
     rights: "All rights reserved.",
     downloadCv: "Download CV",
+  },
+  cmdk: {
+    title: "Command Palette",
+    trigger: "Quick command",
+    placeholder: "Search sections and actions…",
+    empty: "No results found.",
+    groupNavigation: "Go to",
+    groupActions: "Action",
+    downloadCvEn: "Download CV (EN)",
+    downloadCvPt: "Download CV (PT)",
+    themeDark: "Switch to dark theme",
+    themeLight: "Switch to light theme",
+    languageEn: "Switch language to English",
+    languagePt: "Switch language to Portuguese",
+    openChat: "Open AI chat",
+    openLinkedin: "Open LinkedIn",
+    openGithub: "Open GitHub",
+    hintNavigate: "Navigate",
+    hintSelect: "Select",
+    hintClose: "Close",
   },
 };
 

@@ -2,6 +2,8 @@ import React from 'react';
 import { ArrowRight } from 'lucide-react';
 import SectionShell from './ui/SectionShell';
 import GlowCard from './ui/GlowCard';
+// ===== TRACK A — count-up impact metrics =====
+import CountUpStat from './ui/CountUpStat';
 import { useI18n } from '../i18n';
 
 const WhoIAm: React.FC = () => {
@@ -26,6 +28,13 @@ const WhoIAm: React.FC = () => {
             {t.whoiam.p1_end}
           </p>
           <p>{t.whoiam.p2}</p>
+        </div>
+
+        {/* ===== TRACK A — count-up impact metrics (fire once on viewport entry) ===== */}
+        <div className="mt-10 grid grid-cols-2 sm:grid-cols-3 gap-6 pt-8 border-t border-slate-200/70 dark:border-white/10">
+          <CountUpStat to={5} suffix="+" label={t.stats.yearsExperience} />
+          <CountUpStat to={10000} suffix="+" label={t.stats.docsKnowledgeBase} />
+          <CountUpStat to={20000} suffix="+" label={t.stats.docsMigrated} />
         </div>
 
         <div className="mt-10">

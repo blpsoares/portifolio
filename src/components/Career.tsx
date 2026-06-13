@@ -3,6 +3,8 @@ import { ChevronDown } from 'lucide-react';
 import SectionShell from './ui/SectionShell';
 import GlowCard from './ui/GlowCard';
 import Reveal from './ui/Reveal';
+// ===== TRACK A — count-up impact metrics =====
+import CountUpStat from './ui/CountUpStat';
 import { useI18n } from '../i18n';
 
 const Career: React.FC = () => {
@@ -136,6 +138,14 @@ const Career: React.FC = () => {
           })}
         </div>
       </div>
+
+      {/* ===== TRACK A — count-up career metrics (fire once on viewport entry) ===== */}
+      <Reveal from="up" delay={0.1}>
+        <div className="mt-12 grid grid-cols-2 gap-6 sm:gap-8 max-w-md">
+          <CountUpStat to={5} suffix="+" label={t.stats.yearsExperience} />
+          <CountUpStat to={t.career.items.length} label={t.stats.rolesHeld} />
+        </div>
+      </Reveal>
     </SectionShell>
   );
 };

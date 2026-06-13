@@ -3,6 +3,8 @@ import { PROJECTS } from '../constants';
 import SectionShell from './ui/SectionShell';
 import GlowCard from './ui/GlowCard';
 import Reveal from './ui/Reveal';
+// ===== TRACK A — count-up impact metrics =====
+import CountUpStat from './ui/CountUpStat';
 import { useI18n } from '../i18n';
 
 const Projects: React.FC = () => {
@@ -61,6 +63,15 @@ const Projects: React.FC = () => {
           );
         })}
       </div>
+
+      {/* ===== TRACK A — count-up impact metrics drawn from the projects above ===== */}
+      <Reveal from="up" delay={0.1}>
+        <div className="mt-10 grid grid-cols-2 sm:grid-cols-3 gap-6 sm:gap-8 pt-8 border-t border-slate-200/70 dark:border-white/10">
+          <CountUpStat to={20000} suffix="+" label={t.stats.docsMigrated} />
+          <CountUpStat to={10} prefix="~" suffix="s" label={t.stats.latencyBefore} />
+          <CountUpStat to={2} prefix="~" suffix="s" label={t.stats.latencyAfter} />
+        </div>
+      </Reveal>
     </SectionShell>
   );
 };
