@@ -19,14 +19,18 @@ interface Env {
   [key: string]: unknown;
 }
 
+interface ExecutionContext {
+  waitUntil(promise: Promise<unknown>): void;
+}
+
 export default {
-  async fetch(request: Request, env: Env): Promise<Response> {
+  async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
     const { pathname } = new URL(request.url);
 
     if (pathname === '/api/chat') {
       if (request.method !== 'POST') return new Response('Method Not Allowed', { status: 405 });
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      return chatHandler({ request, env } as any);
+      return chatHandler({ request, env, waitUntil: ctx?.waitUntil?.bind(ctx) } as any);
     }
 
     if (pathname === '/api/models') {

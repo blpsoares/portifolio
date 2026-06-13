@@ -4,17 +4,15 @@
  *
  * Uses the API key when present (account-aware availability) but works without
  * it too, since OpenRouter's model catalog is public. Cached for 10 minutes.
+ *
+ * The `:free` filter lives in `_models-util.ts` and is shared with the cron
+ * Worker that auto-rotates the active list into KV — no duplicated logic.
  */
+
+import { freeModels, type OpenRouterModel } from './_models-util';
 
 interface Env {
   OPENROUTER_API_KEY?: string;
-}
-
-interface OpenRouterModel {
-  id?: string;
-  name?: string;
-  context_length?: number;
-  pricing?: { prompt?: string; completion?: string };
 }
 
 const json = (data: unknown, status = 200, cacheSeconds = 0): Response =>
@@ -45,18 +43,7 @@ export async function onRequestGet(context: { env: Env }): Promise<Response> {
   }
 
   const payload = (await upstream.json()) as { data?: OpenRouterModel[] };
-  const isFree = (m: OpenRouterModel) =>
-    m.id?.endsWith(':free') ||
-    (m.pricing?.prompt === '0' && m.pricing?.completion === '0');
-
-  const free = (payload.data ?? [])
-    .filter(isFree)
-    .map((m) => ({
-      id: m.id,
-      name: m.name,
-      context: m.context_length ?? 0,
-    }))
-    .sort((a, b) => b.context - a.context);
+  const free = freeModels(payload.data);
 
   return json(
     {

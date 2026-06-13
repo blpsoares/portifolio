@@ -25,8 +25,8 @@ const pt = {
   },
   hero: {
     badge: "AI Engineer \u00b7 Software Developer",
-    title1: "Sistemas Robustos.",
-    title2: "Intelig\u00eancia Aplicada.",
+    title1: "Da Ideia à Produção.",
+    title2: ["Intelig\u00eancia Aplicada.", "Agentes de IA.", "GenAI em Produ\u00e7\u00e3o."],
     subtitle_prefix: "",
     subtitle_highlight: "AI Engineer e Software Developer.",
     subtitle_suffix:
@@ -75,6 +75,20 @@ const pt = {
     sourceLocalHint: "Motor de regras no navegador, sem LLM, sem custo",
     unavailable:
       "O assistente está indisponível no momento. Tente novamente em instantes.",
+    // Localized labels for clickable grounding citations ([[section:<id>]]).
+    // Keys are the whitelisted section ids; the chip text is prefixed with "↳".
+    citationLabels: {
+      profile: "Perfil",
+      about: "Sobre",
+      stack: "Stack técnica",
+      lowcode: "Low-code",
+      mcp: "MCP",
+      projects: "Projetos",
+      career: "Carreira",
+      education: "Formação",
+      learning: "Aprendizado",
+      "ai-usage": "Uso de IA",
+    } as Record<string, string>,
     contextSuggestions: {
       profile: ["Por que contratar o Bryan?", "Resuma a carreira", "Baixar CV"],
       about: ["Quem é o Bryan?", "Qual o diferencial dele?", "Foco em IA?"],
@@ -197,6 +211,26 @@ const pt = {
   footer: {
     rights: "Todos os direitos reservados.",
     downloadCv: "Download CV",
+  },
+  cmdk: {
+    title: "Paleta de Comandos",
+    trigger: "Comando rápido",
+    placeholder: "Buscar seções e ações…",
+    empty: "Nenhum resultado encontrado.",
+    groupNavigation: "Ir para",
+    groupActions: "Ação",
+    downloadCvEn: "Baixar CV (EN)",
+    downloadCvPt: "Baixar CV (PT)",
+    themeDark: "Mudar para tema escuro",
+    themeLight: "Mudar para tema claro",
+    languageEn: "Mudar idioma para Inglês",
+    languagePt: "Mudar idioma para Português",
+    openChat: "Abrir chat com IA",
+    openLinkedin: "Abrir LinkedIn",
+    openGithub: "Abrir GitHub",
+    hintNavigate: "Navegar",
+    hintSelect: "Selecionar",
+    hintClose: "Fechar",
   },
 };
 

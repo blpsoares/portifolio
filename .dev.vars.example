@@ -15,3 +15,25 @@ OPENROUTER_API_KEY=sk-or-your-key-here
 # https://openrouter.ai/models?max_price=0
 # If unset, the function uses a sensible built-in default list.
 OPENROUTER_MODELS=openai/gpt-oss-120b:free,meta-llama/llama-3.3-70b-instruct:free,qwen/qwen3-next-80b-a3b-instruct:free
+
+# Optional — rate-limit tuning (only applied when the RATE_LIMIT KV binding
+# exists). Per-IP protects the shared origin; per-session stops a single tab
+# from bursting. Defaults shown.
+# RATE_LIMIT_IP_PER_MIN=20
+# RATE_LIMIT_SESSION_PER_MIN=8
+# RATE_LIMIT_SESSION_PER_HOUR=40
+
+# --- Cloudflare bindings (configured in the dashboard / wrangler, NOT here) ---
+# These are NOT plain env vars; document them as bindings for the operator:
+#
+# KV namespace bindings:
+#   RATE_LIMIT  → per-IP + per-session rate-limit counters (no binding = no limit)
+#   MODELS      → cron-Worker-refreshed free-model list (key "active"); chat
+#                 resolves models KV → OPENROUTER_MODELS → built-in defaults
+#
+# Analytics Engine dataset binding (PII-free telemetry):
+#   [[analytics_engine_datasets]]
+#   binding = "ANALYTICS"
+#
+# The free-model auto-rotation cron lives in worker-cron/ and is deployed
+# separately (see worker-cron/wrangler.toml and the README).

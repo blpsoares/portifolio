@@ -25,8 +25,8 @@ const en = {
   },
   hero: {
     badge: "AI Engineer · Software Developer",
-    title1: "Robust Systems.",
-    title2: "Applied Intelligence.",
+    title1: "From Idea to Production.",
+    title2: ["Applied Intelligence.", "AI Agents.", "GenAI in Production."],
     subtitle_prefix: "",
     subtitle_highlight: "AI Engineer and Software Developer.",
     subtitle_suffix:
@@ -74,6 +74,20 @@ const en = {
     sourceAiHint: "Answer from a real LLM via OpenRouter",
     sourceLocalHint: "Rule-based engine in your browser, no LLM, no cost",
     unavailable: "The assistant is unavailable right now, please try again shortly.",
+    // Localized labels for clickable grounding citations ([[section:<id>]]).
+    // Keys are the whitelisted section ids; the chip text is prefixed with "↳".
+    citationLabels: {
+      profile: "Profile",
+      about: "About",
+      stack: "Tech stack",
+      lowcode: "Low-code",
+      mcp: "MCP",
+      projects: "Projects",
+      career: "Career",
+      education: "Education",
+      learning: "Learning",
+      "ai-usage": "AI usage",
+    } as Record<string, string>,
     contextSuggestions: {
       profile: ["Why hire Bryan?", "Summarize his career", "Download CV"],
       about: ["Who is Bryan?", "What's his edge?", "AI focus?"],
@@ -196,6 +210,26 @@ const en = {
   footer: {
     rights: "All rights reserved.",
     downloadCv: "Download CV",
+  },
+  cmdk: {
+    title: "Command Palette",
+    trigger: "Quick command",
+    placeholder: "Search sections and actions…",
+    empty: "No results found.",
+    groupNavigation: "Go to",
+    groupActions: "Action",
+    downloadCvEn: "Download CV (EN)",
+    downloadCvPt: "Download CV (PT)",
+    themeDark: "Switch to dark theme",
+    themeLight: "Switch to light theme",
+    languageEn: "Switch language to English",
+    languagePt: "Switch language to Portuguese",
+    openChat: "Open AI chat",
+    openLinkedin: "Open LinkedIn",
+    openGithub: "Open GitHub",
+    hintNavigate: "Navigate",
+    hintSelect: "Select",
+    hintClose: "Close",
   },
 };
 
