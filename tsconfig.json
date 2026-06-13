@@ -26,5 +26,5 @@
     "allowImportingTsExtensions": true,
     "noEmit": true
   },
-  "exclude": ["functions", "worker", "dist", "node_modules"]
+  "exclude": ["functions", "worker", "worker-cron", "dist", "node_modules"]
 }
