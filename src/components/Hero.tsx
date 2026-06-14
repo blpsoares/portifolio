@@ -3,8 +3,6 @@ import { motion, useMotionValue, useSpring, useTransform, useScroll, useReducedM
 import { ArrowRight, Github, Linkedin, Mail, ChevronDown, Download, Loader2, Circle } from 'lucide-react';
 import { useI18n } from '../i18n';
 import { useCvDownload } from '../hooks/useCvDownload';
-// ===== TRACK A — typewriter headline (second line) =====
-import TypewriterText from './ui/TypewriterText';
 
 // Heavy three.js visual — code-split so it never blocks first paint.
 const NeuralGlobe = lazy(() => import('./hero/NeuralGlobe'));
@@ -111,8 +109,7 @@ const Hero: React.FC = () => {
           <h1 className="font-display text-[clamp(2.25rem,5.5vw,4.25rem)] font-bold tracking-tight text-slate-900 dark:text-white leading-[1.03]">
             {t.hero.title1}
             <br />
-            {/* ===== TRACK A — typewriter reveal on the second line (one-time on mount) ===== */}
-            <TypewriterText text={t.hero.title2} className="holo-text" />
+            <span className="text-brand-500 dark:text-brand-400">{t.hero.title2}</span>
           </h1>
 
           <p className="text-lg md:text-xl text-slate-600 dark:text-slate-400 max-w-2xl leading-relaxed font-light">
