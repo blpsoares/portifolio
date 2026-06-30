@@ -87,14 +87,14 @@ const Navbar: React.FC<NavbarProps> = ({ isDarkMode, toggleTheme }) => {
     'text-xs font-medium text-slate-600 dark:text-slate-400 hover:text-brand-600 dark:hover:text-brand-400 transition-colors whitespace-nowrap';
 
   return (
-    <nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled
-          ? 'bg-white/80 dark:bg-slate-950/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 py-4 shadow-sm'
-          : 'bg-transparent border-b border-transparent py-6'
-      }`}
-    >
-      <div className="max-w-6xl mx-auto px-6 flex justify-between items-center">
+    <nav className="fixed top-0 left-0 right-0 z-50 px-4 sm:px-6 py-3">
+      <div
+        className={`max-w-6xl mx-auto flex justify-between items-center rounded-full px-6 py-2.5 border transition-[background-color,border-color,box-shadow,backdrop-filter] duration-500 ease-out ${
+          isScrolled
+            ? 'bg-white/70 dark:bg-slate-900/55 border-slate-200/70 dark:border-white/10 shadow-lg shadow-slate-900/5 dark:shadow-black/40 backdrop-blur-xl'
+            : 'bg-transparent border-transparent shadow-none backdrop-blur-0'
+        }`}
+      >
         <div className="font-bold text-2xl tracking-tighter text-slate-900 dark:text-white flex items-center font-mono">
           &gt;_<span className="text-brand-600 dark:text-brand-500 animate-pulse">.</span>
         </div>
