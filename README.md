@@ -19,66 +19,89 @@ View your app in AI Studio: https://ai.studio/apps/drive/129fNjSRDf-d_2JJlp5bg8Z
 3. Run the app:
    `npm run dev`
 
-## AI assistant (OpenRouter) — Cloudflare config
+## AI assistant (bra.ia)
 
-The chat is hybrid: the Pages Function `functions/api/chat.ts` streams a real
-LLM answer (with model-driven tool calls, reasoning, and clickable grounding
-citations); on any failure it gracefully drops to the in-browser deterministic
-agent. Everything below is OPTIONAL — without it the site still works on the
-local fallback.
+The chat has three brains and always answers, degrading silently between them:
 
-### Secrets / env vars (Cloudflare Pages → Settings → Variables)
+1. **OpenRouter** (`functions/api/chat.ts`) — a real cloud LLM, streamed, with
+   model-driven tool calls, reasoning and clickable grounding citations. Works
+   on every device, so it leads.
+2. **In-browser model** (`@mlc-ai/web-llm`) — takes over on quota exhaustion,
+   rate limits, or offline. Runs on the visitor's own GPU via WebGPU inside a
+   Web Worker, so the page never janks and no token leaves the device.
+3. **Rule engine** (`src/agent/engine.ts`) — the floor. Answers when neither LLM
+   can serve (no key, no WebGPU, download declined).
 
-- `OPENROUTER_API_KEY` (secret) — enables the real AI. Without it: local fallback.
-- `OPENROUTER_MODELS` (optional) — comma-separated ordered free-model list.
-- Rate-limit tuning (optional, ints): `RATE_LIMIT_IP_PER_MIN` (default 20),
-  `RATE_LIMIT_SESSION_PER_MIN` (default 8), `RATE_LIMIT_SESSION_PER_HOUR`
-  (default 40).
+The visitor never sees a downgrade notice; the source badge under each answer
+says which brain replied.
 
-### KV namespaces (Pages → Settings → Functions → KV bindings)
+### Choosing a cloud model
 
-- `RATE_LIMIT` — per-IP (`rl:ip:*`) and per-session (`rl:sess:*`) counters.
-  Without it, no rate limiting is applied.
-- `MODELS` — the cron Worker writes the fresh free-model list here under the
-  `active` key. Chat resolves models in order: KV `MODELS:active` →
-  `OPENROUTER_MODELS` → built-in defaults. Without it, env/defaults are used.
+`functions/api/_models-util.ts` filters OpenRouter's catalog down to free models
+that can actually chat. **The modality check is not optional and the obvious
+version of it is wrong:** Google's Lyria 3 is a free MUSIC model with a 1M
+context, so sorting free models by context put it first and every chat request
+went to it. Its `output_modalities` are `["text", "audio"]` — it *does* list
+text, so an "includes text" check accepts it. The filter therefore requires
+output to be **exclusively** text, and requires `tools` support, which is what
+we actually depend on.
 
-Create the shared `MODELS` namespace once and bind the same id in both the
-Pages app and the cron Worker:
+The list is re-validated when READ from KV, not only when written, so a poisoned
+list written by an earlier cron run is survivable immediately.
 
-```sh
-wrangler kv namespace create MODELS
-wrangler kv namespace create RATE_LIMIT
-```
+### Local model tiers
 
-### Analytics Engine (PII-free telemetry)
+Which model a visitor gets is decided per device in `src/agent/localEngine.ts`:
 
-Add an Analytics Engine dataset binding named `ANALYTICS` (Pages → Functions →
-Analytics Engine bindings, or via `wrangler.toml`):
+| Tier | Model | Download | Requires |
+| --- | --- | --- | --- |
+| High | Llama 3.2 3B | ~1.8 GB | GPU budget ≥ 2 GB, RAM ≥ 8 GB, ≥ 15 Mbps |
+| Mid | Qwen2.5 1.5B | ~950 MB | GPU budget ≥ 1 GB, RAM ≥ 8 GB, ≥ 5 Mbps |
+| Low | SmolLM2 360M | ~300 MB | GPU budget ≥ 256 MB, RAM ≥ 4 GB |
 
-```toml
-[[analytics_engine_datasets]]
-binding = "ANALYTICS"
-```
+Signals used: `navigator.gpu.requestAdapter()` limits, `navigator.deviceMemory`,
+and throughput measured from the Resource Timing entries of assets the page
+already fetched (`navigator.connection.downlink` is capped and unreliable, so it
+is only a fallback). The "recommended" badge in the settings modal uses hardware
+only — bandwidth decides the ETA, never the recommendation, because a noisy
+reading made the badge jump between visits on the same machine.
 
-Each chat request writes ONE datapoint: `blobs:[category, model, locale,
-fallbackReason]`, `doubles:[latencyMs]`, `indexes:[category]`. It NEVER logs the
-question text, IP, or any PII — only an inferred category
-(`career|projects|ai|hire|other`). Telemetry failures never affect the response.
+Two rules keep this honest:
 
-### Cron Worker (auto-rotate free models)
+- The chosen tier is persisted **only once the download actually starts**, so an
+  unlucky early bandwidth reading can't permanently condemn a strong machine.
+- If any tier's weights are already cached, they win over a nominally better
+  model — except when the visitor picked a model by hand, where substituting it
+  would ignore what they just asked for.
 
-Free `:free` model ids rotate over time. The standalone Worker in `worker-cron/`
-refreshes the list every 6h. Pages Functions can't run cron, hence a separate
-Worker sharing the `MODELS` KV namespace. Deploy it separately:
+WebGPU requires a **secure context**: over plain HTTP on a LAN/Tailscale IP the
+whole local-model feature hides itself. Use HTTPS or `localhost` to test it.
 
-```sh
-cd worker-cron
-# put the shared MODELS namespace id into wrangler.toml first
-wrangler deploy
-# optional, for account-aware availability:
-wrangler secret put OPENROUTER_API_KEY
-```
+### Answer language
 
-It is NOT part of `bun run build` (the Pages pipeline) and is deployed on its
-own.
+`src/agent/language.ts` detects whether the visitor wrote Portuguese or English
+and that beats the site locale. The site locale alone was a bad proxy: it used
+to default to English regardless of `navigator.language`, so a message written
+in Portuguese got a system prompt saying "always respond in English" and the
+model obeyed. The locale now seeds from the browser too.
+
+### Cloudflare config
+
+Secrets / env vars (Pages → Settings → Variables):
+
+- `OPENROUTER_API_KEY` — without it `/api/chat` returns `{ fallback: true }` and
+  the chat drops to the in-browser model.
+- `OPENROUTER_MODELS` — optional ordered, comma-separated override. OpenRouter
+  caps the fallback list at 3.
+- `RATE_LIMIT_IP_PER_MIN` (20), `RATE_LIMIT_SESSION_PER_MIN` (8),
+  `RATE_LIMIT_SESSION_PER_HOUR` (40) — only applied when the KV binding exists.
+
+KV namespaces (Pages → Settings → Functions):
+
+- `RATE_LIMIT` — per-IP + per-session counters. Failures here fail *open*: a KV
+  hiccup must never turn into a 502.
+- `MODELS` — the cron Worker writes the fresh free-model list under `active`.
+  Resolution order: KV → `OPENROUTER_MODELS` → built-in defaults.
+
+Analytics Engine dataset binding `ANALYTICS` is optional (PII-free telemetry).
+The free-model auto-rotation cron lives in `worker-cron/` and deploys separately.

@@ -1,4 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import NotificationCenter from './NotificationCenter';
+import BraiaSettings from './BraiaSettings';
+import LocalModelProgress from './ui/LocalModelProgress';
 import { Moon, Sun, Menu, X, Globe, ChevronDown, Download, Loader2, Command } from 'lucide-react';
 import { useI18n } from '../i18n';
 import { useCvDownload } from '../hooks/useCvDownload';
@@ -87,12 +90,13 @@ const Navbar: React.FC<NavbarProps> = ({ isDarkMode, toggleTheme }) => {
     'text-xs font-medium text-slate-600 dark:text-slate-400 hover:text-brand-600 dark:hover:text-brand-400 transition-colors whitespace-nowrap';
 
   return (
+    <>
+    {/* Download indicator, always visible (even behind the settings modal) */}
+    <LocalModelProgress />
     <nav className="fixed top-0 left-0 right-0 z-50 px-4 sm:px-6 py-3">
       <div
-        className={`max-w-6xl mx-auto flex justify-between items-center rounded-full px-6 py-2.5 border transition-[background-color,border-color,box-shadow,backdrop-filter] duration-500 ease-out ${
-          isScrolled
-            ? 'bg-white/70 dark:bg-slate-900/55 border-slate-200/70 dark:border-white/10 shadow-lg shadow-slate-900/5 dark:shadow-black/40 backdrop-blur-xl'
-            : 'bg-transparent border-transparent shadow-none backdrop-blur-0'
+        className={`nav-pill max-w-6xl mx-auto flex justify-between items-center rounded-full px-6 py-2.5 ${
+          isScrolled ? 'is-scrolled' : ''
         }`}
       >
         <div className="font-bold text-2xl tracking-tighter text-slate-900 dark:text-white flex items-center font-mono">
@@ -163,6 +167,9 @@ const Navbar: React.FC<NavbarProps> = ({ isDarkMode, toggleTheme }) => {
             CV
           </button>
           <div className="w-px h-6 bg-slate-200 dark:bg-slate-800"></div>
+          {/* Local-model activity log (renders nothing until something happens) */}
+          <NotificationCenter />
+          <BraiaSettings />
           <button
             onClick={toggleLocale}
             className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-full bg-slate-100 dark:bg-slate-900 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors text-xs font-semibold uppercase tracking-wider"
@@ -182,6 +189,7 @@ const Navbar: React.FC<NavbarProps> = ({ isDarkMode, toggleTheme }) => {
 
         {/* Mobile Toggle */}
         <div className="md:hidden flex items-center gap-3">
+          <NotificationCenter />
           {/* ===== TRACK A — Command Palette chip (mobile) ===== */}
           <button
             onClick={openCommandPalette}
@@ -264,6 +272,7 @@ const Navbar: React.FC<NavbarProps> = ({ isDarkMode, toggleTheme }) => {
         </div>
       )}
     </nav>
+  </>
   );
 };
 

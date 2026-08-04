@@ -13,9 +13,6 @@ interface AgentChatProps {
   contextNote?: React.ReactNode;
 }
 
-/** "openai/gpt-oss-120b:free" -> "gpt-oss-120b" */
-const prettyModel = (id: string) => id.split('/').pop()?.replace(':free', '') ?? id;
-
 const TypingDots: React.FC = () => (
   <span className="inline-flex items-center gap-1 py-1" aria-hidden="true">
     {[0, 1, 2].map((i) => (
@@ -35,7 +32,7 @@ const TypingDots: React.FC = () => (
  */
 const AgentChat: React.FC<AgentChatProps> = ({ chat, suggestions, contextNote }) => {
   const { t } = useI18n();
-  const { booted, messages, input, setInput, busy, limited, send, scrollToSection } = chat;
+  const { booted, messages, input, setInput, busy, send, scrollToSection } = chat;
   const scrollRef = useRef<HTMLDivElement>(null);
   const autoFollow = useRef(true);
   const lastTop = useRef(0);
@@ -173,17 +170,29 @@ const AgentChat: React.FC<AgentChatProps> = ({ chat, suggestions, contextNote })
 
                     {m.source && !m.streaming && (
                       <div
-                        title={m.source === 'ai' ? t.agent.sourceAiHint : t.agent.sourceLocalHint}
+                        title={
+                          m.source === 'ai'
+                            ? t.agent.sourceAiHint
+                            : m.source === 'webllm'
+                              ? t.agent.sourceWebllmHint
+                              : t.agent.sourceLocalHint
+                        }
                         className="inline-flex items-center gap-1.5 w-fit px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800/70 text-[10px] font-medium text-slate-500 dark:text-slate-400 cursor-default"
                       >
                         <span
                           className={`inline-block w-1.5 h-1.5 rounded-full ${
-                            m.source === 'ai' ? 'bg-brand-500' : 'bg-amber-500'
+                            m.source === 'ai'
+                              ? 'bg-brand-500'
+                              : m.source === 'webllm'
+                                ? 'bg-emerald-500'
+                                : 'bg-amber-500'
                           }`}
                           aria-hidden="true"
                         />
                         {m.source === 'ai'
-                          ? `${t.agent.sourceAi}${m.model ? ` · ${prettyModel(m.model)}` : ''}`
+                          ? `${t.agent.sourceAi}${m.model ? ` · ${m.model}` : ''}`
+                          : m.source === 'webllm'
+                          ? `${t.agent.sourceWebllm}${m.model ? ` · ${m.model}` : ''}`
                           : t.agent.sourceLocal}
                       </div>
                     )}
@@ -238,14 +247,14 @@ const AgentChat: React.FC<AgentChatProps> = ({ chat, suggestions, contextNote })
           <input
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder={limited ? t.agent.inputBlocked : t.agent.placeholder}
-            aria-label={limited ? t.agent.inputBlocked : t.agent.placeholder}
-            disabled={!booted || limited}
+            placeholder={t.agent.placeholder}
+            aria-label={t.agent.placeholder}
+            disabled={!booted}
             className="flex-1 min-w-0 bg-transparent text-base sm:text-sm text-slate-800 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
           />
           <button
             type="submit"
-            disabled={busy || !booted || limited || !input.trim()}
+            disabled={busy || !booted || !input.trim()}
             aria-label="Send"
             className="shrink-0 w-8 h-8 grid place-items-center rounded-full bg-brand-600 hover:bg-brand-700 text-white transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
           >
@@ -253,7 +262,7 @@ const AgentChat: React.FC<AgentChatProps> = ({ chat, suggestions, contextNote })
           </button>
         </form>
         <p className="mt-2 text-center text-[10px] text-slate-400 dark:text-slate-500">
-          {limited ? t.agent.inputBlocked : t.agent.disclaimer}
+          {t.agent.disclaimer}
         </p>
       </div>
     </div>

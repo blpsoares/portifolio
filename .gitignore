@@ -28,3 +28,4 @@ dist-ssr
 
 # Agent isolated worktrees
 .claude/worktrees/
+.wrangler/

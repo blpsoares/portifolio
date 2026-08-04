@@ -2,7 +2,7 @@ import type { AgentAction, AgentReply } from './engine';
 
 /**
  * Canned answers for the PRE-FIXED suggestion chips. These are answered
- * instantly, for free, WITHOUT calling OpenRouter — only free-typed questions
+ * instantly, for free, WITHOUT touching the LLM — only free-typed questions
  * hit the real LLM. Each chip maps to a curated topic with a good answer and an
  * optional page action (scroll / download).
  */

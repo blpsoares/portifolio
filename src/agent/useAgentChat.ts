@@ -5,9 +5,9 @@ import { matchIntent, type AgentAction } from './engine';
 import { cannedReply } from './canned';
 import { setAgentState } from './bus';
 import { streamAiReply, AiUnavailable, type AiToolCall } from './chatClient';
-import type { Translations } from '../i18n';
+import { getLocalEngine, getLocalTier } from './localEngine';
 
-/** Whitelisted section ids the model may navigate to (matches the server enum). */
+/** Whitelisted section ids the agent may navigate to. */
 const SECTIONS = new Set([
   'profile',
   'about',
@@ -21,64 +21,6 @@ const SECTIONS = new Set([
   'ai-usage',
 ]);
 
-/** A resolved, client-executable tool call: chip metadata + the action to run. */
-interface ResolvedToolCall {
-  name: string;
-  arg: string;
-  action: AgentAction;
-}
-
-/**
- * Sanitize a model-emitted tool call on the CLIENT and map it to an
- * AgentAction. Anything outside the whitelist (unknown tool, bad section,
- * malformed JSON) returns null and is ignored — the model can never drive the
- * page outside the allowed set.
- */
-function resolveToolCall(call: AiToolCall, t: Translations): ResolvedToolCall | null {
-  let args: Record<string, unknown> = {};
-  try {
-    const parsed: unknown = call.arguments ? JSON.parse(call.arguments) : {};
-    if (parsed && typeof parsed === 'object') args = parsed as Record<string, unknown>;
-  } catch {
-    /* keep empty args — some tools take none */
-  }
-
-  switch (call.name) {
-    case 'navigate_to_section': {
-      const section = typeof args.section === 'string' ? args.section : '';
-      if (!SECTIONS.has(section)) return null;
-      return {
-        name: 'scroll_to_section',
-        arg: section,
-        action: { type: 'scroll', target: section },
-      };
-    }
-    case 'download_cv': {
-      const lang = args.language === 'pt' || args.language === 'en' ? args.language : undefined;
-      return {
-        name: 'download_cv',
-        arg: lang ?? '',
-        action: { type: 'download_cv', locale: lang },
-      };
-    }
-    case 'open_link': {
-      const target = typeof args.target === 'string' ? args.target : '';
-      const url =
-        target === 'linkedin'
-          ? 'https://linkedin.com/in/blpsoares'
-          : target === 'github'
-            ? `https://${t.cv.github}`
-            : target === 'email'
-              ? `mailto:${t.cv.email}`
-              : '';
-      if (!url) return null;
-      return { name: 'open_url', arg: target, action: { type: 'open_url', url } };
-    }
-    default:
-      return null;
-  }
-}
-
 /** Small awaitable delay used to pace the "agent" output. */
 const sleep = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
 
@@ -91,18 +33,17 @@ export interface ChatMessage {
   reasoning?: string[];
   tool?: { name: string; arg: string; done?: boolean };
   streaming?: boolean;
-  /** which brain produced the answer */
-  source?: 'ai' | 'local';
+  /** which engine produced the answer: in-browser LLM, or the rule engine */
+  source?: 'ai' | 'webllm' | 'local';
   /** the exact model id that answered (ai only) */
   model?: string;
 }
 
 /**
- * Shared "agent brain". Hybrid by design:
- *   1. tries the real AI (OpenRouter via /api/chat) and streams its answer;
- *   2. on any failure (no key, free quota exhausted, rate limit, offline, or
- *      local dev where the function doesn't exist) it gracefully falls back to
- *      the deterministic engine. The site is never "down".
+ * Shared agent logic. Two engines, no cloud:
+ *   1. the in-browser LLM (WebLLM) answers free-typed questions once loaded;
+ *   2. the deterministic rule engine covers suggestion chips, devices that
+ *      can't run WebGPU, and any failure of (1) — so the chat is never down.
  */
 export function useAgentChat(options: { autoBoot?: boolean } = {}) {
   const { autoBoot = true } = options;
@@ -114,9 +55,6 @@ export function useAgentChat(options: { autoBoot?: boolean } = {}) {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState('');
   const [busy, setBusy] = useState(false);
-  // True while the AI is rate-limited / out of quota — blocks free-typed input
-  // (suggestion chips keep working since they're answered locally).
-  const [limited, setLimited] = useState(false);
 
   const idRef = useRef(0);
   const nextId = () => ++idRef.current;
@@ -236,111 +174,154 @@ export function useAgentChat(options: { autoBoot?: boolean } = {}) {
         return;
       }
 
-      // ===== 1) Free-typed questions → real AI =====
-      // A single minimal placeholder line. Real reasoning (when the model
-      // streams it) REPLACES this; plain models keep just this line until the
-      // answer starts. We never invent multi-line fake "thoughts".
-      const placeholder = L('conectando ao modelo…', 'connecting to the model…');
-      let hasRealReasoning = false;
-      // Track whether the model itself drove the page, so we only fall back to
-      // the deterministic detector when it did NOT (non-tool models).
+      // ===== 1) Free-typed questions → three brains, in order =====
+      // A single minimal placeholder line, replaced by the answer as soon as
+      // the first token lands. We never invent fake "thoughts".
+      const placeholder = L('pensando…', 'thinking…');
+
+      // OpenRouter answers best and works on every device, so it leads. The
+      // in-browser model catches quota/rate-limit/offline without the visitor
+      // noticing, and the rule engine is the floor that keeps the chat alive
+      // when neither LLM can serve.
+      const localReady = getLocalEngine() !== null;
+
+      /** Deterministic engine: rule-based answer + its side effects. */
+      const answerDeterministically = async () => {
+        const det = matchIntent(query, t, locale);
+        if (det.tool) {
+          await sleep(220);
+          if (!aliveRef.current) return;
+          const tool = det.tool;
+          patch(agentId, (m) => ({ ...m, tool: { name: tool.name, arg: tool.arg } }));
+          await sleep(400);
+          if (!aliveRef.current) return;
+          runAction(det.tool.action);
+          patch(agentId, (m) => (m.tool ? { ...m, tool: { ...m.tool, done: true } } : m));
+        }
+        const words = det.answer.split(' ');
+        for (let i = 0; i < words.length; i++) {
+          await sleep(20);
+          if (!aliveRef.current) return;
+          patch(agentId, (m) => ({ ...m, text: words.slice(0, i + 1).join(' ') }));
+        }
+        patch(agentId, (m) => ({ ...m, reasoning: [], streaming: false, source: 'local' }));
+      };
+
+      // Did an LLM drive the page itself? Decides whether the rule-based
+      // detector needs to step in afterwards.
       let modelActed = false;
-      // Buffer incremental reasoning so we render readable lines, not tokens.
-      let reasoningBuf = '';
 
-      try {
-        patch(agentId, (m) => ({ ...m, reasoning: [placeholder] }));
+      /** Run a whitelisted action emitted by either LLM. */
+      const applyAction = (resolved: { name: string; arg: string; action: AgentAction } | null) => {
+        if (!resolved || !aliveRef.current || modelActed) return;
+        modelActed = true;
+        patch(agentId, (m) => ({ ...m, tool: { name: resolved.name, arg: resolved.arg } }));
+        runAction(resolved.action);
+        patch(agentId, (m) => (m.tool ? { ...m, tool: { ...m.tool, done: true } } : m));
+      };
 
-        await streamAiReply({
+      /** Side effects the LLM asked for in prose but never emitted as an action. */
+      const honorMissedIntent = () => {
+        if (modelActed) return;
+        const det = matchIntent(query, t, locale);
+        if (
+          det.tool &&
+          (det.tool.action.type === 'download_cv' || det.tool.action.type === 'open_url')
+        ) {
+          runAction(det.tool.action);
+        }
+      };
+
+      /** In-browser model. Throws if it can't serve, so the caller can fall through. */
+      const answerLocally = async () => {
+        // Loaded on demand so the grounding prompt never ships in the initial
+        // bundle — it's only needed once a local model is live.
+        const { streamLocalReply } = await import('./localChatClient');
+        const { resolveAction } = await import('./actionTokens');
+
+        await streamLocalReply({
           query,
           locale,
           onModel: (model) => {
             if (!aliveRef.current) return;
             patch(agentId, (m) => ({ ...m, model }));
           },
-          onReasoning: (delta) => {
-            if (!aliveRef.current) return;
-            // First real reasoning token wipes the placeholder.
-            if (!hasRealReasoning) {
-              hasRealReasoning = true;
-              reasoningBuf = '';
-            }
-            reasoningBuf += delta;
-            // Split into non-empty lines; the last (possibly partial) line is
-            // shown live too so streaming feels continuous.
-            const lines = reasoningBuf
-              .split('\n')
-              .map((s) => s.trim())
-              .filter(Boolean);
-            patch(agentId, (m) => ({ ...m, reasoning: lines }));
-          },
-          onToolCall: (call) => {
-            if (!aliveRef.current) return;
-            const resolved = resolveToolCall(call, t);
-            if (!resolved) return; // outside whitelist → ignored
-            modelActed = true;
-            patch(agentId, (m) => ({ ...m, tool: { name: resolved.name, arg: resolved.arg } }));
-            runAction(resolved.action);
-            patch(agentId, (m) =>
-              m.tool ? { ...m, tool: { ...m.tool, done: true } } : m,
-            );
-          },
+          onAction: (name, arg) =>
+            applyAction(resolveAction(name, arg, { github: t.cv.github, email: t.cv.email })),
           onChunk: (delta) => {
             if (!aliveRef.current) return;
-            patch(agentId, (m) => ({ ...m, text: m.text + delta, source: 'ai' }));
+            patch(agentId, (m) => ({ ...m, text: m.text + delta, source: 'webllm' }));
           },
         });
 
-        // FALLBACK for models without tool support: if the model never emitted
-        // a usable tool call, honor explicit side-effect requests (download CV,
-        // open contact link) via the deterministic detector — without
-        // hijacking the conversation with scrolls.
-        if (!modelActed) {
-          const det = matchIntent(query, t, locale);
-          if (
-            det.tool &&
-            (det.tool.action.type === 'download_cv' || det.tool.action.type === 'open_url')
-          ) {
-            runAction(det.tool.action);
-          }
+        honorMissedIntent();
+        patch(agentId, (m) => ({ ...m, reasoning: [], streaming: false, source: 'webllm' }));
+      };
+
+      try {
+        patch(agentId, (m) => ({ ...m, reasoning: [placeholder] }));
+
+        // ---- Brain 1: OpenRouter ----
+        let hasRealReasoning = false;
+        let reasoningBuf = '';
+        try {
+          const { resolveToolCall } = await import('./cloudTools');
+          await streamAiReply({
+            query,
+            locale,
+            onModel: (model) => {
+              if (!aliveRef.current) return;
+              patch(agentId, (m) => ({ ...m, model }));
+            },
+            onReasoning: (delta) => {
+              if (!aliveRef.current) return;
+              if (!hasRealReasoning) {
+                hasRealReasoning = true;
+                reasoningBuf = '';
+              }
+              reasoningBuf += delta;
+              const lines = reasoningBuf.split('\n').map((x) => x.trim()).filter(Boolean);
+              patch(agentId, (m) => ({ ...m, reasoning: lines }));
+            },
+            onToolCall: (call: AiToolCall) =>
+              applyAction(resolveToolCall(call, { github: t.cv.github, email: t.cv.email })),
+            onChunk: (delta) => {
+              if (!aliveRef.current) return;
+              patch(agentId, (m) => ({ ...m, text: m.text + delta, source: 'ai' }));
+            },
+          });
+
+          honorMissedIntent();
+          patch(agentId, (m) => ({
+            ...m,
+            reasoning: hasRealReasoning ? m.reasoning : [],
+            streaming: false,
+            source: 'ai',
+          }));
+          setAgentState('idle');
+          if (aliveRef.current) setBusy(false);
+          return;
+        } catch (cloudErr) {
+          // No key, quota gone, rate limited, offline, or the endpoint is down.
+          // Silently hand over: the visitor should never see a downgrade notice.
+          if (!(cloudErr instanceof AiUnavailable)) console.error('cloud agent error', cloudErr);
+          if (!aliveRef.current) return;
+          patch(agentId, (m) => ({ ...m, text: '', reasoning: [placeholder], tool: undefined }));
+          modelActed = false;
         }
-        // If no real reasoning ever arrived, clear the placeholder so nothing
-        // fake lingers next to the final answer.
-        patch(agentId, (m) => ({
-          ...m,
-          reasoning: hasRealReasoning ? m.reasoning : [],
-          streaming: false,
-          source: 'ai',
-        }));
+
+        // ---- Brain 2: the in-browser model ----
+        if (!localReady) throw new Error('local_not_ready');
+        await answerLocally();
         setAgentState('idle');
         if (aliveRef.current) setBusy(false);
         return;
       } catch (err) {
-        // OpenRouter unavailable (no key / quota exhausted / rate-limited /
-        // offline / local dev). No deterministic answer fallback — show a clean
-        // message. If it's a usage limit, block the input for a cooldown
-        // (suggestion chips still work, since those are answered locally).
-        if (!(err instanceof AiUnavailable)) console.error('agent error', err);
+        // ---- Brain 3: the rule engine, the floor that always answers ----
+        console.error('local agent error', err);
         if (!aliveRef.current) return;
-        const reason = err instanceof AiUnavailable ? err.reason : 'unavailable';
-        const isLimit = reason === 'quota' || reason === 'rate_limited';
-        patch(agentId, (m) => ({
-          ...m,
-          reasoning: [],
-          tool: undefined,
-          text: isLimit ? t.agent.limitReached : t.agent.unavailable,
-          streaming: false,
-          source: undefined,
-        }));
-        if (isLimit) {
-          setLimited(true);
-          const cooldown = reason === 'rate_limited' ? 45000 : 5 * 60000;
-          const tm = setTimeout(() => {
-            if (aliveRef.current) setLimited(false);
-            timersRef.current.delete(tm);
-          }, cooldown);
-          timersRef.current.add(tm);
-        }
+        patch(agentId, (m) => ({ ...m, text: '', reasoning: [], tool: undefined }));
+        await answerDeterministically();
         setAgentState('idle');
         if (aliveRef.current) setBusy(false);
       }
@@ -359,6 +340,32 @@ export function useAgentChat(options: { autoBoot?: boolean } = {}) {
     [runAction],
   );
 
+  /**
+   * Inject a proactive agent message (used by the local-model greeting). It's
+   * typed out word by word so it reads as bra.ia talking, not as a banner.
+   */
+  const greet = useCallback(async (text: string) => {
+    const id = nextId();
+    setMessages((prev) => {
+      // Never interrupt an ongoing conversation with a proactive hello.
+      if (prev.length > 0) return prev;
+      return [...prev, { id, role: 'agent', text: '', streaming: true }];
+    });
+    const words = text.split(' ');
+    for (let i = 0; i < words.length; i++) {
+      await sleep(28);
+      if (!aliveRef.current) return;
+      patch(id, (m) => ({ ...m, text: words.slice(0, i + 1).join(' ') }));
+    }
+    // Same provenance badge as any other answer, model name included.
+    patch(id, (m) => ({
+      ...m,
+      streaming: false,
+      source: 'webllm',
+      model: getLocalTier()?.label,
+    }));
+  }, [patch]);
+
   return {
     bootLines,
     booted,
@@ -366,8 +373,8 @@ export function useAgentChat(options: { autoBoot?: boolean } = {}) {
     input,
     setInput,
     busy,
-    limited,
     send,
+    greet,
     scrollToSection,
     hasStarted: messages.length > 0,
   };

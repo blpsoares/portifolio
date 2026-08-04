@@ -47,9 +47,6 @@ const pt = {
     toolRunning: "executando…",
     toolDone: "concluído",
     disclaimer: "Sugestões respondem na hora; perguntas livres usam IA.",
-    limitReached:
-      "Limite de uso da IA atingido. Tente de novo em instantes, ou use as sugestões abaixo.",
-    inputBlocked: "IA indisponível no momento, use as sugestões",
     suggestions: [
       "Por que contratar o Bryan?",
       "Mostre os projetos de IA",
@@ -69,10 +66,61 @@ const pt = {
     welcomeTitle: "Como posso ajudar?",
     welcomeText:
       "Pergunte sobre a carreira, projetos e skills do Bryan, eu respondo na hora.",
-    sourceAi: "OpenRouter",
+    sourceAi: "Nuvem",
+    sourceAiHint: "Resposta de um LLM na nuvem via OpenRouter",
     sourceLocal: "Local · determinístico",
-    sourceAiHint: "Resposta de um LLM real via OpenRouter",
     sourceLocalHint: "Motor de regras no navegador, sem LLM, sem custo",
+    sourceWebllm: "Local · seu navegador",
+    sourceWebllmHint:
+      "LLM real rodando na sua GPU via WebGPU. Nenhum token sai do seu dispositivo.",
+    // Copy do "modo local" (WebLLM): oferta única, download e status.
+    local: {
+      offerTitle: "Quer que eu rode dentro do seu navegador?",
+      offerText:
+        "Escolhi o {model} pro seu computador: ~{mb} uma única vez{eta}. Depois disso eu respondo na sua própria GPU, sem nuvem e sem limite. Pode continuar navegando enquanto baixa.",
+      accept: "Pode baixar",
+      decline: "Agora não",
+      privacy: "Nenhuma pergunta sua sai do dispositivo",
+      loadingTitle: "Carregando modelo local…",
+      loadingHint:
+        "Roda em segundo plano, o chat continua funcionando normalmente enquanto isso.",
+      openChat: "Abrir conversa →",
+      errorText:
+        "Não consegui carregar o modelo aqui no seu navegador. Pode ser a conexão ou memória de vídeo.",
+      retry: "Tentar de novo",
+      badgeReady: "online · 100% local",
+      badgeLoading: "carregando modelo local · {pct}%",
+      settings: {
+        title: "Modelos locais",
+        subtitle:
+          "Modelos de IA que rodam no seu navegador, na sua GPU. Baixam uma vez e ficam salvos aqui.",
+        active: "em uso",
+        downloaded: "já baixado",
+        recommended: "recomendado",
+        noDownload: "sem novo download",
+        download: "Baixar",
+        downloading: "Baixando",
+        use: "Usar",
+        turnOff: "Desinstalar todos e desativar",
+        isOff: "Nenhum modelo local instalado. O chat responde por regras.",
+        uninstall: "Desinstalar",
+        confirmUninstall: "Apagar",
+        cancel: "Cancelar",
+        installed: "{n} modelo(s) instalado(s) · {mb} em disco",
+        noneInstalled: "Nenhum modelo instalado neste navegador",
+        persisted: "Salvo de forma permanente neste navegador.",
+        notPersisted:
+          "Salvo neste navegador. O Chrome só pode descartar se o disco ficar sem espaço.",
+        tradeoffs: {
+          "Llama-3.2-3B-Instruct-q4f16_1-MLC":
+            "O mais capaz: respostas mais longas, melhor raciocínio e português mais natural. Em compensação é o download mais pesado e exige uma GPU dedicada.",
+          "Qwen2.5-1.5B-Instruct-q4f16_1-MLC":
+            "O equilíbrio: metade do download do 3B e roda em placa integrada decente. Respostas boas, um pouco mais curtas e diretas.",
+          "SmolLM2-360M-Instruct-q4f16_1-MLC":
+            "O mais leve: baixa em segundos e roda em quase tudo. Serve pro básico, mas erra mais e o português é fraco.",
+        } as Record<string, string>,
+      },
+    },
     unavailable:
       "O assistente está indisponível no momento. Tente novamente em instantes.",
     // Localized labels for clickable grounding citations ([[section:<id>]]).

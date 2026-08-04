@@ -163,7 +163,7 @@ export const profile: Profile = {
     {
       role: { pt: 'Desenvolvedor Backend Senior', en: 'Senior Backend Developer' },
       company: 'Eletromidia',
-      period: { pt: 'out 2025 – Presente', en: 'Oct 2025 – Present' },
+      period: { pt: 'out 2025 a Presente', en: 'Oct 2025 to Present' },
       duration: { pt: '8 meses', en: '8 months' },
       type: { pt: 'Tempo integral', en: 'Full-time' },
       location: { pt: 'São Paulo · Híbrido', en: 'São Paulo · Hybrid' },
@@ -196,7 +196,7 @@ export const profile: Profile = {
     {
       role: { pt: 'Desenvolvedor Backend Pleno', en: 'Mid-level Backend Developer' },
       company: 'Eletromidia',
-      period: { pt: 'ago 2024 – out 2025', en: 'Aug 2024 – Oct 2025' },
+      period: { pt: 'ago 2024 a out 2025', en: 'Aug 2024 to Oct 2025' },
       duration: { pt: '1 ano 3 meses', en: '1 yr 3 mos' },
       type: { pt: 'Tempo integral', en: 'Full-time' },
       location: { pt: 'São Paulo · Híbrido', en: 'São Paulo · Hybrid' },
@@ -224,7 +224,7 @@ export const profile: Profile = {
     {
       role: { pt: 'Desenvolvedor de Software', en: 'Software Developer' },
       company: 'Alest Consultoria',
-      period: { pt: 'dez 2023 – ago 2024', en: 'Dec 2023 – Aug 2024' },
+      period: { pt: 'dez 2023 a ago 2024', en: 'Dec 2023 to Aug 2024' },
       duration: { pt: '9 meses', en: '9 months' },
       type: { pt: 'Tempo integral', en: 'Full-time' },
       location: { pt: 'São Paulo · Presencial', en: 'São Paulo · On-site' },
@@ -252,7 +252,7 @@ export const profile: Profile = {
     {
       role: { pt: 'Desenvolvedor Estagiário', en: 'Developer Intern' },
       company: 'Alest Consultoria',
-      period: { pt: 'jun 2023 – dez 2023', en: 'Jun 2023 – Dec 2023' },
+      period: { pt: 'jun 2023 a dez 2023', en: 'Jun 2023 to Dec 2023' },
       duration: { pt: '7 meses', en: '7 months' },
       type: { pt: 'Estágio', en: 'Internship' },
       location: { pt: 'São Paulo', en: 'São Paulo' },
@@ -280,7 +280,7 @@ export const profile: Profile = {
     {
       role: { pt: 'Desenvolvedor Frontend', en: 'Frontend Developer' },
       company: 'Next Fusion',
-      period: { pt: '2021 – jun 2023', en: '2021 – Jun 2023' },
+      period: { pt: '2021 a jun 2023', en: '2021 to Jun 2023' },
       duration: { pt: '~2 anos', en: '~2 years' },
       type: { pt: 'Sócio', en: 'Co-founder' },
       location: { pt: 'São Paulo', en: 'São Paulo' },
@@ -464,7 +464,7 @@ export const profile: Profile = {
       institution: 'UNIPDS',
       degree: { pt: 'Pós-Graduação', en: 'Postgraduate' },
       field: { pt: 'Engenharia de IA Aplicada', en: 'Applied AI Engineering' },
-      period: { pt: 'fev 2026 – mar 2027', en: 'Feb 2026 – Mar 2027' },
+      period: { pt: 'fev 2026 a mar 2027', en: 'Feb 2026 to Mar 2027' },
       logo: '/unipds-logo.jpg',
       current: true,
       status: { pt: 'Em andamento', en: 'In progress' },
@@ -476,7 +476,7 @@ export const profile: Profile = {
         pt: 'Análise e Desenvolvimento de Sistemas',
         en: 'Systems Analysis and Development',
       },
-      period: { pt: 'jul 2022 – jan 2025', en: 'Jul 2022 – Jan 2025' },
+      period: { pt: 'jul 2022 a jan 2025', en: 'Jul 2022 to Jan 2025' },
       logo: '/pucpr-logo.jpg',
       current: false,
       status: { pt: '', en: '' },

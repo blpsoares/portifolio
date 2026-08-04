@@ -6,6 +6,8 @@ import { useAgentChat } from '../agent/useAgentChat';
 import { useActiveSection } from '../hooks/useActiveSection';
 import AgentChat from './AgentChat';
 import AiOrb from './ui/AiOrb';
+import BraiaLocalBrain from './BraiaLocalBrain';
+import { useLocalBrain } from '../agent/useLocalBrain';
 // ===== TRACK A — single additive listener so the Command Palette can open the dock =====
 import { onOpenAgentDock } from '../agent/dockControls';
 
@@ -14,6 +16,27 @@ const NeuralGlobe = lazy(() => import('./hero/NeuralGlobe'));
 
 const DEFAULT_SIZE = { w: 420, h: 640 };
 const clamp = (v: number, min: number, max: number) => Math.min(Math.max(v, min), max);
+
+/** Margin kept between the panel and the window edges. */
+const GUTTER = 24;
+
+/**
+ * Shrink a stored panel size so it always fits the current window.
+ *
+ * The size is persisted across sessions, so it outlives the screen it was set
+ * on: drag it wide on a 4K monitor, come back on a laptop or a narrowed window,
+ * and it would overflow the viewport. Minimums are honored only while they
+ * still fit — on a genuinely tiny window, fitting wins.
+ */
+function fitToViewport(size: { w: number; h: number }): { w: number; h: number } {
+  if (typeof window === 'undefined') return size;
+  const maxW = Math.max(0, window.innerWidth - GUTTER);
+  const maxH = Math.max(0, window.innerHeight - GUTTER - 8);
+  return {
+    w: Math.min(size.w, maxW),
+    h: Math.min(size.h, maxH),
+  };
+}
 
 /**
  * Persistent, site-wide AI assistant ("bra.ia"). A floating orb launcher opens a
@@ -26,20 +49,41 @@ const AgentDock: React.FC = () => {
   const chat = useAgentChat({ autoBoot: false });
   const active = useActiveSection();
   const reduce = useReducedMotion();
+  const local = useLocalBrain();
+  const loadingLocal = local.state.status === 'loading';
+  const localPct = Math.round(local.state.progress * 100);
+
+  // Opening the chat from the ping seeds the conversation with the greeting,
+  // so bra.ia is already "talking" the moment the panel appears.
+  const openFromGreeting = useCallback(() => {
+    const text = local.greeting;
+    local.dismissGreeting();
+    setOpen(true);
+    if (text) void chat.greet(text);
+  }, [local, chat]);
 
   const [size, setSize] = useState(() => {
     if (typeof window !== 'undefined') {
       try {
         const s = JSON.parse(localStorage.getItem('braia.size') || '');
-        if (s?.w && s?.h) return s as { w: number; h: number };
+        if (s?.w && s?.h) return fitToViewport(s as { w: number; h: number });
       } catch {
         /* ignore */
       }
     }
-    return DEFAULT_SIZE;
+    return fitToViewport(DEFAULT_SIZE);
   });
   const sizeRef = useRef(size);
   sizeRef.current = size;
+
+  // A size stored on a big monitor must not survive onto a small window. Clamp
+  // whenever the viewport changes — the persisted value is a preference, not a
+  // promise, and only the resize handler is allowed to widen it again.
+  useEffect(() => {
+    const onResize = () => setSize((prev) => fitToViewport(prev));
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
 
   // ===== TRACK A — additive only: open the dock on external request (Command Palette). =====
   useEffect(() => onOpenAgentDock(() => setOpen(true)), []);
@@ -76,6 +120,20 @@ const AgentDock: React.FC = () => {
 
   return (
     <>
+      {/* LOCAL MODEL — offer / progress / ready ping (hidden while the panel is open) */}
+      {!open && (
+        <BraiaLocalBrain
+          state={local.state}
+          offering={local.offering}
+          greeting={local.greeting}
+          onAccept={local.accept}
+          onDecline={local.decline}
+          onOpenGreeting={openFromGreeting}
+          onDismissGreeting={local.dismissGreeting}
+          onRetry={local.retry}
+        />
+      )}
+
       {/* LAUNCHER */}
       <AnimatePresence>
         {!open && (
@@ -110,7 +168,12 @@ const AgentDock: React.FC = () => {
             className="fixed z-50 inset-x-0 bottom-0 sm:inset-x-auto sm:right-5 sm:bottom-5"
           >
             <div
-              style={{ width: size.w, height: size.h }}
+              style={{
+                width: size.w,
+                height: size.h,
+                maxWidth: `calc(100vw - ${GUTTER}px)`,
+                maxHeight: `calc(100dvh - ${GUTTER}px)`,
+              }}
               className="group/panel relative flex flex-col rounded-3xl glass border border-slate-200/80 dark:border-slate-700/60 shadow-2xl shadow-slate-900/20 dark:shadow-black/40 overflow-hidden max-sm:!w-auto max-sm:!h-[86dvh] max-sm:!rounded-b-none max-sm:!border-x-0 max-sm:!border-b-0"
             >
               {/* RESIZE — visible grabbers on the straight edges (desktop) */}
@@ -145,9 +208,20 @@ const AgentDock: React.FC = () => {
                     aria-hidden="true"
                   />
                 </div>
-                <div className="min-w-0 leading-tight">
+                <div className="min-w-0 flex-1 leading-tight">
                   <p className="text-sm font-semibold text-slate-900 dark:text-white truncate">{t.agent.cta}</p>
-                  <p className="text-[11px] text-emerald-600 dark:text-emerald-400">{t.agent.online}</p>
+                  {/* While the local model loads, say so INSIDE the panel —
+                      the floating card is hidden when the chat is open, and a
+                      silent warm-up makes answers look randomly worse. */}
+                  {loadingLocal ? (
+                    <p className="text-[11px] text-brand-600 dark:text-brand-400 tabular-nums">
+                      {t.agent.local.badgeLoading.replace('{pct}', String(localPct))}
+                    </p>
+                  ) : (
+                    <p className="text-[11px] text-emerald-600 dark:text-emerald-400">
+                      {local.state.status === 'ready' ? t.agent.local.badgeReady : t.agent.online}
+                    </p>
+                  )}
                 </div>
 
                 <button
@@ -159,6 +233,25 @@ const AgentDock: React.FC = () => {
                   <X size={18} />
                 </button>
               </div>
+
+              {/* LOCAL MODEL PROGRESS — a hairline under the header, so the
+                  warm-up is visible without stealing space from the chat. */}
+              {loadingLocal && (
+                <div
+                  role="progressbar"
+                  aria-valuenow={localPct}
+                  aria-valuemin={0}
+                  aria-valuemax={100}
+                  aria-label={t.agent.local.loadingTitle}
+                  className="shrink-0 h-0.5 w-full bg-slate-200/70 dark:bg-slate-800/70"
+                >
+                  <motion.div
+                    className="h-full bg-gradient-to-r from-brand-500 to-brand-400"
+                    animate={{ width: `${localPct}%` }}
+                    transition={{ ease: 'easeOut', duration: 0.4 }}
+                  />
+                </div>
+              )}
 
               {/* CHAT */}
               <div className="flex-1 min-h-0">

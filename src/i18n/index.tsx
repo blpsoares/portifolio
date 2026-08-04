@@ -25,6 +25,12 @@ export const I18nProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('locale');
       if (saved === 'en' || saved === 'pt') return saved;
+      // No stored preference: honor the browser instead of assuming English.
+      // Defaulting to 'en' meant a visitor with a pt-BR browser landed on the
+      // English site, and the AI was then instructed to "always respond in
+      // English" even when they wrote in Portuguese.
+      const nav = navigator.language || (navigator.languages && navigator.languages[0]);
+      if (nav && nav.toLowerCase().startsWith('pt')) return 'pt';
     }
     return 'en';
   });

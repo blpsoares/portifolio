@@ -11,6 +11,7 @@
  */
 
 import { buildSystemPrompt } from './_context';
+import { isChatModel } from './_models-util';
 
 /** Minimal KV namespace shape (only the methods we use). */
 interface KVNamespace {
@@ -85,9 +86,13 @@ const parseKvModels = (raw: string | null): string[] | null => {
   try {
     const parsed: unknown = JSON.parse(raw);
     if (!Array.isArray(parsed)) return null;
-    const list = parsed.filter(
-      (x): x is string => typeof x === 'string' && x.trim().length > 0,
-    );
+    const list = parsed
+      .filter((x): x is string => typeof x === 'string' && x.trim().length > 0)
+      // Re-validate on READ, not just on write. KV holds whatever the cron put
+      // there, and a cron that once wrote a music model keeps serving it until
+      // the next successful run. Checking here means a bad list is survivable
+      // immediately instead of after the next rotation.
+      .filter((id) => isChatModel({ id }));
     return list.length ? list : null;
   } catch {
     return null;
@@ -220,10 +225,16 @@ async function overLimit(
   limit: number,
   ttlSeconds: number,
 ): Promise<boolean> {
-  const current = parseInt((await kv.get(key)) ?? '0', 10);
-  if (current >= limit) return true;
-  await kv.put(key, String(current + 1), { expirationTtl: ttlSeconds });
-  return false;
+  // A KV hiccup must never become a 502: rate limiting is a guard rail, and
+  // failing open keeps the chat answering while still protecting the common case.
+  try {
+    const current = parseInt((await kv.get(key)) ?? '0', 10);
+    if (current >= limit) return true;
+    await kv.put(key, String(current + 1), { expirationTtl: ttlSeconds });
+    return false;
+  } catch {
+    return false;
+  }
 }
 
 /**
@@ -240,7 +251,24 @@ function inferCategory(query: string, hasJob: boolean): string {
   return 'other';
 }
 
-export async function onRequestPost(context: {
+export async function onRequestPost(ctx: {
+  request: Request;
+  env: Env;
+  waitUntil?: (promise: Promise<unknown>) => void;
+}): Promise<Response> {
+  // Any unhandled throw in here surfaces as Cloudflare's own opaque 502
+  // (`content-type: text/plain`), which tells the visitor nothing and the
+  // frontend even less. Wrapping the handler guarantees the client always gets
+  // the `{ fallback: true, reason }` contract it knows how to degrade from.
+  try {
+    return await handleChat(ctx);
+  } catch (err) {
+    console.error('chat handler crashed', err);
+    return json({ fallback: true, reason: 'crash' }, 502);
+  }
+}
+
+async function handleChat(context: {
   request: Request;
   env: Env;
   // Pages passes a `waitUntil` for fire-and-forget work; may be absent in the
