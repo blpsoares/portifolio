@@ -215,9 +215,15 @@ const pt = {
     items: buildCareerItems("pt"),
   },
   about: {
-    title: "Vibe Coding & Automa\u00e7\u00e3o",
+    title: "Vibe Coding & Automação",
     philosophy:
-      "Copilotos aceleram, mas a responsabilidade t\u00e9cnica permanece. Acredito na automa\u00e7\u00e3o que elimina o repetitivo, permitindo foco total na arquitetura e na corre\u00e7\u00e3o de gargalos. A IA ajuda a construir; eu reviso, otimizo e garanto a qualidade.",
+      "Copilotos aceleram, mas a responsabilidade técnica permanece. Acredito na automação que elimina o repetitivo, permitindo foco total na arquitetura e na correção de gargalos. A IA ajuda a construir; eu reviso, otimizo e garanto a qualidade.",
+    toolsTitle: "Stack de IA & Automação",
+    principles: [
+      { title: "Entregue mais rápido", body: "A IA cuida do boilerplate. Eu foco na arquitetura, nos edge cases e nas partes que realmente importam." },
+      { title: "Mantenha o controle", body: "Todo output é revisado, testado e assumido. Copilotos são ferramentas, não substitutos para o julgamento técnico." },
+      { title: "Automatize o repetitivo", body: "Se uma tarefa é repetitiva e determinística, ela deve ser automatizada. O tempo é melhor gasto resolvendo problemas reais." },
+    ],
   },
   learning: {
     badge: "Open Source \u00b7 Sistema de Estudos",
@@ -259,6 +265,10 @@ const pt = {
   footer: {
     rights: "Todos os direitos reservados.",
     downloadCv: "Download CV",
+    tagline: "Engenheiro full-stack & entusiasta de automação.",
+    quickLinks: "Links Rápidos",
+    connect: "Contato",
+    builtWith: "Feito com",
   },
   cmdk: {
     title: "Paleta de Comandos",
