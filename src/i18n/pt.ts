@@ -24,11 +24,11 @@ const pt = {
     aiUsage: "Automa\u00e7\u00e3o",
   },
   hero: {
-    badge: "AI Engineer \u00b7 Software Developer",
+    badge: "AI Engineer \u00b7 Sr Software Developer",
     title1: "IA Não é mágica.",
     title2: "\u00c9 Engenharia",
     subtitle_prefix: "",
-    subtitle_highlight: "AI Engineer e Software Developer.",
+    subtitle_highlight: "AI Engineer e Sr Software Developer.",
     subtitle_suffix:
       " Construo sistemas escal\u00e1veis, pipelines de IA e orquestra\u00e7\u00e3o de agentes para problemas reais de neg\u00f3cio.",
     cta: "Alguns projetos",
@@ -154,7 +154,7 @@ const pt = {
   whoiam: {
     title: "Quem sou",
     p1_start:
-      "AI Engineer e Software Developer com +5 anos de experi\u00eancia em desenvolvimento de software, com os \u00faltimos 2 anos focados em ",
+      "AI Engineer e Sr Software Developer com 5 anos no ecossistema JS, sendo os \u00faltimos 2,5 focados em ",
     p1_highlight1: "IA Generativa aplicada",
     p1_mid:
       ". Construo sistemas escal\u00e1veis, pipelines RAG, agentes de IA com tool use e solu\u00e7\u00f5es de ",

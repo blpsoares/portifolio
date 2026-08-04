@@ -145,7 +145,7 @@ export interface Profile {
 export const profile: Profile = {
   personal: {
     name: 'Bryan Soares',
-    title: { pt: 'AI Engineer · Software Developer', en: 'AI Engineer · Software Developer' },
+    title: { pt: 'AI Engineer · Sr Software Developer', en: 'AI Engineer · Sr Software Developer' },
     location: { pt: 'São Paulo, Brasil', en: 'São Paulo, Brazil' },
     phone: '(11) 93045-6696',
     email: 'bryanluccas@hotmail.com',
@@ -155,8 +155,8 @@ export const profile: Profile = {
   },
 
   summary: {
-    pt: 'AI Engineer e Software Developer com +5 anos de experiência em desenvolvimento de software, sendo os últimos 2 anos focado em IA Generativa aplicada. Construí pipelines RAG, agentes de IA, servidores MCP para integração com LLMs e soluções de orquestração multi-agente para problemas reais de negócio, como chatbots corporativos sobre bases de 10.000+ documentos e buscas inteligentes com IA em produção. Atualmente cursando Pós-graduação em Engenharia de IA Aplicada.',
-    en: "AI Engineer and Software Developer with 5+ years of experience in software development, with the last 2 years focused on applied Generative AI. I've built RAG pipelines, AI agents, MCP servers for LLM integration, and multi-agent orchestration solutions for real business problems, from corporate chatbots over 10,000+ document knowledge bases to AI-powered smart search in production. Currently pursuing a Postgraduate degree in Applied AI Engineering.",
+    pt: 'AI Engineer e Sr Software Developer com 5 anos no ecossistema JS (Node.js, Bun, TypeScript, React), sendo os últimos 2,5 anos focado em IA. Na Eletromídia automatizei validação de PDFs com Document AI (96% de acurácia) e criei busca NLP que monta queries de filtro no banco via structured output. Construí o Agentistics, um servidor MCP com métricas de uso de AI coding assistants e tracking centralizado de times, e sou co-autor do DuckFlux, DSL declarativa para orquestração multi-agente. Atualmente cursando Pós-graduação em Engenharia de IA Aplicada.',
+    en: "AI Engineer and Sr Software Developer with 5 years in the JS ecosystem (Node.js, Bun, TypeScript, React), the last 2.5 focused on AI. At Eletromidia I automated PDF validation with Document AI (96% accuracy) and built an NLP search that assembles database filter queries via structured output. I built Agentistics, an MCP server with usage metrics and centralized tracking for AI coding assistants across teams, and I co-authored DuckFlux, a declarative DSL for multi-agent orchestration. Currently pursuing a Postgraduate degree in Applied AI Engineering.",
   },
 
   experience: [
@@ -164,11 +164,23 @@ export const profile: Profile = {
       role: { pt: 'Desenvolvedor Backend Senior', en: 'Senior Backend Developer' },
       company: 'Eletromidia',
       period: { pt: 'out 2025 a Presente', en: 'Oct 2025 to Present' },
-      duration: { pt: '8 meses', en: '8 months' },
+      duration: { pt: '10 meses', en: '10 months' },
       type: { pt: 'Tempo integral', en: 'Full-time' },
       location: { pt: 'São Paulo · Híbrido', en: 'São Paulo · Hybrid' },
       current: true,
       bullets: [
+        {
+          pt: 'Refatorei o sistema de Propostas (PHP legado para Bun/TypeScript), projeto travado há 2 anos por complexidade e falta de braço. Entreguei o MVP em 1 mês com desenvolvimento assistido por IA, apresentado na convenção anual da empresa pelo CTO',
+          en: 'Refactored the Proposals system (legacy PHP to Bun/TypeScript), a project stalled for 2 years due to complexity and lack of headcount. Shipped the MVP in 1 month with AI-assisted development, presented at the company annual convention by the CTO',
+        },
+        {
+          pt: 'Criei o PDD (Parity-Driven Development) durante o refactor: metodologia que resolve a paridade entre sistema legado e novo, hoje parte do fluxo de migração de refactors do time',
+          en: 'Created PDD (Parity-Driven Development) during the refactor: a methodology for resolving parity between legacy and new systems, now part of the team refactor migration flow',
+        },
+        {
+          pt: 'Deploy interno do Embark (open source próprio) para publicação de projetos de áreas não-técnicas',
+          en: 'Internal rollout of Embark (my own open source project) for publishing projects from non-technical areas',
+        },
         {
           pt: 'Construí um servidor MCP na API principal do produto da empresa, permitindo um agente LLM processar queries em linguagem natural via tool use',
           en: "Built an MCP server on the company's main product API, enabling an LLM agent to process natural language queries via tool use",
@@ -191,7 +203,7 @@ export const profile: Profile = {
         },
       ],
       cvTech:
-        'Node.js, TypeScript, MCP, Gemini, Anthropic, OpenAI, GitHub Copilot, MongoDB, Docker, N8N, Windmill, Cloudflare',
+        'Bun, TypeScript, Node.js, MCP, Gemini, Anthropic, OpenAI, GitHub Copilot, MongoDB, Docker, N8N, Windmill, Cloudflare',
     },
     {
       role: { pt: 'Desenvolvedor Backend Pleno', en: 'Mid-level Backend Developer' },
@@ -203,8 +215,8 @@ export const profile: Profile = {
       current: false,
       bullets: [
         {
-          pt: 'Criei o Pulsar, CLI interna para migrações MongoDB entre bancos no mesmo cluster ou entre clusters separados, com modo de sync em tempo real que injeta metadados nos documentos para tracking ao vivo, substituiu processo totalmente manual de múltiplos mongodumps e restores',
-          en: 'Built Pulsar, an internal CLI for MongoDB migrations between databases in the same cluster or across separate clusters/accounts, with a real-time sync mode that injects metadata into documents for live tracking, replaced a fully manual process of multiple mongodumps and restores',
+          pt: 'Criei o Pulsar, CLI interna para migrações MongoDB entre clusters, com TUI, modo cold dump e modo hot sync com watch para manter bases sincronizadas em tempo real, útil para staging. Substituiu processo manual de mongodump/restore e nos deu uma base confiável para ambiente de staging',
+          en: 'Built Pulsar, an internal CLI for MongoDB migrations across clusters, with a TUI, a cold dump mode and a hot sync mode with watch that keeps databases synchronized in real time, useful for staging. It replaced a manual mongodump/restore process and gave us a reliable staging environment',
         },
         {
           pt: 'Automatizei processo manual de validação de PDFs: uso do Google Document AI com Custom Extractor para reconhecer campos dinâmicos e validar contra dados de contrato, modelo final com 96% de acurácia',
@@ -362,13 +374,13 @@ export const profile: Profile = {
       title: { pt: 'Migração Massiva com Node Streams', en: 'Massive Migration with Node Streams' },
       category: { pt: 'PERFORMANCE & DATA', en: 'PERFORMANCE & DATA' },
       description: {
-        pt: 'Arquitetura e execução de pipeline de migração de 20.000+ documentos de múltiplas origens (Drive, OneDrive, S3, Local) para DocuSign. Utilização intensiva de Node.js Streams para controle de backpressure, evitando memory leaks. Implementação de observabilidade com Winston para retomada granular em caso de falha, tolerância a falhas sem reprocessamento do início. Solução construída para ser reutilizável em outros clientes com a mesma necessidade.',
-        en: 'Architecture and execution of a migration pipeline for 20,000+ documents from multiple sources (Drive, OneDrive, S3, Local) to DocuSign. Intensive use of Node.js Streams for backpressure control, preventing memory leaks. Observability implementation with Winston for granular recovery on failure, fault tolerance without reprocessing from scratch. Solution built to be reusable across other clients with the same need.',
+        pt: 'Arquitetura e execução de pipeline de migração de 30.000+ documentos de múltiplas origens (Drive, OneDrive, S3, Local) para DocuSign. Utilização intensiva de Node.js Streams para controle de backpressure, evitando memory leaks. Implementação de observabilidade com Winston para retomada granular em caso de falha, tolerância a falhas sem reprocessamento do início. Solução construída para ser reutilizável em outros clientes com a mesma necessidade.',
+        en: 'Architecture and execution of a migration pipeline for 30,000+ documents from multiple sources (Drive, OneDrive, S3, Local) to DocuSign. Intensive use of Node.js Streams for backpressure control, preventing memory leaks. Observability implementation with Winston for granular recovery on failure, fault tolerance without reprocessing from scratch. Solution built to be reusable across other clients with the same need.',
       },
       cardTitle: 'Migração Massiva com Node Streams',
       cardCategory: 'Performance & Data',
       cardDescription:
-        'Arquitetura e execução de pipeline de migração de 20.000+ documentos de múltiplas origens (Drive, OneDrive, S3, Local) para DocuSign. Utilização intensiva de Node.js Streams para controle de backpressure, evitando memory leaks. Implementação de observabilidade com Winston para retomada granular em caso de falha, tolerância a falhas sem reprocessamento do início. Solução construída para ser reutilizável em outros clientes com a mesma necessidade.',
+        'Arquitetura e execução de pipeline de migração de 30.000+ documentos de múltiplas origens (Drive, OneDrive, S3, Local) para DocuSign. Utilização intensiva de Node.js Streams para controle de backpressure, evitando memory leaks. Implementação de observabilidade com Winston para retomada granular em caso de falha, tolerância a falhas sem reprocessamento do início. Solução construída para ser reutilizável em outros clientes com a mesma necessidade.',
       technologies: ['Node.js Streams', 'API Integrations', 'File Systems', 'Winston'],
     },
     {

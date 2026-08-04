@@ -24,11 +24,11 @@ const en = {
     aiUsage: "Automation",
   },
   hero: {
-    badge: "AI Engineer · Software Developer",
+    badge: "AI Engineer · Sr Software Developer",
     title1: "AI is not magic.",
     title2: "It's Engineering.",
     subtitle_prefix: "",
-    subtitle_highlight: "AI Engineer and Software Developer.",
+    subtitle_highlight: "AI Engineer and Sr Software Developer.",
     subtitle_suffix:
       " I build scalable systems, AI pipelines and agent-orchestration solutions for real business problems.",
     cta: "Some projects",
@@ -151,7 +151,7 @@ const en = {
   whoiam: {
     title: "Who I am",
     p1_start:
-      "AI Engineer and Software Developer with 5+ years of experience in software development, with the last 2 years focused on ",
+      "AI Engineer and Sr Software Developer with 5 years in the JS ecosystem, the last 2.5 focused on ",
     p1_highlight1: "applied Generative AI",
     p1_mid:
       ". I build scalable systems, RAG pipelines, AI agents with tool use, and ",
