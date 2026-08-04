@@ -1,20 +1,10 @@
 import React from "react";
-<<<<<<< Updated upstream
-import { Mail, Github, Linkedin, Download, Loader2 } from "lucide-react";
-=======
 import { Mail, Github, Linkedin, Heart } from "lucide-react";
->>>>>>> Stashed changes
 import { useI18n } from "../i18n";
-import { useCvDownload } from "../hooks/useCvDownload";
 
 const Footer: React.FC = () => {
-<<<<<<< Updated upstream
-	const { t } = useI18n();
-	const { generating, downloadCv } = useCvDownload();
-=======
   const { t } = useI18n();
   const year = new Date().getFullYear();
->>>>>>> Stashed changes
 
   const navLinks = [
     { name: t.nav.profile, href: "#profile" },
@@ -25,54 +15,6 @@ const Footer: React.FC = () => {
     { name: t.nav.aiUsage, href: "#ai-usage" },
   ];
 
-<<<<<<< Updated upstream
-				<div className="flex items-center gap-6">
-					<button
-						onClick={() => downloadCv()}
-						disabled={generating}
-						className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-brand-600 hover:bg-brand-700 text-white text-sm font-semibold transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-70 disabled:cursor-wait shadow-sm shadow-brand-600/20"
-						aria-label={t.footer.downloadCv}
-					>
-						{generating ? (
-							<Loader2 size={16} className="animate-spin" />
-						) : (
-							<Download size={16} />
-						)}
-						{t.footer.downloadCv}
-					</button>
-
-					<div className="w-px h-6 bg-slate-200 dark:bg-slate-800" />
-
-					<a
-						href="https://github.com/blpsoares"
-						target="_blank"
-						rel="noopener noreferrer"
-						className="text-slate-400 hover:text-brand-600 dark:hover:text-brand-400 transition-colors"
-						aria-label="GitHub Profile"
-					>
-						<Github size={20} />
-					</a>
-					<a
-						href="https://linkedin.com/in/blpsoares"
-						target="_blank"
-						rel="noopener noreferrer"
-						className="text-slate-400 hover:text-brand-600 dark:hover:text-brand-400 transition-colors"
-						aria-label="LinkedIn Profile"
-					>
-						<Linkedin size={20} />
-					</a>
-					<a
-						href="mailto:bryanluccas@hotmail.com"
-						className="text-slate-400 hover:text-brand-600 dark:hover:text-brand-400 transition-colors"
-						aria-label="Email"
-					>
-						<Mail size={20} />
-					</a>
-				</div>
-			</div>
-		</footer>
-	);
-=======
   const handleNavClick = (href: string) => {
     if (window.location.hash.startsWith("#/")) {
       window.location.hash = "";
@@ -173,7 +115,6 @@ const Footer: React.FC = () => {
       </div>
     </footer>
   );
->>>>>>> Stashed changes
 };
 
 export default Footer;
