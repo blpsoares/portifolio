@@ -78,6 +78,28 @@ export function isChatModel(m: OpenRouterModel): boolean {
 }
 
 /**
+ * Families that reliably answer a short grounded prompt fast on the free tier,
+ * best first. Anything unlisted still qualifies, it just ranks below these.
+ */
+const PREFERRED = [
+  /gpt-oss/i,
+  /llama-3\.[13]-(8|70)b/i,
+  /qwen[23](\.5)?-(7|14|32)b/i,
+  /gemma-[23]-(9|12|27)b/i,
+  /mistral-(small|nemo)/i,
+  /ling-.*flash/i,
+];
+
+/** Lower is better. Huge models rank last: free tier queues make them unusable. */
+function preferenceRank(id: string): number {
+  const hit = PREFERRED.findIndex((re) => re.test(id));
+  if (hit !== -1) return hit;
+  // Anything advertising hundreds of billions of parameters goes to the back.
+  if (/\b(\d{3,})b\b/i.test(id)) return PREFERRED.length + 1;
+  return PREFERRED.length;
+}
+
+/**
  * Filter the raw catalog down to free CHAT models, normalize the shape and sort
  * by context length (largest first). Entries without an id are dropped.
  */
@@ -91,5 +113,15 @@ export function freeModels(data: OpenRouterModel[] | undefined): FreeModel[] {
       name: m.name ?? m.id,
       context: m.context_length ?? 0,
     }))
-    .sort((a, b) => b.context - a.context);
+    // NOT sorted by context. Ranking free models by context length is what put a
+    // 550B model first, and a giant free model sits in a queue long enough that
+    // the Worker times out. This assistant sends ~2k tokens and wants an answer
+    // in seconds, so responsiveness beats window size: prefer known-good compact
+    // instruct models, then everything else, and only then break ties by context.
+    .sort((a, b) => {
+      const ra = preferenceRank(a.id);
+      const rb = preferenceRank(b.id);
+      if (ra !== rb) return ra - rb;
+      return b.context - a.context;
+    });
 }

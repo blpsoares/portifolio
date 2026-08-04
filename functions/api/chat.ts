@@ -67,9 +67,9 @@ interface ChatBody {
  * https://openrouter.ai/models?max_price=0
  */
 const DEFAULT_MODELS = [
-  'openai/gpt-oss-120b:free',
-  'meta-llama/llama-3.3-70b-instruct:free',
-  'qwen/qwen3-next-80b-a3b-instruct:free',
+  'openai/gpt-oss-20b:free',
+  'inclusionai/ling-3.0-flash:free',
+  'google/gemma-4-26b-a4b-it:free',
 ];
 
 const envModels = (env: Env): string[] => {
@@ -107,7 +107,11 @@ const resolveModels = async (env: Env): Promise<string[]> => {
   if (env.MODELS) {
     try {
       const kvList = parseKvModels(await env.MODELS.get('active'));
-      if (kvList) return kvList;
+      // A single survivor means the stored list has rotted: free ids disappear
+      // from the catalog, and the modality filter strips whatever non-chat
+      // models an older cron run wrote. One model is also zero fallback, so
+      // prefer the curated defaults over limping on the remains.
+      if (kvList && kvList.length >= 2) return kvList;
     } catch {
       /* KV unavailable — fall through to env/defaults */
     }
@@ -119,6 +123,8 @@ const resolveModels = async (env: Env): Promise<string[]> => {
 const MAX_QUERY_CHARS = 1200;
 const MAX_JOB_CHARS = 6000;
 const MAX_TOKENS = 700;
+/** Give up on the upstream model before Cloudflare gives up on us. */
+const UPSTREAM_TIMEOUT_MS = 20000;
 
 const intEnv = (raw: string | undefined, fallback: number): number => {
   const n = parseInt(raw ?? '', 10);
@@ -360,9 +366,16 @@ async function handleChat(context: {
   const modelList = await resolveModels(env);
   const category = inferCategory(query, !!jobText);
 
+  // A slow or queued model must degrade, not kill the Worker. Without this the
+  // request hangs until Cloudflare gives up and returns its own opaque 502,
+  // which is exactly what a 550B free model on a busy queue produced.
+  const abort = new AbortController();
+  const timer = setTimeout(() => abort.abort(), UPSTREAM_TIMEOUT_MS);
+
   let upstream: Response;
   try {
     upstream = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+      signal: abort.signal,
       method: 'POST',
       headers: {
         Authorization: `Bearer ${env.OPENROUTER_API_KEY}`,
@@ -389,10 +402,13 @@ async function handleChat(context: {
         messages,
       }),
     });
-  } catch {
-    recordTelemetry(category, 'none', locale ?? 'auto', 'network');
-    return json({ fallback: true, reason: 'network' }, 502);
+  } catch (err) {
+    clearTimeout(timer);
+    const timedOut = (err as Error)?.name === 'AbortError';
+    recordTelemetry(category, 'none', locale ?? 'auto', timedOut ? 'timeout' : 'network');
+    return json({ fallback: true, reason: timedOut ? 'timeout' : 'network' }, 502);
   }
+  clearTimeout(timer);
 
   // Free quota exhausted / rate-limited upstream / any error → fallback.
   if (!upstream.ok || !upstream.body) {
