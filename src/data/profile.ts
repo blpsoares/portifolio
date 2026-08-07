@@ -170,36 +170,24 @@ export const profile: Profile = {
       current: true,
       bullets: [
         {
-          pt: 'Refatorei o sistema de Propostas (PHP legado para Bun/TypeScript), projeto travado há 2 anos por complexidade e falta de braço. Entreguei o MVP em 1 mês com desenvolvimento assistido por IA, apresentado na convenção anual da empresa pelo CTO',
-          en: 'Refactored the Proposals system (legacy PHP to Bun/TypeScript), a project stalled for 2 years due to complexity and lack of headcount. Shipped the MVP in 1 month with AI-assisted development, presented at the company annual convention by the CTO',
+          pt: 'Refatorei o sistema de Propostas (PHP legado para Bun/TypeScript), projeto travado há 2 anos por complexidade e falta de braço. MVP em 1 mês com desenvolvimento assistido por IA. Apresentado na convenção anual da empresa pelo CTO',
+          en: 'Refactored the Proposals system (legacy PHP to Bun/TypeScript), a project stalled for 2 years due to complexity and lack of headcount. MVP in 1 month with AI-assisted development. Presented at the company annual convention by the CTO',
         },
         {
-          pt: 'Criei o PDD (Parity-Driven Development) durante o refactor: metodologia que resolve a paridade entre sistema legado e novo, hoje parte do fluxo de migração de refactors do time',
-          en: 'Created PDD (Parity-Driven Development) during the refactor: a methodology for resolving parity between legacy and new systems, now part of the team refactor migration flow',
+          pt: 'Criei o PDD (Parity-Driven Development) durante o refactor, uma metodologia que visa resolver a paridade e agora virou parte do fluxo da migração de refactors',
+          en: 'Created PDD (Parity-Driven Development) during the refactor, a methodology to solve parity that is now part of the team refactor migration flow',
+        },
+        {
+          pt: 'Referência de IA do time, envolvido em decisões de arquitetura e apoiando outros devs na adoção',
+          en: "AI reference for the team, involved in architecture decisions and supporting other devs in adoption",
+        },
+        {
+          pt: 'Sustentação do produto principal: debug, correções, criação de interfaces e suporte a outros times',
+          en: 'Support for the main product: debugging, fixes, interface development, and support to other teams',
         },
         {
           pt: 'Deploy interno do Embark (open source próprio) para publicação de projetos de áreas não-técnicas',
           en: 'Internal rollout of Embark (my own open source project) for publishing projects from non-technical areas',
-        },
-        {
-          pt: 'Construí um servidor MCP na API principal do produto da empresa, permitindo um agente LLM processar queries em linguagem natural via tool use',
-          en: "Built an MCP server on the company's main product API, enabling an LLM agent to process natural language queries via tool use",
-        },
-        {
-          pt: 'Pesquisa de aplicabilidade de IA em produtos, identificando oportunidades de integração GenAI em ferramentas internas',
-          en: 'Research on AI applicability in products, identifying GenAI integration opportunities in internal tools',
-        },
-        {
-          pt: 'Criei projetos de automação permitindo stakeholders não-técnicos transformarem ideias em realidade de forma independente',
-          en: 'Created automation projects enabling non-technical stakeholders to bring their ideas to life independently',
-        },
-        {
-          pt: 'Suporte arquitetural para novos projetos e refatoração de sistemas legados',
-          en: 'Architectural support for new projects and refactoring of legacy systems',
-        },
-        {
-          pt: 'Referência de IA/GenAI do time, apoiando outros devs em arquitetura, implementações e uso de IA',
-          en: 'AI/GenAI reference for the team, supporting other developers in architecture, implementations, and AI usage',
         },
       ],
       cvTech:
@@ -215,20 +203,16 @@ export const profile: Profile = {
       current: false,
       bullets: [
         {
-          pt: 'Criei o Pulsar, CLI interna para migrações MongoDB entre clusters, com TUI, modo cold dump e modo hot sync com watch para manter bases sincronizadas em tempo real, útil para staging. Substituiu processo manual de mongodump/restore e nos deu uma base confiável para ambiente de staging',
-          en: 'Built Pulsar, an internal CLI for MongoDB migrations across clusters, with a TUI, a cold dump mode and a hot sync mode with watch that keeps databases synchronized in real time, useful for staging. It replaced a manual mongodump/restore process and gave us a reliable staging environment',
+          pt: 'Criei o Pulsar, CLI interna para migrações MongoDB entre clusters. Tem TUI, modo cold dump e modo hot sync com watch para manter bases sincronizadas em tempo real (útil para staging). Substituiu processo manual de mongodump/restore e nos deu uma base confiável para ambiente de staging',
+          en: 'Built Pulsar, an internal CLI for MongoDB migrations across clusters. It has a TUI, a cold dump mode and a hot sync mode with watch to keep databases synchronized in real time (useful for staging). It replaced a manual mongodump/restore process and gave us a reliable staging environment',
         },
         {
-          pt: 'Automatizei processo manual de validação de PDFs: uso do Google Document AI com Custom Extractor para reconhecer campos dinâmicos e validar contra dados de contrato, modelo final com 96% de acurácia',
-          en: 'Automation of a manual PDF validation process: used Google Document AI with Custom Extractor to recognize dynamic fields and match them against contract data, final model with 96% accuracy',
+          pt: 'Automatizei validação de PDFs de contrato com Google Document AI e Custom Extractor, modelo com 96% de acurácia',
+          en: 'Automated contract PDF validation with Google Document AI and a Custom Extractor, model with 96% accuracy',
         },
         {
-          pt: 'Campo de busca com IA: a IA extrai dados-chave do prompt do usuário, monta o body do endpoint e faz a request final retornando resultados filtrados na interface, eliminando input manual de filtros',
-          en: "AI-powered search field: the AI extracts key data from the user's prompt, builds the endpoint body, and makes the final request returning filtered results in the interface, eliminating manual filter input",
-        },
-        {
-          pt: 'Pesquisa completa e apresentação sobre MongoDB edge computing para uma aplicação da empresa',
-          en: 'Full research and presentation of MongoDB edge computing for a company application',
+          pt: 'Busca por linguagem natural: structured output da OpenAI converte a entrada do usuário em queries de filtro no MongoDB',
+          en: "Natural language search: OpenAI's structured output converts the user's input into MongoDB filter queries",
         },
       ],
       cvTech: 'Node.js, TypeScript, MongoDB, Document AI, OpenAI, Windmill, Docker',
@@ -243,20 +227,16 @@ export const profile: Profile = {
       current: false,
       bullets: [
         {
-          pt: 'Reuniões com clientes e desenho das arquiteturas a serem utilizadas em cada projeto, traduzindo dores de negócio em soluções técnicas',
-          en: 'Client meetings and architecture design for each project, translating business pains into technical solutions',
+          pt: 'Reuniões diretas com clientes para desenhar arquiteturas de cada projeto, traduzindo problema de negócio em solução técnica',
+          en: 'Direct client meetings to design each project\'s architecture, translating business problems into technical solutions',
         },
         {
-          pt: 'Mentorei 5 estagiários através de 1:1s regulares, orientando crescimento de carreira e apresentando planos de desenvolvimento individual (PDIs)',
-          en: 'Mentored 5 interns through regular 1:1s, guiding career growth and presenting individual development plans (PDIs)',
+          pt: 'Pipeline de migração de 30.000+ documentos (Drive, OneDrive, S3, local → DocuSign) com Node.js Streams para controle de backpressure (referência de migrações dentro da empresa)',
+          en: 'Migration pipeline for 30,000+ documents (Drive, OneDrive, S3, local → DocuSign) using Node.js Streams for backpressure control (became the reference for migrations within the company)',
         },
         {
-          pt: 'ETLs para projetos massivos de migração de dados em múltiplos ambientes de clientes',
-          en: 'ETLs for massive data migration projects across multiple client environments',
-        },
-        {
-          pt: 'Arquitetei pipeline de migração de 30.000+ documentos (Drive · OneDrive · S3 · Local → DocuSign) com Node.js Streams e pipeline() para controle de backpressure e observabilidade com Winston para recuperação granular em falhas',
-          en: 'Architected a migration pipeline for 30,000+ documents (Drive · OneDrive · S3 · Local → DocuSign) using Node.js Streams with pipeline() for backpressure control and Winston observability for granular failure recovery',
+          pt: 'Mentorei 5 estagiários com 1:1s regulares',
+          en: 'Mentored 5 interns with regular 1:1s',
         },
       ],
       cvTech: 'Node.js, TypeScript, GCP, Docker, Node Streams, Winston, APIs',
@@ -271,20 +251,12 @@ export const profile: Profile = {
       current: false,
       bullets: [
         {
-          pt: 'Arquitetei e entreguei chatbot RAG corporativo (Dialogflow CX) integrado a base de conhecimento com 10.000+ documentos (JSONs, planilhas e PDFs), substituiu processo 100% manual de consulta por interface em linguagem natural',
-          en: 'Architected and delivered a corporate RAG chatbot (Dialogflow CX) integrated with a knowledge base of 10,000+ documents (JSONs, spreadsheets, and PDFs), replaced a 100% manual consultation process with a natural language interface',
+          pt: 'Implementei chatbot corporativo com Dialogflow CX integrado a base de conhecimento interna, usado para consultas em linguagem natural pelos colaboradores',
+          en: 'Implemented a corporate chatbot with Dialogflow CX integrated with the internal knowledge base, used by employees for natural language queries',
         },
         {
-          pt: 'Fine-tuning de modelos da OpenAI (da-vinci) para casos de uso específicos de domínio na primeira onda de adoção GenAI',
-          en: 'Fine-tuning of OpenAI models (da-vinci) for domain-specific use cases in the first wave of GenAI adoption',
-        },
-        {
-          pt: 'Construí workflows de integração entre plataformas usando Make.com e N8N para automação de entregas de projetos',
-          en: 'Built cross-platform integration workflows using Make.com and N8N to automate project deliveries',
-        },
-        {
-          pt: 'Treinei outros estagiários em tópicos técnicos em que eu tinha mais domínio',
-          en: 'Trained other interns on technical topics where I had more expertise',
+          pt: 'Integrações entre plataformas com Make e N8N (Monday + DocuSign, Monday + HubSpot, entre outras)',
+          en: 'Cross-platform integrations with Make and N8N (Monday + DocuSign, Monday + HubSpot, among others)',
         },
       ],
       cvTech: 'Node.js, Dialogflow CX, RAG, OpenAI, GCP, Make, N8N, Pub/Sub, Cloud Functions',
@@ -299,28 +271,8 @@ export const profile: Profile = {
       current: false,
       bullets: [
         {
-          pt: 'Entreguei ~20 sites institucionais e landing pages de ponta a ponta: reuniões com clientes, levantamento de requisitos, desenvolvimento e deploy',
-          en: 'Delivered ~20 corporate websites and landing pages end-to-end: client meetings, requirements gathering, development, and deploy',
-        },
-        {
-          pt: 'Agência de desenvolvimento de websites para diversos nichos e tipos de comércio, fundada com um sócio designer',
-          en: 'Web development agency for various business types and niches, co-founded with a designer partner',
-        },
-        {
-          pt: 'Desenvolvimento completo do frontend com React, HTML/CSS e WordPress seguindo as especificações de UI/UX do sócio designer',
-          en: 'Full frontend development with React, HTML/CSS, and WordPress following the UI/UX specs designed by the partner',
-        },
-        {
-          pt: 'Suporte para otimização de SEO nos sites',
-          en: 'SEO optimization support for client websites',
-        },
-        {
-          pt: 'Reuniões e suporte para agências de tráfego para implementação de tags e alterações chave em projetos existentes',
-          en: 'Meetings and support for traffic agencies to implement tags and key changes in existing projects',
-        },
-        {
-          pt: 'Captação de clientes a partir de tráfego orgânico (Instagram, conversas, indicações)',
-          en: 'Client acquisition through organic traffic (Instagram, conversations, referrals)',
+          pt: 'Agência de desenvolvimento web fundada com um sócio designer. ~20 sites institucionais e landing pages entregues de ponta a ponta: levantamento de requisitos, desenvolvimento (React, WordPress) e deploy',
+          en: 'Web development agency founded with a designer partner. ~20 corporate websites and landing pages delivered end-to-end: requirements gathering, development (React, WordPress), and deploy',
         },
       ],
       cvTech: 'React, JavaScript, HTML/CSS, WordPress, Figma',

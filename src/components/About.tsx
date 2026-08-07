@@ -1,23 +1,7 @@
 import React from 'react';
-import { Bot, Quote, Zap, ShieldCheck, Repeat2 } from 'lucide-react';
+import { Bot, Quote } from 'lucide-react';
 import ScrollReveal from './ScrollReveal';
 import { useI18n } from '../i18n';
-
-const AI_TOOLS = [
-  'Claude',
-  'GitHub Copilot',
-  'Cursor',
-  'v0.dev',
-  'Make',
-  'n8n',
-  'Windmill',
-];
-
-const PRINCIPLE_ICONS = [
-  <Zap size={18} className="text-brand-500" />,
-  <ShieldCheck size={18} className="text-emerald-500" />,
-  <Repeat2 size={18} className="text-violet-500" />,
-];
 
 const About: React.FC = () => {
   const { t } = useI18n();
@@ -58,44 +42,6 @@ const About: React.FC = () => {
           </div>
         </ScrollReveal>
 
-        {/* Principles */}
-        <ScrollReveal>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {t.about.principles.map((principle, i) => (
-              <div
-                key={principle.title}
-                className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 flex flex-col gap-3 hover:border-brand-300 dark:hover:border-brand-700 transition-colors"
-              >
-                <div className="flex items-center gap-2 font-semibold text-slate-800 dark:text-slate-200">
-                  {PRINCIPLE_ICONS[i]}
-                  {principle.title}
-                </div>
-                <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
-                  {principle.body}
-                </p>
-              </div>
-            ))}
-          </div>
-        </ScrollReveal>
-
-        {/* AI Tools */}
-        <ScrollReveal>
-          <div className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 flex flex-col gap-4">
-            <p className="text-xs font-semibold uppercase tracking-widest text-slate-400 dark:text-slate-500">
-              {t.about.toolsTitle}
-            </p>
-            <div className="flex flex-wrap gap-2">
-              {AI_TOOLS.map((tool) => (
-                <span
-                  key={tool}
-                  className="px-3 py-1.5 text-xs font-medium rounded-full bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-800 hover:border-brand-300 dark:hover:border-brand-700 hover:text-brand-600 dark:hover:text-brand-400 transition-colors cursor-default"
-                >
-                  {tool}
-                </span>
-              ))}
-            </div>
-          </div>
-        </ScrollReveal>
       </div>
     </section>
   );

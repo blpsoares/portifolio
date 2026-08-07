@@ -215,12 +215,6 @@ const en = {
     title: "Vibe Coding & Automation",
     philosophy:
       "Copilots accelerate, but technical responsibility remains. I believe in automation that eliminates the repetitive, allowing full focus on architecture and bottleneck resolution. AI helps build; I review, optimize, and ensure quality.",
-    toolsTitle: "AI & Automation Stack",
-    principles: [
-      { title: "Ship faster", body: "AI handles the boilerplate. I focus on architecture, edge cases, and the parts that actually matter." },
-      { title: "Stay in control", body: "Every output gets reviewed, tested, and owned. Copilots are tools, not replacements for judgment." },
-      { title: "Automate the boring", body: "If a task is repetitive and deterministic, it should be automated. Time is better spent solving real problems." },
-    ],
   },
   learning: {
     badge: "Open Source · Study System",

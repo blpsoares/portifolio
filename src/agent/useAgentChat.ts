@@ -266,6 +266,13 @@ export function useAgentChat(options: { autoBoot?: boolean } = {}) {
         let reasoningBuf = '';
         try {
           const { resolveToolCall } = await import('./cloudTools');
+          // Free OpenRouter models don't reliably use real function-calling —
+          // some just write the inline [[action:...]] token as plain text (the
+          // same protocol the system prompt teaches the in-browser model).
+          // Parse it the same way here so it drives the page instead of
+          // leaking into the visible answer.
+          const { ActionTokenStream, resolveAction } = await import('./actionTokens');
+          const tokenStream = new ActionTokenStream();
           await streamAiReply({
             query,
             locale,
@@ -287,9 +294,16 @@ export function useAgentChat(options: { autoBoot?: boolean } = {}) {
               applyAction(resolveToolCall(call, { github: t.cv.github, email: t.cv.email })),
             onChunk: (delta) => {
               if (!aliveRef.current) return;
-              patch(agentId, (m) => ({ ...m, text: m.text + delta, source: 'ai' }));
+              const { text, actions } = tokenStream.push(delta);
+              for (const a of actions) {
+                applyAction(resolveAction(a.name, a.arg, { github: t.cv.github, email: t.cv.email }));
+              }
+              if (text) patch(agentId, (m) => ({ ...m, text: m.text + text, source: 'ai' }));
             },
           });
+
+          const trailing = tokenStream.flush();
+          if (trailing) patch(agentId, (m) => ({ ...m, text: m.text + trailing, source: 'ai' }));
 
           honorMissedIntent();
           patch(agentId, (m) => ({

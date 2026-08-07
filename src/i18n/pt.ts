@@ -218,12 +218,6 @@ const pt = {
     title: "Vibe Coding & Automação",
     philosophy:
       "Copilotos aceleram, mas a responsabilidade técnica permanece. Acredito na automação que elimina o repetitivo, permitindo foco total na arquitetura e na correção de gargalos. A IA ajuda a construir; eu reviso, otimizo e garanto a qualidade.",
-    toolsTitle: "Stack de IA & Automação",
-    principles: [
-      { title: "Entregue mais rápido", body: "A IA cuida do boilerplate. Eu foco na arquitetura, nos edge cases e nas partes que realmente importam." },
-      { title: "Mantenha o controle", body: "Todo output é revisado, testado e assumido. Copilotos são ferramentas, não substitutos para o julgamento técnico." },
-      { title: "Automatize o repetitivo", body: "Se uma tarefa é repetitiva e determinística, ela deve ser automatizada. O tempo é melhor gasto resolvendo problemas reais." },
-    ],
   },
   learning: {
     badge: "Open Source \u00b7 Sistema de Estudos",
