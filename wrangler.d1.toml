@@ -1,0 +1,28 @@
+# D1 config for LOCAL commands only.
+#
+# Deliberately NOT named `wrangler.toml`: the deploy runs
+#   wrangler pages deploy dist --project-name=blpsoares
+# and a Pages-shaped config sitting in the project root changes how that
+# command resolves the project and the output directory. Keeping this under a
+# name wrangler does not auto-load means the deploy behaves exactly as before.
+#
+# Production commands do not need this file at all — `--remote` resolves the
+# database by name against the account. Only `--local` does:
+#
+#   wrangler d1 execute bryan-chat --local -c wrangler.d1.toml --file=./migrations/0001_chat_logs.sql
+#   bun run chat:log --local
+#
+# The production binding lives in the Pages dashboard (Settings → Bindings) as
+# CHAT_LOG.
+
+name = "portifolio-d1"
+compatibility_date = "2024-09-23"
+
+# Account that hosts the `blpsoares` Pages project. Not a secret: an account id
+# names the tenant, it grants nothing without a token.
+account_id = "6752d7f0e8a8291aa3b3da7d069c8fb7"
+
+[[d1_databases]]
+binding = "CHAT_LOG"
+database_name = "bryan-chat"
+database_id = "0b33836c-5cf2-4eba-a600-ba390cf1fe2f"

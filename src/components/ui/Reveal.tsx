@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion, useReducedMotion, type Variants } from 'framer-motion';
 
 type Direction = 'up' | 'down' | 'left' | 'right' | 'scale' | 'none';
@@ -44,8 +44,27 @@ const Reveal: React.FC<RevealProps> = ({
 }) => {
   const reduce = useReducedMotion();
 
+  /**
+   * Sideways entrances are for side-by-side columns. Once those columns stack,
+   * a horizontal slide both reads wrong and pushes the element past the
+   * viewport edge, which shows up as a horizontal scrollbar mid-animation.
+   */
+  const [narrow, setNarrow] = useState(
+    () => typeof window !== 'undefined' && window.matchMedia('(max-width: 1023px)').matches
+  );
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 1023px)');
+    const update = () => setNarrow(mq.matches);
+    update();
+    mq.addEventListener('change', update);
+    return () => mq.removeEventListener('change', update);
+  }, []);
+
+  const direction: Direction =
+    narrow && (from === 'left' || from === 'right') ? 'up' : from;
+
   const variants: Variants = {
-    hidden: reduce ? { opacity: 0 } : { opacity: 0, filter: 'blur(8px)', ...offset(from) },
+    hidden: reduce ? { opacity: 0 } : { opacity: 0, filter: 'blur(8px)', ...offset(direction) },
     show: {
       opacity: 1,
       x: 0,

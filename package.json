@@ -8,7 +8,8 @@
     "build": "vite build && bun run build:worker",
     "build:worker": "bun build worker/index.ts --outfile dist/_worker.js --target browser --format esm --minify",
     "preview": "vite preview",
-    "preview:ai": "bun run build && npx wrangler pages dev dist"
+    "preview:ai": "bun run build && npx wrangler pages dev dist",
+    "chat:log": "bun run scripts/chat-log.ts"
   },
   "dependencies": {
     "@mlc-ai/web-llm": "^0.2.84",

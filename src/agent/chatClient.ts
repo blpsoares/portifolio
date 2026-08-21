@@ -51,7 +51,7 @@ interface SseDelta {
 const SESSION_KEY = 'bryan_ai_session_id';
 
 /** Stable per-browser session id, persisted in localStorage (best-effort). */
-function getSessionId(): string {
+export function getSessionId(): string {
   try {
     const existing = localStorage.getItem(SESSION_KEY);
     if (existing) return existing;
@@ -104,8 +104,10 @@ export async function streamAiReply({
     // The function returns { fallback: true, reason } for graceful degradation.
     let reason = 'unavailable';
     try {
-      const data = (await res.clone().json()) as { reason?: string };
+      const data = (await res.clone().json()) as { reason?: string; error?: string };
+      // Guard-rail refusals arrive as `error`, graceful degradation as `reason`.
       if (data?.reason) reason = data.reason;
+      else if (data?.error) reason = data.error;
     } catch {
       /* non-JSON (e.g. 404 in dev) */
     }

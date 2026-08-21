@@ -1,18 +1,24 @@
 import React from "react";
-import { Mail, Github, Linkedin, Heart } from "lucide-react";
+import { Mail, Github, Linkedin } from "lucide-react";
 import { useI18n } from "../i18n";
 
 const Footer: React.FC = () => {
   const { t } = useI18n();
   const year = new Date().getFullYear();
 
+  // Mirrors the on-page section order. Split in two columns so the whole map of
+  // the site fits without a scrolling stack of links.
   const navLinks = [
     { name: t.nav.profile, href: "#profile" },
+    { name: t.nav.about, href: "#about" },
     { name: t.nav.stacks, href: "#stack" },
     { name: t.nav.projects, href: "#projects" },
     { name: t.nav.career, href: "#career" },
-    { name: t.nav.lowcode, href: "#lowcode" },
+    { name: t.nav.education, href: "#education" },
+    { name: t.nav.articles, href: "#articles" },
+    { name: t.nav.openSource, href: "#open-source" },
     { name: t.nav.aiUsage, href: "#ai-usage" },
+    { name: t.nav.contact, href: "#contact" },
   ];
 
   const handleNavClick = (href: string) => {
@@ -58,7 +64,7 @@ const Footer: React.FC = () => {
           <p className="text-xs font-semibold uppercase tracking-widest text-slate-400 dark:text-slate-500">
             {t.footer.quickLinks}
           </p>
-          <nav className="flex flex-col gap-2">
+          <nav className="grid grid-flow-col grid-rows-5 gap-x-8 gap-y-2">
             {navLinks.map((link) => (
               <button
                 key={link.href}
@@ -104,13 +110,8 @@ const Footer: React.FC = () => {
 
       {/* Bottom bar */}
       <div className="border-t border-slate-200 dark:border-slate-800">
-        <div className="max-w-6xl mx-auto px-6 py-4 flex flex-col sm:flex-row justify-between items-center gap-2 text-xs text-slate-400 dark:text-slate-600">
+        <div className="max-w-6xl mx-auto px-6 py-4 text-center text-xs text-slate-400 dark:text-slate-600">
           <span>© {year} Bryan Soares. {t.footer.rights}</span>
-          <span className="flex items-center gap-1">
-            {t.footer.builtWith}
-            <Heart size={11} className="text-brand-400 fill-brand-400 mx-0.5" />
-            React · Tailwind · Vibe Coding
-          </span>
         </div>
       </div>
     </footer>

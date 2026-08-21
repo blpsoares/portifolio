@@ -8,6 +8,10 @@ export default defineConfig(({ mode }) => {
 		server: {
 			port: 3001,
 			host: "0.0.0.0",
+			// Dev only: lets a tunnel hostname (trycloudflare.com, ngrok, etc.)
+			// reach the dev server, which Vite otherwise blocks as a DNS-rebinding
+			// guard. Has no effect on the production build.
+			allowedHosts: true,
 		},
 		build: {
 			outDir: "dist",

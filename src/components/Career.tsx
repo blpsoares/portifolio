@@ -16,7 +16,7 @@ const Career: React.FC = () => {
   return (
     <SectionShell
       id="career"
-      index={6}
+      index={4}
       eyebrow="CAREER"
       navLabel={t.nav.career}
       title={t.career.title}

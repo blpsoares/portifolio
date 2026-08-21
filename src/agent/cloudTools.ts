@@ -12,20 +12,7 @@
  */
 import type { AiToolCall } from './chatClient';
 import type { AgentAction } from './engine';
-
-/** Sections the model may scroll to. Matches the server-side enum in chat.ts. */
-const SECTIONS = new Set([
-  'profile',
-  'about',
-  'stack',
-  'lowcode',
-  'mcp',
-  'projects',
-  'career',
-  'education',
-  'learning',
-  'ai-usage',
-]);
+import { SECTIONS, PAGE_ROUTES } from './sections';
 
 export interface ResolvedToolCall {
   name: string;
@@ -58,6 +45,24 @@ export function resolveToolCall(
         arg: section,
         action: { type: 'scroll', target: section },
       };
+    }
+
+    case 'open_page': {
+      const page = typeof args.page === 'string' ? args.page.toLowerCase() : '';
+      if (!(page in PAGE_ROUTES)) return null;
+      return { name: 'open_page', arg: page, action: { type: 'open_page', page } };
+    }
+
+    case 'set_theme': {
+      const theme = args.theme === 'dark' || args.theme === 'light' ? args.theme : null;
+      if (!theme) return null;
+      return { name: 'set_theme', arg: theme, action: { type: 'set_theme', theme } };
+    }
+
+    case 'set_language': {
+      const lang = args.language === 'pt' || args.language === 'en' ? args.language : null;
+      if (!lang) return null;
+      return { name: 'set_language', arg: lang, action: { type: 'set_language', locale: lang } };
     }
 
     case 'download_cv': {

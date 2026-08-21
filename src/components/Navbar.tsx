@@ -46,31 +46,19 @@ const Navbar: React.FC<NavbarProps> = ({ isDarkMode, toggleTheme }) => {
   const navItems: NavItem[] = [
     { name: t.nav.profile, href: '#profile' },
     { name: t.nav.about, href: '#about' },
-    {
-      name: t.nav.expertise,
-      children: [
-        { name: t.nav.stacks, href: '#stack' },
-        { name: t.nav.lowcode, href: '#lowcode' },
-        { name: t.nav.mcps, href: '#mcp' },
-      ],
-    },
+    { name: t.nav.stacks, href: '#stack' },
     { name: t.nav.projects, href: '#projects' },
     { name: t.nav.career, href: '#career' },
     { name: t.nav.education, href: '#education' },
-    {
-      name: t.nav.vibe,
-      children: [
-        { name: t.nav.learning, href: '#learning' },
-        { name: t.nav.vibeProjects, href: '#vibe-projects' },
-        { name: t.nav.aiUsage, href: '#ai-usage' },
-      ],
-    },
+    { name: t.nav.articles, href: '#articles' },
+    { name: t.nav.openSource, href: '#open-source' },
+    { name: t.nav.contact, href: '#contact' },
   ];
 
   const handleNavClick = (href: string) => {
     setIsMobileMenuOpen(false);
     // If on a sub-page, navigate home first
-    if (window.location.hash.startsWith('#/')) {
+    if (window.location.hash.startsWith('#/') && !href.startsWith('#/')) {
       window.location.hash = '';
       setTimeout(() => {
         const element = document.querySelector(href);
@@ -87,7 +75,7 @@ const Navbar: React.FC<NavbarProps> = ({ isDarkMode, toggleTheme }) => {
   };
 
   const linkClass =
-    'text-xs font-medium text-slate-600 dark:text-slate-400 hover:text-brand-600 dark:hover:text-brand-400 transition-colors whitespace-nowrap';
+    'text-xs font-medium text-slate-700 dark:text-slate-300 hover:text-brand-600 dark:hover:text-brand-400 transition-colors whitespace-nowrap';
 
   return (
     <>

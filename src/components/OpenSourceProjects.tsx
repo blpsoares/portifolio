@@ -1,19 +1,19 @@
 import React, { useState } from 'react';
-import { Sparkles, ChevronLeft, ChevronRight, ExternalLink, ArrowRight } from 'lucide-react';
+import { Github, ChevronLeft, ChevronRight, ExternalLink, ArrowRight } from 'lucide-react';
 import { useI18n } from '../i18n';
-import { useVibeApps, getAppUrl } from '../hooks/useVibeApps';
+import { useOpenSourceApps, getAppUrl } from '../hooks/useOpenSourceApps';
 import SectionShell from './ui/SectionShell';
 import GlowCard from './ui/GlowCard';
 import Reveal from './ui/Reveal';
 
 const ITEMS_PER_TAB = 2;
 
-const VibeProjects: React.FC = () => {
+const OpenSourceProjects: React.FC = () => {
   const { t } = useI18n();
-  const { apps, loading, error } = useVibeApps();
+  const { apps, loading, error } = useOpenSourceApps();
   const [activeTab, setActiveTab] = useState(0);
 
-  if (loading || error || apps.length === 0) return null;
+  if (loading || apps.length === 0) return null;
 
   const totalTabs = Math.ceil(apps.length / ITEMS_PER_TAB);
   const currentApps = apps.slice(
@@ -23,36 +23,36 @@ const VibeProjects: React.FC = () => {
 
   return (
     <SectionShell
-      id="vibe-projects"
-      index={9}
-      eyebrow="VIBE CODING"
-      navLabel={t.nav.vibeProjects}
-      title={t.vibeProjects.title}
-      subtitle={t.vibeProjects.subtitle}
+      id="open-source"
+      index={7}
+      eyebrow="OPEN SOURCE"
+      navLabel={t.nav.openSource}
+      title={t.openSource.title}
+      subtitle={t.openSource.subtitle}
     >
       <Reveal from="up">
         <div className="flex flex-col md:flex-row md:items-center justify-between mb-10 gap-6">
           <div className="inline-flex items-center gap-2 self-start px-3 py-1 rounded-full bg-brand-500/10 text-brand-600 dark:text-brand-300 text-xs font-bold uppercase tracking-wider border border-brand-500/20">
-            <Sparkles size={12} />
-            <span>{t.vibeProjects.badge}</span>
+            <Github size={12} aria-hidden="true" />
+            <span>{t.openSource.badge}</span>
           </div>
 
           <a
-            href="#/vibe-projects"
+            href="#/open-source"
             className="group inline-flex items-center gap-2 px-5 py-2.5 bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-sm font-semibold rounded-lg hover:bg-slate-800 dark:hover:bg-slate-100 transition-all hover:scale-[1.02] active:scale-[0.98] shrink-0"
           >
-            {t.vibeProjects.viewAll}
+            {t.openSource.viewAll}
             <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
           </a>
         </div>
       </Reveal>
 
-      {/* Tab indicators */}
       {totalTabs > 1 && (
         <div className="flex items-center justify-center gap-4 mb-8">
           <button
             onClick={() => setActiveTab((prev) => Math.max(0, prev - 1))}
             disabled={activeTab === 0}
+            aria-label="Anterior"
             className="p-2 rounded-lg glass border border-slate-200/70 dark:border-slate-700/60 text-slate-600 dark:text-slate-400 hover:border-brand-500/40 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
           >
             <ChevronLeft size={18} />
@@ -62,6 +62,7 @@ const VibeProjects: React.FC = () => {
               <button
                 key={i}
                 onClick={() => setActiveTab(i)}
+                aria-label={`${i + 1}`}
                 className={`w-2.5 h-2.5 rounded-full transition-all ${
                   i === activeTab
                     ? 'bg-brand-500 scale-125 shadow-[0_0_10px_rgba(45,212,191,0.7)]'
@@ -73,6 +74,7 @@ const VibeProjects: React.FC = () => {
           <button
             onClick={() => setActiveTab((prev) => Math.min(totalTabs - 1, prev + 1))}
             disabled={activeTab === totalTabs - 1}
+            aria-label="Próximo"
             className="p-2 rounded-lg glass border border-slate-200/70 dark:border-slate-700/60 text-slate-600 dark:text-slate-400 hover:border-brand-500/40 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
           >
             <ChevronRight size={18} />
@@ -80,24 +82,27 @@ const VibeProjects: React.FC = () => {
         </div>
       )}
 
-      {/* Project cards with iframe */}
+      {error && (
+        <p className="mb-6 text-center text-sm text-slate-500 dark:text-slate-400">
+          {t.openSource.errorLoading}
+        </p>
+      )}
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {currentApps.map((app, idx) => {
           const url = getAppUrl(app);
           return (
             <Reveal key={app.name} from="up" delay={idx * 0.08}>
               <GlowCard className="h-full overflow-hidden">
-                {/* Iframe preview */}
                 <div className="relative w-full h-64 bg-slate-100 dark:bg-slate-800/60 overflow-hidden">
                   <iframe
                     src={url}
-                    title={app.name}
+                    title={app.displayName}
                     className="w-full h-full border-0 pointer-events-none scale-[0.5] origin-top-left"
                     style={{ width: '200%', height: '200%' }}
                     loading="lazy"
                     sandbox="allow-scripts allow-same-origin"
                   />
-                  {/* Overlay to prevent interaction */}
                   <a
                     href={url}
                     target="_blank"
@@ -106,24 +111,24 @@ const VibeProjects: React.FC = () => {
                   >
                     <span className="opacity-0 group-hover:opacity-100 transition-opacity bg-slate-900/80 dark:bg-white/90 text-white dark:text-slate-900 px-4 py-2 rounded-lg text-sm font-semibold flex items-center gap-2">
                       <ExternalLink size={14} />
-                      {t.vibeProjects.visitSite}
+                      {t.openSource.visitSite}
                     </span>
                   </a>
                 </div>
 
-                {/* Card info */}
                 <div className="p-6">
                   <div className="flex items-center justify-between gap-3">
                     <h3 className="text-lg font-bold font-display text-slate-900 dark:text-white group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors">
-                      {app.name}
+                      {app.displayName}
                     </h3>
                     <span className="text-xs font-mono text-slate-500 dark:text-slate-400 glass px-2 py-1 rounded border border-slate-200/70 dark:border-slate-700/60">
-                      {app.subdomain}.openvibes.tech
+                      {app.host}
                     </span>
                   </div>
                   <div className="flex flex-wrap gap-2 mt-3">
-                    <span className="px-2.5 py-0.5 bg-brand-500/10 text-brand-600 dark:text-brand-300 text-xs font-semibold rounded-md border border-brand-500/20">
-                      Vibe Coded
+                    <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 bg-brand-500/10 text-brand-600 dark:text-brand-300 text-xs font-semibold rounded-md border border-brand-500/20">
+                      <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" aria-hidden="true" />
+                      {t.openSource.liveLabel}
                     </span>
                     <span className="px-2.5 py-0.5 glass text-slate-600 dark:text-slate-300 text-xs font-semibold rounded-md border border-slate-200/70 dark:border-slate-700/60">
                       {app.appDeployment}
@@ -139,4 +144,4 @@ const VibeProjects: React.FC = () => {
   );
 };
 
-export default VibeProjects;
+export default OpenSourceProjects;

@@ -7,6 +7,11 @@
    ============================================================ */
 body {
   font-family: 'Inter', sans-serif;
+  /* Decorative overshoot — entrance slides, blur halos, oversized glows — must
+     never produce a horizontal scrollbar. `clip` rather than `hidden` because
+     `hidden` turns this into a scroll container and breaks `position: sticky`
+     for everything inside. */
+  overflow-x: clip;
 }
 
 /* Keep anchored sections clear of the fixed navbar when navigating via the menu */
@@ -53,6 +58,18 @@ section[id] {
   outline-offset: 6px;
   border-radius: 1rem;
   scroll-margin-top: 6rem;
+}
+
+/* Dot field on the hero trailing edge — the same texture as the brand banner. */
+.hero-dotfield {
+  background-image: radial-gradient(currentColor 1px, transparent 1px);
+  background-size: 14px 14px;
+  color: rgba(45, 212, 191, 0.5);
+  -webkit-mask-image: radial-gradient(120% 90% at 100% 0%, #000 10%, transparent 70%);
+  mask-image: radial-gradient(120% 90% at 100% 0%, #000 10%, transparent 70%);
+}
+:root.dark .hero-dotfield {
+  color: rgba(45, 212, 191, 0.42);
 }
 
 /* Aurora glow layer behind the hero */
@@ -142,13 +159,15 @@ section[id] {
   animation: shimmer 2.5s linear infinite;
 }
 
-/* Frosted glass panel */
+/* Frosted glass panel.
+   Opaque enough to read as a surface: the neural field drifts *behind* cards,
+   it must never compete with the copy printed on them. */
 .glass {
-  background: rgba(255, 255, 255, 0.6);
-  backdrop-filter: blur(16px) saturate(140%);
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(18px) saturate(140%);
 }
 :root.dark .glass {
-  background: rgba(2, 6, 23, 0.55);
+  background: rgba(4, 10, 25, 0.78);
 }
 
 /* ============================================================

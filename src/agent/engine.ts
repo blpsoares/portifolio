@@ -15,6 +15,9 @@ export type AgentAction =
   | { type: 'scroll'; target: string }
   | { type: 'download_cv'; locale?: 'pt' | 'en' }
   | { type: 'open_url'; url: string }
+  | { type: 'open_page'; page: string }
+  | { type: 'set_theme'; theme: 'dark' | 'light' }
+  | { type: 'set_language'; locale: 'pt' | 'en' }
   | { type: 'none' };
 
 export interface ToolCall {
@@ -34,7 +37,7 @@ export interface AgentReply {
 
 interface Intent {
   id: string;
-  /** keywords in both languages; matching is accent-insensitive substring */
+  /** keywords in both languages; matched accent-insensitively, on word boundaries */
   kw: string[];
   /** `query` is already normalized (lowercase, accent-stripped) */
   reply: (t: Translations, locale: Locale, query: string) => AgentReply;
@@ -75,7 +78,9 @@ const intents: Intent[] = [
     id: 'hire',
     kw: [
       'por que contratar', 'porque contratar', 'contratar', 'vale a pena', 'diferencial',
+      'vaga', 'capaz', 'serve', 'perfil', 'fit', 'senior', 'senioridade', 'recomenda',
       'why hire', 'should i hire', 'why bryan', 'why should', 'value', 'stand out', 'edge',
+      'good fit', 'capable', 'right person', 'seniority',
     ],
     reply: (t, locale) => ({
       reasoning: [
@@ -86,16 +91,20 @@ const intents: Intent[] = [
       tool: { name: 'scroll_to_section', arg: 'career', action: { type: 'scroll', target: 'career' } },
       answer: L(
         locale,
-        '+5 anos de software, sendo os últimos 2 focados em IA Generativa em produção. Levou um chatbot RAG sobre 10.000+ documentos do zero, construiu um servidor MCP na API principal da Eletromídia e agentes de NLP-to-database usados em produto real. O diferencial: comunicação de quem vende + profundidade de quem arquiteta. Te levei pra Trajetória — dá uma olhada nos números.',
-        '5+ years in software, the last 2 focused on Generative AI in production. Shipped a RAG chatbot over 10,000+ documents, built an MCP server on Eletromídia\'s core API and NLP-to-database agents used in a real product. The edge: the communication of someone who sells + the depth of someone who architects. I scrolled you to Career — check the numbers.',
+        '+5 anos de software, sendo os últimos 2 focados em IA Generativa em produção. Entregou um chatbot corporativo sobre uma base de 10.000+ documentos, construiu um servidor MCP na API principal da Eletromídia e agentes de NLP-to-database usados em produto real. O diferencial: comunicação de quem vende + profundidade de quem arquiteta. Te levei pra Trajetória — dá uma olhada nos números.',
+        '5+ years in software, the last 2 focused on Generative AI in production. Shipped a corporate chatbot over a 10,000+ document knowledge base, built an MCP server on Eletromídia\'s core API and NLP-to-database agents used in a real product. The edge: the communication of someone who sells + the depth of someone who architects. I scrolled you to Career — check the numbers.',
       ),
     }),
   },
   {
     id: 'projects',
     kw: [
-      'projeto', 'projetos', 'mostre', 'mostrar', 'portfolio de projetos', 'cases',
-      'project', 'projects', 'show me', 'show projects', 'work',
+      'projeto', 'projetos', 'mostre', 'mostrar', 'mostra', 'portfolio', 'portfolio de projetos',
+      'case', 'cases', 'relevante', 'relevantes', 'importante', 'destaque', 'destaques',
+      'entregou', 'entregas', 'entregue', 'realizou', 'construiu', 'fez', 'ja fez',
+      'principais', 'resultados', 'sucesso', 'melhor trabalho', 'o que ele fez',
+      'project', 'projects', 'show me', 'show projects', 'work', 'built', 'delivered',
+      'shipped', 'achievements', 'highlights', 'relevant', 'impact', 'accomplished',
     ],
     reply: (t, locale) => ({
       reasoning: [
@@ -106,8 +115,8 @@ const intents: Intent[] = [
       tool: { name: 'scroll_to_section', arg: 'projects', action: { type: 'scroll', target: 'projects' } },
       answer: L(
         locale,
-        `Destaques: "${t.projects.items[0].title}" (Dialogflow CX + RAG sobre 10k docs), "${t.projects.items[1].title}" (texto livre → query MongoDB, em produção) e "${t.projects.items[3].title}" (20k+ docs com Node Streams e backpressure). Acabei de te levar até a seção Projetos.`,
-        `Highlights: "${t.projects.items[0].title}" (Dialogflow CX + RAG over 10k docs), "${t.projects.items[1].title}" (free text → MongoDB query, in production) and "${t.projects.items[3].title}" (20k+ docs with Node Streams and backpressure). I just took you to the Projects section.`,
+        `Destaques: "${t.projects.items[0].title}" (Dialogflow CX sobre 10k docs), "${t.projects.items[1].title}" (texto livre → query MongoDB, em produção) e "${t.projects.items[3].title}" (30k+ docs com Node Streams e backpressure). Acabei de te levar até a seção Projetos.`,
+        `Highlights: "${t.projects.items[0].title}" (Dialogflow CX over 10k docs), "${t.projects.items[1].title}" (free text → MongoDB query, in production) and "${t.projects.items[3].title}" (30k+ docs with Node Streams and backpressure). I just took you to the Projects section.`,
       ),
     }),
   },
@@ -122,19 +131,22 @@ const intents: Intent[] = [
         L(locale, 'classificando intenção: foco em IA', 'classifying intent: AI focus'),
         L(locale, 'recuperando experiência GenAI', 'retrieving GenAI experience'),
       ],
-      tool: { name: 'scroll_to_section', arg: 'mcp', action: { type: 'scroll', target: 'mcp' } },
+      tool: { name: 'scroll_to_section', arg: 'stack', action: { type: 'scroll', target: 'stack' } },
       answer: L(
         locale,
-        'IA aplicada é o core do Bryan: pipelines RAG, sistemas multi-agente, agentes com tool use e servidores MCP conectando LLMs (OpenAI · Claude · Gemini) a sistemas reais. Na Eletromídia ele construiu um servidor MCP na API principal pra um agente processar queries em linguagem natural. Te levei até a seção de MCP.',
-        "Applied AI is Bryan's core: RAG pipelines, multi-agent systems, agents with tool use and MCP servers wiring LLMs (OpenAI · Claude · Gemini) into real systems. At Eletromídia he built an MCP server on the core API so an agent could process natural-language queries. I scrolled you to the MCP section.",
+        'IA aplicada é o core do Bryan: sistemas multi-agente, agentes com tool use e servidores MCP conectando LLMs (OpenAI · Claude · Gemini) a sistemas reais. Na Eletromídia ele construiu um servidor MCP na API principal pra um agente processar queries em linguagem natural. Te levei até a seção de MCP.',
+        "Applied AI is Bryan's core: multi-agent systems, agents with tool use and MCP servers wiring LLMs (OpenAI · Claude · Gemini) into real systems. At Eletromídia he built an MCP server on the core API so an agent could process natural-language queries. I scrolled you to the MCP section.",
       ),
     }),
   },
   {
     id: 'career',
     kw: [
-      'carreira', 'trajetoria', 'experiencia', 'historico', 'onde trabalhou', 'empresas',
-      'career', 'experience', 'history', 'companies', 'worked', 'background',
+      'carreira', 'trajetoria', 'experiencia', 'experiencias', 'historico', 'empresas',
+      'trabalhou', 'trabalha', 'trabalhando', 'anos de experiencia', 'quantos anos',
+      'cargo', 'cargos', 'emprego', 'empregos', 'profissional', 'resume', 'resuma',
+      'career', 'experience', 'history', 'companies', 'worked', 'works', 'background',
+      'years of experience', 'summarize',
     ],
     reply: (t, locale) => ({
       reasoning: [
@@ -168,8 +180,10 @@ const intents: Intent[] = [
   {
     id: 'skills',
     kw: [
-      'skill', 'skills', 'habilidade', 'habilidades', 'stack', 'tecnologia', 'tecnologias',
-      'ferramentas', 'tech', 'technologies', 'tools', 'languages', 'linguagens',
+      'skill', 'skills', 'habilidade', 'habilidades', 'stack', 'stacks', 'tecnologia',
+      'tecnologias', 'ferramentas', 'domina', 'sabe', 'conhece', 'manja', 'usa',
+      'arsenal', 'kubernetes', 'docker', 'typescript', 'node', 'bun', 'react',
+      'tech', 'technologies', 'tools', 'languages', 'linguagens', 'knows', 'proficient',
     ],
     reply: (t, locale) => ({
       reasoning: [
@@ -179,8 +193,8 @@ const intents: Intent[] = [
       tool: { name: 'scroll_to_section', arg: 'stack', action: { type: 'scroll', target: 'stack' } },
       answer: L(
         locale,
-        'Core: Node.js · TypeScript · Bun · MongoDB · Redis · Docker · Clean Architecture. IA: RAG, multi-agente, MCP, APIs de LLM, Document AI, Dialogflow CX. Infra: GCP, Cloudflare, GitHub Actions. Te mostrei o Arsenal Tecnológico completo.',
-        'Core: Node.js · TypeScript · Bun · MongoDB · Redis · Docker · Clean Architecture. AI: RAG, multi-agent, MCP, LLM APIs, Document AI, Dialogflow CX. Infra: GCP, Cloudflare, GitHub Actions. I showed you the full Tech Arsenal.',
+        'O arsenal se organiza em cinco frentes em volta das metodologias próprias dele (PDD e SDD): Agentes & Orquestração, MCP & Contexto, RAG & Recuperação, Backend & Dados e Infra & Automação. Core técnico: Node.js · Bun · TypeScript · MongoDB · Redis · GCP · Cloudflare. Te mostrei o Arsenal Técnico completo.',
+        'The arsenal is organised into five branches around his own methodologies (PDD and SDD): Agents & Orchestration, MCP & Context, RAG & Retrieval, Backend & Data, and Infra & Automation. Technical core: Node.js · Bun · TypeScript · MongoDB · Redis · GCP · Cloudflare. I showed you the full Technical Arsenal.',
       ),
     }),
   },
@@ -188,7 +202,8 @@ const intents: Intent[] = [
     id: 'education',
     kw: [
       'formacao', 'educacao', 'faculdade', 'pos', 'pos-graduacao', 'graduacao', 'estudou',
-      'education', 'degree', 'university', 'college', 'studied', 'academic',
+      'estudando', 'estuda', 'estudo', 'curso', 'cursando', 'diploma', 'universidade',
+      'education', 'degree', 'university', 'college', 'studied', 'studying', 'academic',
     ],
     reply: (t, locale) => ({
       reasoning: [L(locale, 'consultando registros acadêmicos', 'querying academic records')],
@@ -242,15 +257,16 @@ const intents: Intent[] = [
   {
     id: 'contact',
     kw: [
-      'contato', 'falar', 'email', 'e-mail', 'linkedin', 'github', 'chamar', 'contratar agora',
-      'contact', 'reach', 'get in touch', 'hire now', 'connect',
+      'contato', 'falar', 'falo', 'email', 'e-mail', 'linkedin', 'github', 'chamar',
+      'contratar agora', 'conversar', 'entrar em contato', 'como falo',
+      'contact', 'reach', 'get in touch', 'hire now', 'connect', 'talk to',
     ],
     reply: (t, locale) => ({
       reasoning: [
         L(locale, 'recuperando canais de contato', 'retrieving contact channels'),
         L(locale, 'abrindo LinkedIn', 'opening LinkedIn'),
       ],
-      tool: { name: 'open_url', arg: 'linkedin.com/in/blpsoares', action: { type: 'open_url', url: 'https://linkedin.com/in/blpsoares' } },
+      tool: { name: 'scroll_to_section', arg: 'contact', action: { type: 'scroll', target: 'contact' } },
       answer: L(
         locale,
         `Pode falar direto: ${t.cv.email} · ${t.cv.phone}. LinkedIn: ${t.cv.linkedin} · GitHub: ${t.cv.github}. Abri o LinkedIn dele numa nova aba.`,
@@ -268,8 +284,8 @@ const intents: Intent[] = [
       tool: { name: 'scroll_to_section', arg: 'about', action: { type: 'scroll', target: 'about' } },
       answer: L(
         locale,
-        'Bryan Soares — Software Developer & AI Engineer de São Paulo. Backend Engineer com +5 anos, hoje focado em IA Generativa aplicada: RAG, agentes, MCP e orquestração multi-agente em produção. Abri a seção "Quem sou".',
-        'Bryan Soares — Software Developer & AI Engineer from São Paulo. Backend Engineer with 5+ years, now focused on applied Generative AI: RAG, agents, MCP and multi-agent orchestration in production. I opened the "Who I am" section.',
+        'Bryan Soares — Software Developer & AI Engineer de São Paulo. Backend Engineer com +5 anos, hoje focado em IA Generativa aplicada: agentes com tool use, MCP e orquestração multi-agente em produção. Abri a seção "Quem sou".',
+        'Bryan Soares — Software Developer & AI Engineer from São Paulo. Backend Engineer with 5+ years, now focused on applied Generative AI: agents with tool use, MCP and multi-agent orchestration in production. I opened the "Who I am" section.',
       ),
     }),
   },
@@ -287,6 +303,30 @@ const fallback = (locale: Locale): AgentReply => ({
   ),
 });
 
+/**
+ * Whole-word containment.
+ *
+ * Plain `includes` was matching keywords inside unrelated words: `ia` fires on
+ * "experiência" and "Eletromídia", `ai` fires on "mais" and on the "ai" of
+ * "AI Engineer" in a question that has nothing to do with the AI section. That
+ * is how "tenho uma vaga de AI Engineer, o Bryan é capaz?" ended up answered
+ * with the MCP blurb. Keywords with spaces are matched as phrases, still on
+ * word boundaries.
+ */
+const containsWord = (haystack: string, needle: string): boolean => {
+  const escaped = needle.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return new RegExp(`(?:^|[^\\p{L}\\p{N}])${escaped}(?:[^\\p{L}\\p{N}]|$)`, 'u').test(haystack);
+};
+
+/**
+ * Below this, the rule engine does not pretend to know the answer.
+ *
+ * A single two-letter hit used to be enough to win, so the engine would answer
+ * confidently — and scroll the page — on evidence that meant nothing. Roughly
+ * one solid keyword (or two short ones) is the floor for acting.
+ */
+const MIN_CONFIDENCE = 4;
+
 export function matchIntent(query: string, t: Translations, locale: Locale): AgentReply {
   const q = norm(query);
   if (!q) return fallback(locale);
@@ -297,7 +337,8 @@ export function matchIntent(query: string, t: Translations, locale: Locale): Age
   for (const intent of intents) {
     let score = 0;
     for (const k of intent.kw) {
-      if (q.includes(norm(k))) score += norm(k).length; // longer matches weigh more
+      const kw = norm(k);
+      if (containsWord(q, kw)) score += kw.length; // longer matches weigh more
     }
     if (score > bestScore) {
       bestScore = score;
@@ -305,5 +346,5 @@ export function matchIntent(query: string, t: Translations, locale: Locale): Age
     }
   }
 
-  return best ? best.reply(t, locale, q) : fallback(locale);
+  return best && bestScore >= MIN_CONFIDENCE ? best.reply(t, locale, q) : fallback(locale);
 }

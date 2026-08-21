@@ -15,20 +15,7 @@
  * or a malformed token resolves to null and is dropped.
  */
 import type { AgentAction } from './engine';
-
-/** Sections the model may scroll to — mirrors the list in the system prompt. */
-const SECTIONS = new Set([
-  'profile',
-  'about',
-  'stack',
-  'lowcode',
-  'mcp',
-  'projects',
-  'career',
-  'education',
-  'learning',
-  'ai-usage',
-]);
+import { SECTIONS, PAGE_ROUTES } from './sections';
 
 /** A resolved action plus the chip metadata the chat bubble renders. */
 export interface ParsedAction {
@@ -62,6 +49,21 @@ export function resolveAction(
   if (n === 'download_cv') {
     const locale = a === 'pt' || a === 'en' ? a : undefined;
     return { name: 'download_cv', arg: locale ?? '', action: { type: 'download_cv', locale } };
+  }
+
+  if (n === 'page') {
+    if (!(a in PAGE_ROUTES)) return null;
+    return { name: 'open_page', arg: a, action: { type: 'open_page', page: a } };
+  }
+
+  if (n === 'theme') {
+    if (a !== 'dark' && a !== 'light') return null;
+    return { name: 'set_theme', arg: a, action: { type: 'set_theme', theme: a } };
+  }
+
+  if (n === 'language') {
+    if (a !== 'pt' && a !== 'en') return null;
+    return { name: 'set_language', arg: a, action: { type: 'set_language', locale: a } };
   }
 
   if (n === 'open') {
