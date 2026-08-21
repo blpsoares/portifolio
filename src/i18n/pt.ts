@@ -20,7 +20,6 @@ const pt = {
     aiUsage: "Como eu trabalho com IA",
   },
   hero: {
-    available: "Dispon\u00edvel para novas oportunidades",
     thesis1: "IA n\u00e3o \u00e9 m\u00e1gica.",
     thesis2: "\u00c9 engenharia.",
     // Condensado da filosofia que vive na se\u00e7\u00e3o "IA & Automa\u00e7\u00e3o": no hero
@@ -34,8 +33,6 @@ const pt = {
     online: "online",
     badge: "local · 0 tokens · $0.00",
     placeholder: "Pergunte algo sobre o Bryan…",
-    hint: "← converse com a IA",
-    thinking: "raciocinando",
     toolRunning: "executando…",
     toolDone: "concluído",
     feedbackAsk: "Ajudou?",
@@ -117,8 +114,6 @@ const pt = {
         } as Record<string, string>,
       },
     },
-    unavailable:
-      "O assistente está indisponível no momento. Tente novamente em instantes.",
     // Localized labels for clickable grounding citations ([[section:<id>]]).
     // Keys are the whitelisted section ids; the chip text is prefixed with "↳".
     citationLabels: {
@@ -207,7 +202,6 @@ const pt = {
       "Ferramentas que constru\u00ed e mantenho no aberto, do primeiro commit ao deploy. Todas est\u00e3o no ar \u2014 clique em qualquer preview para visitar.",
     viewAll: "Ver todos",
     visitSite: "Visitar site",
-    viewSource: "Ver c\u00f3digo",
     backHome: "Voltar ao in\u00edcio",
     pageTitle: "Todos os projetos open source",
     pageSubtitle:
@@ -248,7 +242,6 @@ const pt = {
     tagline: "AI Engineer e Sr Software Developer. Sistemas escaláveis, pipelines de IA e agentes em produção.",
     quickLinks: "Links Rápidos",
     connect: "Contato",
-    builtWith: "Feito com",
   },
   cmdk: {
     title: "Paleta de Comandos",
