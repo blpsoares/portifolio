@@ -113,7 +113,6 @@ const CommandPalette: React.FC<CommandPaletteProps> = ({
       nav('articles', t.nav.articles),
       nav('open-source', t.nav.openSource),
       nav('ai-usage', t.nav.aiUsage),
-      nav('contact', t.nav.contact),
       // Actions.
       {
         id: 'action:cv-en',

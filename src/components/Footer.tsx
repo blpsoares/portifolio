@@ -18,7 +18,6 @@ const Footer: React.FC = () => {
     { name: t.nav.articles, href: "#articles" },
     { name: t.nav.openSource, href: "#open-source" },
     { name: t.nav.aiUsage, href: "#ai-usage" },
-    { name: t.nav.contact, href: "#contact" },
   ];
 
   const handleNavClick = (href: string) => {

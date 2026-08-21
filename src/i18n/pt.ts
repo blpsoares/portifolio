@@ -18,12 +18,15 @@ const pt = {
     openSource: "Open Source",
     articles: "Artigos",
     aiUsage: "Como eu trabalho com IA",
-    contact: "Contato",
   },
   hero: {
     available: "Dispon\u00edvel para novas oportunidades",
+    thesis1: "IA n\u00e3o \u00e9 m\u00e1gica.",
+    thesis2: "\u00c9 engenharia.",
+    // Condensado da filosofia que vive na se\u00e7\u00e3o "IA & Automa\u00e7\u00e3o": no hero
+    // ele precisa caber em duas linhas, ent\u00e3o fica a abertura e o fecho.
     subtitle_suffix:
-      "Construo sistemas escal\u00e1veis, pipelines de IA e orquestra\u00e7\u00e3o de agentes para problemas reais de neg\u00f3cio.",
+      "Copilotos aceleram, mas a responsabilidade t\u00e9cnica permanece. A IA ajuda a construir; eu reviso, otimizo e garanto a qualidade.",
     cta: "Ver os projetos",
   },
   agent: {
@@ -127,7 +130,6 @@ const pt = {
       education: "Formação",
       "open-source": "Projetos open source",
       "ai-usage": "Uso de IA",
-      contact: "Contato",
     } as Record<string, string>,
     contextSuggestions: {
       profile: ["Por que contratar o Bryan?", "Resuma a carreira", "Baixar CV"],
@@ -138,7 +140,6 @@ const pt = {
       education: ["Qual a formação dele?", "Está estudando o quê?", "Pós em quê?"],
       "open-source": ["O que é o Agentistics?", "O que é o PDD?", "Mostre os projetos de IA"],
       "ai-usage": ["Como ele usa IA no dia a dia?", "Por que contratar o Bryan?", "Resuma a carreira"],
-      contact: ["Como falo com ele?", "Baixar CV", "Está aberto a oportunidades?"],
     } as Record<string, string[]>,
   },
   whoiam: {
@@ -198,18 +199,6 @@ const pt = {
     title: "IA & Automação",
     philosophy:
       "Copilotos aceleram, mas a responsabilidade técnica permanece. Acredito na automação que elimina o repetitivo, permitindo foco total na arquitetura e na correção de gargalos. A IA ajuda a construir; eu reviso, otimizo e garanto a qualidade.",
-  },
-  contact: {
-    title: "Vamos conversar",
-    subtitle:
-      "Aberto a oportunidades e a trocar ideia sobre IA aplicada, arquitetura de backend e automa\u00e7\u00e3o.",
-    emailLabel: "E-mail",
-    linkedinLabel: "LinkedIn",
-    githubLabel: "GitHub",
-    cvLabel: "Baixar CV",
-    cvHint: "PDF gerado na hora, no idioma da p\u00e1gina",
-    availability: "Dispon\u00edvel para novas conversas",
-    location: "S\u00e3o Paulo, Brasil \u00b7 h\u00edbrido ou remoto",
   },
   openSource: {
     badge: "Open Source",
