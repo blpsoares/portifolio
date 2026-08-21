@@ -6,6 +6,8 @@
 # in both this file and the Pages binding:
 #   wrangler kv namespace create MODELS
 
+account_id = "6752d7f0e8a8291aa3b3da7d069c8fb7"
+
 name = "portfolio-models-cron"
 main = "index.ts"
 compatibility_date = "2024-09-23"
@@ -14,11 +16,13 @@ compatibility_date = "2024-09-23"
 [triggers]
 crons = ["0 */6 * * *"]
 
-# Shared KV namespace. Replace <MODELS_KV_NAMESPACE_ID> with the id printed by
-# `wrangler kv namespace create MODELS`.
+# Shared KV namespace — the SAME one bound to the Pages project as MODELS.
+# If these two ever point at different namespaces the cron writes into a void
+# and the chat keeps serving the stale built-in list, which is exactly what
+# happened before: the rotation existed but was never connected at either end.
 [[kv_namespaces]]
 binding = "MODELS"
-id = "<MODELS_KV_NAMESPACE_ID>"
+id = "71dec2950510429cb460b9add886b012"
 
 # OPENROUTER_API_KEY is optional (the model catalog is public). If you want
 # account-aware availability, set it as a secret:  wrangler secret put OPENROUTER_API_KEY

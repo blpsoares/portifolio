@@ -69,9 +69,9 @@ interface ChatBody {
  * Refresh from https://openrouter.ai/models?max_price=0
  */
 const DEFAULT_MODELS = [
-  'google/gemma-4-31b-it:free',
-  'nvidia/nemotron-3-nano-30b-a3b:free',
-  'cohere/north-mini-code:free',
+  'poolside/laguna-s-2.1:free',
+  'poolside/laguna-xs-2.1:free',
+  'dots-studio/dots-3-note-preview:free',
   // OpenRouter's own free router: it picks whatever is actually up right now,
   // so it is the candidate least likely to rot when the ids above go stale.
   'openrouter/free',
@@ -112,10 +112,10 @@ const resolveModels = async (env: Env): Promise<string[]> => {
   if (env.MODELS) {
     try {
       const kvList = parseKvModels(await env.MODELS.get('active'));
-      // A single survivor means the stored list has rotted: free ids disappear
-      // from the catalog, and the modality filter strips whatever non-chat
-      // models an older cron run wrote. One model is also zero fallback, so
-      // prefer the curated defaults over limping on the remains.
+      // One survivor means the stored list has rotted — free ids drop out of the
+      // catalog and the modality filter strips non-chat models an older run
+      // wrote. One candidate is also zero fallback, so prefer the curated
+      // defaults over limping on the remains.
       if (kvList && kvList.length >= 2) return kvList;
     } catch {
       /* KV unavailable — fall through to env/defaults */

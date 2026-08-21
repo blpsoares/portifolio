@@ -45,8 +45,12 @@ async function refreshModels(env: Env): Promise<void> {
   }
 
   const payload = (await res.json()) as { data?: OpenRouterModel[] };
+  // Six, not three. A model listed as free in the catalog can still answer 404
+  // "unavailable for free" or 429 "rate-limited upstream" at inference time,
+  // and which ones do changes through the day. The chat now walks the whole
+  // list until one streams, so depth here is what keeps it alive.
   const top = freeModels(payload.data)
-    .slice(0, 3)
+    .slice(0, 6)
     .map((m) => m.id);
 
   if (top.length === 0) {
@@ -54,8 +58,12 @@ async function refreshModels(env: Env): Promise<void> {
     return;
   }
 
-  await env.MODELS.put('active', JSON.stringify(top));
-  console.log('cron: wrote active models', top.join(','));
+  // OpenRouter's own free router goes last: it picks whatever is actually up,
+  // so it survives even a day where every specific id above is throttled.
+  const list = [...top, 'openrouter/free'];
+
+  await env.MODELS.put('active', JSON.stringify(list));
+  console.log('cron: wrote active models', list.join(','));
 }
 
 export default {
