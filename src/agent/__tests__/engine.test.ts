@@ -58,8 +58,8 @@ const CASES: Array<[string, Expected]> = [
 
   // — contato / CV —
   ['me manda o cv em pdf', 'download_cv'],
-  ['como falo com ele?', 'contact'],
-  ['qual o email dele?', 'contact'],
+  ['como falo com ele?', 'email'],
+  ['qual o email dele?', 'email'],
 
   // — quem é —
   ['quem e o bryan?', 'about'],

@@ -266,7 +266,8 @@ const intents: Intent[] = [
         L(locale, 'recuperando canais de contato', 'retrieving contact channels'),
         L(locale, 'abrindo LinkedIn', 'opening LinkedIn'),
       ],
-      tool: { name: 'scroll_to_section', arg: 'contact', action: { type: 'scroll', target: 'contact' } },
+      // A seção de contato saiu do site; o e-mail é o canal direto.
+      tool: { name: 'open_url', arg: 'email', action: { type: 'open_url', url: 'mailto:bryanluccas@hotmail.com' } },
       answer: L(
         locale,
         `Pode falar direto: ${t.cv.email} · ${t.cv.phone}. LinkedIn: ${t.cv.linkedin} · GitHub: ${t.cv.github}. Abri o LinkedIn dele numa nova aba.`,

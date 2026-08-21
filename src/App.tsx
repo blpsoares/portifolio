@@ -10,7 +10,6 @@ import Education from './components/Education';
 import Career from './components/Career';
 import OpenSourceProjects from './components/OpenSourceProjects';
 import About from './components/About';
-import Contact from './components/Contact';
 import Footer from './components/Footer';
 import NeuralBackground from './components/NeuralBackground';
 import AmbientBackground from './components/AmbientBackground';
@@ -129,7 +128,6 @@ function App() {
                   <Articles />
                   <OpenSourceProjects />
                   <About />
-                  <Contact />
                 </main>
                 <Footer />
               </>

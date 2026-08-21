@@ -18,12 +18,15 @@ const en = {
     openSource: "Open Source",
     articles: "Articles",
     aiUsage: "How I work with AI",
-    contact: "Contact",
   },
   hero: {
     available: "Available for new opportunities",
+    thesis1: "AI is not magic.",
+    thesis2: "It's engineering.",
+    // Condensed from the philosophy in the "AI & Automation" section: in the
+    // hero it has to fit two lines, so it keeps the opening and the close.
     subtitle_suffix:
-      "I build scalable systems, AI pipelines and agent-orchestration solutions for real business problems.",
+      "Copilots accelerate, but technical responsibility remains. AI helps build; I review, optimize, and ensure quality.",
     cta: "See the projects",
   },
   agent: {
@@ -124,7 +127,6 @@ const en = {
       education: "Education",
       "open-source": "Open source projects",
       "ai-usage": "AI usage",
-      contact: "Contact",
     } as Record<string, string>,
     contextSuggestions: {
       profile: ["Why hire Bryan?", "Summarize his career", "Download CV"],
@@ -135,7 +137,6 @@ const en = {
       education: ["What's his education?", "What is he studying?", "Postgrad in what?"],
       "open-source": ["What is Agentistics?", "What is PDD?", "Show the AI projects"],
       "ai-usage": ["How does he use AI daily?", "Why hire Bryan?", "Summarize his career"],
-      contact: ["How do I reach him?", "Download CV", "Is he open to opportunities?"],
     } as Record<string, string[]>,
   },
   whoiam: {
@@ -193,18 +194,6 @@ const en = {
     title: "AI & Automation",
     philosophy:
       "Copilots accelerate, but technical responsibility remains. I believe in automation that eliminates the repetitive, allowing full focus on architecture and bottleneck resolution. AI helps build; I review, optimize, and ensure quality.",
-  },
-  contact: {
-    title: "Let's talk",
-    subtitle:
-      "Open to opportunities and to trading notes on applied AI, backend architecture and automation.",
-    emailLabel: "Email",
-    linkedinLabel: "LinkedIn",
-    githubLabel: "GitHub",
-    cvLabel: "Download CV",
-    cvHint: "PDF generated on the spot, in the page language",
-    availability: "Available for new conversations",
-    location: "São Paulo, Brazil · hybrid or remote",
   },
   openSource: {
     badge: "Open Source",

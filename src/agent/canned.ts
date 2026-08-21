@@ -81,9 +81,9 @@ const TOPICS = {
     action: { type: 'scroll', target: 'articles' },
   },
   contact: {
-    pt: 'O caminho mais direto é o e-mail bryanluccas@hotmail.com, ou o LinkedIn. Ele está aberto a novas oportunidades. Abri a seção de contato.',
-    en: 'The most direct route is bryanluccas@hotmail.com, or LinkedIn. He is open to new opportunities. I opened the contact section.',
-    action: { type: 'scroll', target: 'contact' },
+    pt: 'O caminho mais direto é o e-mail bryanluccas@hotmail.com, ou o LinkedIn. Ele está aberto a novas oportunidades. Abri seu e-mail.',
+    en: 'The most direct route is bryanluccas@hotmail.com, or LinkedIn. He is open to new opportunities. I opened your mail client.',
+    action: { type: 'open_url', url: 'mailto:bryanluccas@hotmail.com' },
   },
   aiusage: {
     pt: 'No dia a dia ele usa copilotos pra acelerar, mas mantém a responsabilidade técnica: automatiza o repetitivo, revisa e otimiza a arquitetura. A IA constrói; ele garante a qualidade. Abri a seção de Automação.',

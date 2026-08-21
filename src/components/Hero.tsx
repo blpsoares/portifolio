@@ -94,15 +94,13 @@ const Hero: React.FC = () => {
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
           className="lg:col-span-7"
         >
-          <div className="mb-7 inline-flex items-center gap-2.5 rounded-full glass gradient-border px-3.5 py-1.5">
-            <span className="relative flex h-2 w-2" aria-hidden="true">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
-            </span>
-            <span className="font-mono text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-600 dark:text-slate-300">
-              {t.hero.available}
-            </span>
-          </div>
+          {/* The position, stated before the name. Above a headline this large a
+              kicker has to stay small or the two fight; the weight split does
+              the work that size would otherwise have to. */}
+          <p className="mb-6 font-display text-[clamp(1.05rem,1.6vw,1.3rem)] font-bold leading-snug tracking-tight text-slate-900 dark:text-white">
+            {t.hero.thesis1}{' '}
+            <span className="text-slate-500 dark:text-slate-400">{t.hero.thesis2}</span>
+          </p>
 
           {/* Name — white/teal split, straight off the brand mark. */}
           <h1 className="font-display text-[clamp(2.75rem,7vw,5.25rem)] font-bold leading-[0.98] tracking-tight text-slate-900 dark:text-white">
@@ -122,7 +120,7 @@ const Hero: React.FC = () => {
             </div>
           </div>
 
-          <p className="mt-8 max-w-2xl text-lg font-light leading-relaxed text-slate-600 dark:text-slate-400 md:text-xl">
+          <p className="mt-8 max-w-2xl text-base font-light leading-relaxed text-slate-600 dark:text-slate-400 md:text-lg">
             {t.hero.subtitle_suffix}
           </p>
 

@@ -52,7 +52,6 @@ const Navbar: React.FC<NavbarProps> = ({ isDarkMode, toggleTheme }) => {
     { name: t.nav.education, href: '#education' },
     { name: t.nav.articles, href: '#articles' },
     { name: t.nav.openSource, href: '#open-source' },
-    { name: t.nav.contact, href: '#contact' },
   ];
 
   const handleNavClick = (href: string) => {

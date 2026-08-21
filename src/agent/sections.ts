@@ -22,7 +22,6 @@ export const SECTION_IDS = [
   'articles',
   'open-source',
   'ai-usage',
-  'contact',
 ] as const;
 
 export type SectionId = (typeof SECTION_IDS)[number];

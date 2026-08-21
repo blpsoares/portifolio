@@ -153,7 +153,6 @@ const SECTIONS = [
   'articles',
   'open-source',
   'ai-usage',
-  'contact',
 ] as const;
 
 /** Standalone pages the agent may open. Mirrors PAGE_ROUTES in sections.ts. */
