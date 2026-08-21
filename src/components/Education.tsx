@@ -10,7 +10,7 @@ const Education: React.FC = () => {
   return (
     <SectionShell
       id="education"
-      index={7}
+      index={5}
       eyebrow="EDUCATION"
       navLabel={t.nav.education}
       title={t.education.title}

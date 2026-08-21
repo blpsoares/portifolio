@@ -35,20 +35,19 @@
   opacity: 0;
   transition: opacity 0.5s ease-out;
   background:
-    linear-gradient(150deg, rgba(255, 255, 255, 0.55) 0%, rgba(255, 255, 255, 0) 34%),
-    radial-gradient(120% 180% at 50% -40%, rgba(255, 255, 255, 0.35), transparent 60%);
+    linear-gradient(150deg, rgba(255, 255, 255, 0.28) 0%, rgba(255, 255, 255, 0) 30%),
+    radial-gradient(120% 180% at 50% -40%, rgba(255, 255, 255, 0.16), transparent 55%);
 }
 
 /* Estado rolado: o vidro surge */
 .nav-pill.is-scrolled {
-  background-color: rgba(255, 255, 255, 0.55);
-  border-color: rgba(255, 255, 255, 0.6);
-  -webkit-backdrop-filter: blur(16px) saturate(180%) brightness(1.06);
-  backdrop-filter: blur(16px) saturate(180%) brightness(1.06);
+  background-color: rgba(255, 255, 255, 0.72);
+  border-color: rgba(15, 23, 42, 0.08);
+  -webkit-backdrop-filter: blur(20px) saturate(170%);
+  backdrop-filter: blur(20px) saturate(170%);
   box-shadow:
-    0 10px 34px rgba(15, 23, 42, 0.12),
-    inset 0 1px 0 rgba(255, 255, 255, 0.9),
-    inset 0 -10px 22px rgba(255, 255, 255, 0.25);
+    0 10px 30px rgba(15, 23, 42, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.65);
 }
 .nav-pill.is-scrolled::before {
   opacity: 1;
@@ -56,26 +55,22 @@
 
 /* Dark */
 html.dark .nav-pill.is-scrolled {
-  background-color: rgba(15, 23, 30, 0.5);
-  border-color: rgba(255, 255, 255, 0.12);
+  background-color: rgba(3, 9, 22, 0.78);
+  border-color: rgba(45, 212, 191, 0.16);
   box-shadow:
-    0 14px 40px rgba(0, 0, 0, 0.5),
-    inset 0 1px 0 rgba(255, 255, 255, 0.22),
-    inset 0 -10px 24px rgba(45, 212, 191, 0.08);
+    0 14px 40px rgba(0, 0, 0, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 html.dark .nav-pill::before {
   background:
-    linear-gradient(150deg, rgba(255, 255, 255, 0.18) 0%, rgba(255, 255, 255, 0) 34%),
-    radial-gradient(120% 180% at 50% -40%, rgba(94, 234, 212, 0.12), transparent 60%);
+    linear-gradient(150deg, rgba(255, 255, 255, 0.07) 0%, rgba(255, 255, 255, 0) 30%),
+    radial-gradient(120% 180% at 50% -40%, rgba(94, 234, 212, 0.08), transparent 55%);
 }
 
-/* Refração de borda real onde houver suporte (Chromium). Fallback = blur acima. */
-@supports (backdrop-filter: url('#lg-refraction')) {
-  .nav-pill.is-scrolled {
-    -webkit-backdrop-filter: url('#lg-refraction') blur(14px) saturate(180%) brightness(1.05);
-    backdrop-filter: url('#lg-refraction') blur(14px) saturate(180%) brightness(1.05);
-  }
-}
+/* NOTA: a refração SVG (`#lg-refraction`) desloca o backdrop em ~38px. Numa
+   pílula de ~44px de altura isso arrasta o conteúdo da página inteira para
+   dentro da barra e é o que a deixava esbranquiçada ao rolar. A navegação usa
+   vidro fosco simples; `.lg-refract` continua disponível para peças maiores. */
 
 @media (prefers-reduced-motion: reduce) {
   .nav-pill,

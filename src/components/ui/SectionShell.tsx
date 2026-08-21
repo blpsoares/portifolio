@@ -43,11 +43,11 @@ const SectionShell: React.FC<SectionShellProps> = ({
       id={id}
       data-section={id}
       data-section-label={navLabel ?? eyebrow}
-      className={`relative py-20 md:py-32 px-6 ${className}`}
+      className={`relative py-16 md:py-24 px-6 ${className}`}
     >
       <div className="max-w-6xl mx-auto">
         <Reveal from="up">
-          <div className={`mb-12 md:mb-20 ${centered ? 'text-center mx-auto max-w-3xl' : 'max-w-3xl'}`}>
+          <div className={`mb-10 md:mb-14 ${centered ? 'text-center mx-auto max-w-3xl' : 'max-w-3xl'}`}>
             <div className={`flex items-center gap-3 mb-5 ${centered ? 'justify-center' : ''}`}>
               <span className="font-mono text-xs font-semibold text-brand-500 dark:text-brand-400">
                 {num}

@@ -13,6 +13,8 @@
  */
 import { onRequestPost as chatHandler } from '../functions/api/chat';
 import { onRequestGet as modelsHandler } from '../functions/api/models';
+import { onRequestPost as logHandler } from '../functions/api/log';
+import { onRequestPost as feedbackHandler } from '../functions/api/feedback';
 
 interface Env {
   ASSETS?: { fetch: (request: Request) => Promise<Response> };
@@ -31,6 +33,16 @@ export default {
       if (request.method !== 'POST') return new Response('Method Not Allowed', { status: 405 });
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       return chatHandler({ request, env, waitUntil: ctx?.waitUntil?.bind(ctx) } as any);
+    }
+
+    if (pathname === '/api/log') {
+      if (request.method !== 'POST') return new Response('Method Not Allowed', { status: 405 });
+      return logHandler({ request, env, waitUntil: ctx?.waitUntil?.bind(ctx) } as any);
+    }
+
+    if (pathname === '/api/feedback') {
+      if (request.method !== 'POST') return new Response('Method Not Allowed', { status: 405 });
+      return feedbackHandler({ request, env } as any);
     }
 
     if (pathname === '/api/models') {

@@ -67,6 +67,9 @@ export interface WorkProject {
   cardCategory: string;
   cardDescription: string;
   technologies: string[];
+  /** The one number the project is remembered by, surfaced on the card so the
+   *  outcome is legible without reading the whole paragraph. Site-only. */
+  impact?: I18nText;
 }
 
 // ---------------------------------------------------------------------------
@@ -102,30 +105,33 @@ export interface CvSkill {
 // ---------------------------------------------------------------------------
 // On-page Tech Arsenal (feeds SKILLS in constants.tsx)
 // ---------------------------------------------------------------------------
-export interface TechStackGroup {
-  /** Language-neutral key matching t.techstack.categories. */
-  title: string;
-  skills: string[];
+/**
+ * The arsenal is modelled as a brain with branches: one central node, a handful
+ * of domains hanging off it, and inside each domain the tools grouped by what
+ * they are FOR. A flat tag list made a daily driver and a tool touched once
+ * read as equally important, and gave no shape to the knowledge.
+ */
+export interface SkillCluster {
+  /** What this group of tools is for, e.g. "Retrieval", "Runtime". */
+  label: I18nText;
+  items: string[];
+  /**
+   * Marks a group as shipped work rather than know-how. Rendered with its own
+   * accent so the difference is read from the layout, not from a footnote.
+   */
+  highlight?: boolean;
 }
 
-// ---------------------------------------------------------------------------
-// Low-code tools (feeds LOW_CODE_TOOLS + lowcode.descriptions)
-// ---------------------------------------------------------------------------
-export interface LowCodeTool {
-  category: string;
-  tools: string;
-  /** Icon name resolved to a lucide-react component in constants.tsx. */
-  icon: 'workflow' | 'layers' | 'zap';
-  description: I18nText;
-}
-
-// ---------------------------------------------------------------------------
-// MCP workflows (feeds MCP_WORKFLOWS + mcp.descriptions)
-// ---------------------------------------------------------------------------
-export interface McpWorkflow {
-  tool: string;
-  icon: 'terminal' | 'file' | 'database';
-  description: I18nText;
+export interface SkillBranch {
+  /** Stable key, used for React keys and the i18n lookup. */
+  id: string;
+  title: I18nText;
+  /** Short label that has to fit inside a node of the graph. */
+  short: I18nText;
+  blurb: I18nText;
+  /** Icon name resolved to a lucide-react component in the component. */
+  icon: 'brain' | 'plug' | 'search' | 'server' | 'cloud';
+  clusters: SkillCluster[];
 }
 
 export interface Profile {
@@ -136,9 +142,7 @@ export interface Profile {
   cvProjects: CvProject[];
   education: Education[];
   cvSkills: CvSkill[];
-  techStack: TechStackGroup[];
-  lowCodeTools: LowCodeTool[];
-  mcpWorkflows: McpWorkflow[];
+  skillBranches: SkillBranch[];
   languages: I18nText;
 }
 
@@ -239,7 +243,7 @@ export const profile: Profile = {
           en: 'Mentored 5 interns with regular 1:1s',
         },
       ],
-      cvTech: 'Node.js, TypeScript, GCP, Docker, Node Streams, Winston, APIs',
+      cvTech: 'Node.js, TypeScript, GCP, Docker, Node.js Streams, Backpressure, APIs',
     },
     {
       role: { pt: 'Desenvolvedor Estagiário', en: 'Developer Intern' },
@@ -259,7 +263,7 @@ export const profile: Profile = {
           en: 'Cross-platform integrations with Make and N8N (Monday + DocuSign, Monday + HubSpot, among others)',
         },
       ],
-      cvTech: 'Node.js, Dialogflow CX, RAG, OpenAI, GCP, Make, N8N, Pub/Sub, Cloud Functions',
+      cvTech: 'Node.js, Dialogflow CX, OpenAI, GCP, N8N, Pub/Sub, Cloud Functions',
     },
     {
       role: { pt: 'Desenvolvedor Frontend', en: 'Frontend Developer' },
@@ -281,17 +285,18 @@ export const profile: Profile = {
 
   workProjects: [
     {
-      title: { pt: 'Chatbot RAG Corporativo', en: 'Corporate RAG Chatbot' },
-      category: { pt: 'RAG & ENTERPRISE AI', en: 'RAG & ENTERPRISE AI' },
+      title: { pt: 'Chatbot Corporativo com Dialogflow CX', en: 'Corporate Chatbot with Dialogflow CX' },
+      category: { pt: 'IA CONVERSACIONAL', en: 'CONVERSATIONAL AI' },
       description: {
-        pt: 'Arquitetura e entrega de um chatbot conversacional corporativo interno utilizando Dialogflow CX integrado a uma base de conhecimento de 10.000+ documentos (JSONs, planilhas e PDFs). O sistema substituiu um processo manual de consulta de documentos por uma interface de linguagem natural, aplicando RAG para recuperação semântica de informações não estruturadas.',
-        en: 'Architecture and delivery of an internal corporate conversational chatbot using Dialogflow CX integrated with a knowledge base of 10,000+ documents (JSONs, spreadsheets, and PDFs). The system replaced a manual document consultation process with a natural language interface, applying RAG for semantic retrieval of unstructured information.',
+        pt: 'Arquitetura e entrega de um chatbot conversacional corporativo interno utilizando Dialogflow CX integrado a uma base de conhecimento de 10.000+ documentos (JSONs, planilhas e PDFs). O sistema substituiu um processo manual de consulta de documentos por uma interface de linguagem natural. A recuperação ficou a cargo da base de conhecimento gerenciada do Dialogflow; meu trabalho foi o desenho conversacional, o tratamento das fontes e a integração com os sistemas internos.',
+        en: 'Architecture and delivery of an internal corporate conversational chatbot using Dialogflow CX integrated with a knowledge base of 10,000+ documents (JSONs, spreadsheets, and PDFs). The system replaced a manual document consultation process with a natural language interface. Retrieval was handled by the managed Dialogflow knowledge base; my work was the conversational design, the source preparation and the integration with internal systems.',
       },
-      cardTitle: 'Chatbot RAG Corporativo',
-      cardCategory: 'RAG & ENTERPRISE AI',
+      cardTitle: 'Chatbot Corporativo com Dialogflow CX',
+      cardCategory: 'IA CONVERSACIONAL',
       cardDescription:
-        'Arquitetura e entrega de um chatbot conversacional corporativo interno utilizando Dialogflow CX integrado a uma base de conhecimento de 10.000+ documentos (JSONs, planilhas e PDFs). O sistema substituiu um processo manual de consulta de documentos por uma interface de linguagem natural, aplicando RAG para recuperação semântica de informações não estruturadas.',
-      technologies: ['Dialogflow CX', 'RAG', 'Node.js', 'TypeScript', 'GCP', 'NLP'],
+        'Arquitetura e entrega de um chatbot conversacional corporativo interno utilizando Dialogflow CX integrado a uma base de conhecimento de 10.000+ documentos (JSONs, planilhas e PDFs). O sistema substituiu um processo manual de consulta de documentos por uma interface de linguagem natural. A recuperação ficou a cargo da base de conhecimento gerenciada do Dialogflow; meu trabalho foi o desenho conversacional, o tratamento das fontes e a integração com os sistemas internos.',
+      technologies: ['Dialogflow CX', 'Knowledge Base', 'Node.js', 'TypeScript', 'GCP', 'NLP'],
+      impact: { pt: '10.000+ documentos consultáveis por linguagem natural', en: '10,000+ documents queryable in natural language' },
     },
     {
       title: {
@@ -308,32 +313,35 @@ export const profile: Profile = {
       cardDescription:
         'Desenvolvimento de um agente de IA capaz de interpretar entradas de texto livre do usuário e convertê-las em queries estruturadas de MongoDB. O sistema entende a intenção do usuário, aplica a lógica de negócio e retorna os resultados filtrados, eliminando a necessidade de preenchimento manual de filtros. Integrado a produto interno em produção.',
       technologies: ['OpenAI', 'MongoDB', 'Node.js', 'TypeScript', 'Windmill', 'AI Agent'],
+      impact: { pt: 'Busca livre vira query no banco', en: 'Free text becomes a database query' },
     },
     {
       title: { pt: 'Extrator Customizado com Document AI', en: 'Document AI Custom Extractor' },
       category: { pt: 'IA & AUTOMAÇÃO', en: 'AI & AUTOMATION' },
       description: {
-        pt: 'Arquitetura e implementação de um pipeline de extração de dados com Google Document AI para um cliente enterprise. Substituiu um processo 100% manual de validação operacional por um fluxo automatizado que identifica, extrai e valida campos específicos de documentos não estruturados com alta precisão. Solução projetada para reuso em outros clientes com a mesma necessidade.',
-        en: 'Architecture and implementation of a data extraction pipeline with Google Document AI for an enterprise client. Replaced a 100% manual operational validation process with an automated flow that identifies, extracts, and validates specific fields from unstructured documents with high accuracy. Solution designed for reuse across other clients with the same need.',
+        pt: 'Arquitetura e implementação de um pipeline de extração de dados com Google Document AI para um produto interno da Eletromídia. Substituiu um processo 100% manual de validação operacional por um fluxo automatizado que identifica, extrai e valida campos específicos de documentos não estruturados com alta precisão. Solução projetada para reuso em outros fluxos com a mesma necessidade.',
+        en: 'Architecture and implementation of a data extraction pipeline with Google Document AI for an internal Eletromidia product. Replaced a 100% manual operational validation process with an automated flow that identifies, extracts, and validates specific fields from unstructured documents with high accuracy. Solution designed for reuse across other flows with the same need.',
       },
       cardTitle: 'Document AI Custom Extractor',
       cardCategory: 'IA & Automação',
       cardDescription:
-        'Arquitetura e implementação de um pipeline de extração de dados com Google Document AI para um cliente enterprise. Substituiu um processo 100% manual de validação operacional por um fluxo automatizado que identifica, extrai e valida campos específicos de documentos não estruturados com alta precisão. Solução projetada para reuso em outros clientes com a mesma necessidade.',
+        'Arquitetura e implementação de um pipeline de extração de dados com Google Document AI para um produto interno da Eletromídia. Substituiu um processo 100% manual de validação operacional por um fluxo automatizado que identifica, extrai e valida campos específicos de documentos não estruturados com alta precisão. Solução projetada para reuso em outros fluxos com a mesma necessidade.',
       technologies: ['Node.js', 'Google Document AI', 'TypeScript'],
+      impact: { pt: '96% de acurácia na extração', en: '96% extraction accuracy' },
     },
     {
       title: { pt: 'Migração Massiva com Node Streams', en: 'Massive Migration with Node Streams' },
       category: { pt: 'PERFORMANCE & DATA', en: 'PERFORMANCE & DATA' },
       description: {
-        pt: 'Arquitetura e execução de pipeline de migração de 30.000+ documentos de múltiplas origens (Drive, OneDrive, S3, Local) para DocuSign. Utilização intensiva de Node.js Streams para controle de backpressure, evitando memory leaks. Implementação de observabilidade com Winston para retomada granular em caso de falha, tolerância a falhas sem reprocessamento do início. Solução construída para ser reutilizável em outros clientes com a mesma necessidade.',
-        en: 'Architecture and execution of a migration pipeline for 30,000+ documents from multiple sources (Drive, OneDrive, S3, Local) to DocuSign. Intensive use of Node.js Streams for backpressure control, preventing memory leaks. Observability implementation with Winston for granular recovery on failure, fault tolerance without reprocessing from scratch. Solution built to be reusable across other clients with the same need.',
+        pt: 'Arquitetura e execução de pipeline de migração de 30.000+ documentos de múltiplas origens (Drive, OneDrive, S3, Local) para DocuSign. Utilização intensiva de Node.js Streams para controle de backpressure, evitando memory leaks. Implementação de observabilidade estruturada para retomada granular em caso de falha, tolerância a falhas sem reprocessamento do início. Solução construída para ser reutilizável em outros fluxos com a mesma necessidade.',
+        en: 'Architecture and execution of a migration pipeline for 30,000+ documents from multiple sources (Drive, OneDrive, S3, Local) to DocuSign. Intensive use of Node.js Streams for backpressure control, preventing memory leaks. Structured observability for granular recovery on failure, fault tolerance without reprocessing from scratch. Solution built to be reusable across other flows with the same need.',
       },
       cardTitle: 'Migração Massiva com Node Streams',
       cardCategory: 'Performance & Data',
       cardDescription:
-        'Arquitetura e execução de pipeline de migração de 30.000+ documentos de múltiplas origens (Drive, OneDrive, S3, Local) para DocuSign. Utilização intensiva de Node.js Streams para controle de backpressure, evitando memory leaks. Implementação de observabilidade com Winston para retomada granular em caso de falha, tolerância a falhas sem reprocessamento do início. Solução construída para ser reutilizável em outros clientes com a mesma necessidade.',
-      technologies: ['Node.js Streams', 'API Integrations', 'File Systems', 'Winston'],
+        'Arquitetura e execução de pipeline de migração de 30.000+ documentos de múltiplas origens (Drive, OneDrive, S3, Local) para DocuSign. Utilização intensiva de Node.js Streams para controle de backpressure, evitando memory leaks. Implementação de observabilidade estruturada para retomada granular em caso de falha, tolerância a falhas sem reprocessamento do início. Solução construída para ser reutilizável em outros fluxos com a mesma necessidade.',
+      technologies: ['Node.js Streams', 'Backpressure', 'API Integrations', 'File Systems'],
+      impact: { pt: '30.000+ documentos migrados', en: '30,000+ documents migrated' },
     },
     {
       title: { pt: 'Otimização com Redis', en: 'Redis Optimization' },
@@ -347,6 +355,7 @@ export const profile: Profile = {
       cardDescription:
         'Implementação estratégica de cache utilizando Hashsets e Sorted Lists para armazenar resultados de computações complexas. Redução drástica na latência e custos de banco de dados em endpoints de alta concorrência. Queries complexas com tempo de resposta reduzido de ~10s para ~2s (em alguns casos abaixo de 900ms).',
       technologies: ['Redis', 'Caching Strategy', 'Backend Optimization'],
+      impact: { pt: 'Latência de ~10s para ~2s', en: 'Latency from ~10s to ~2s' },
     },
     {
       title: { pt: 'Versionamento de Triggers MongoDB', en: 'MongoDB Triggers Versioning' },
@@ -360,6 +369,7 @@ export const profile: Profile = {
       cardDescription:
         'Criação de um modelo proprietário para versionamento seguro de MongoDB Atlas Triggers. O sistema garante a sincronia entre o código da aplicação e as functions do banco, prevenindo erros de deploy e esquecimento de configurações críticas.',
       technologies: ['MongoDB Atlas', 'Serverless Functions', 'CI/CD'],
+      impact: { pt: 'Zero deploy fora de sincronia', en: 'Zero out-of-sync deploys' },
     },
     {
       title: { pt: 'Ensino para Estagiários', en: 'Intern Training' },
@@ -373,6 +383,7 @@ export const profile: Profile = {
       cardDescription:
         'Desenvolvimento de um projeto prático focado em raciocínio técnico para treinamento de estagiários. O ambiente simula desafios reais de backend, promovendo aprendizado mútuo e elevação da barra técnica do time.',
       technologies: ['NodeJS Streams', 'Code Review', 'Best Practices'],
+      impact: { pt: 'Barra técnica do time elevada', en: "Raised the team's technical bar" },
     },
   ],
 
@@ -451,15 +462,15 @@ export const profile: Profile = {
     {
       category: { pt: 'IA Generativa & ML', en: 'Generative AI & ML' },
       items: {
-        pt: 'Pipelines RAG, Sistemas Multi-Agente, Agentes de IA com Tool Use, APIs de LLM (OpenAI, Claude, Gemini), Prompt Engineering, Fine-tuning, MCP (Model Context Protocol), Dialogflow CX, Document AI, TensorFlow',
-        en: 'RAG Pipelines, Multi-Agent Systems, AI Agents with Tool Use, LLM APIs (OpenAI, Claude, Gemini), Prompt Engineering, Fine-tuning, MCP (Model Context Protocol), Dialogflow CX, Document AI, TensorFlow',
+        pt: 'Agentes de IA com Tool Use, Orquestração Multi-Agente, MCP (Model Context Protocol), Structured Output, Prompt Engineering, Avaliação de LLM (evals, LLM-as-judge), RAG e estratégias de recuperação, Dialogflow CX, Document AI',
+        en: 'AI Agents with Tool Use, Multi-Agent Orchestration, MCP (Model Context Protocol), Structured Output, Prompt Engineering, LLM evaluation (evals, LLM-as-judge), RAG and retrieval strategies, Dialogflow CX, Document AI',
       },
     },
     {
       category: { pt: 'Backend', en: 'Backend' },
       items: {
-        pt: 'Node.js, TypeScript, Bun, Express.js, Elysia, REST APIs, Redis, Docker, Clean Architecture',
-        en: 'Node.js, TypeScript, Bun, Express.js, Elysia, REST APIs, Redis, Docker, Clean Architecture',
+        pt: 'Node.js, Bun, TypeScript, Elysia, Zod, MongoDB, Redis, Node.js Streams, Backpressure, Estratégias de cache',
+        en: 'Node.js, Bun, TypeScript, Elysia, Zod, MongoDB, Redis, Node.js Streams, Backpressure, Estratégias de cache',
       },
     },
     {
@@ -478,7 +489,7 @@ export const profile: Profile = {
     },
     {
       category: { pt: 'Automação', en: 'Automation' },
-      items: { pt: 'N8N, Make, Windmill, Retool', en: 'N8N, Make, Windmill, Retool' },
+      items: { pt: 'N8N, Windmill, Webhooks, Atlas Triggers', en: 'N8N, Windmill, Webhooks, Atlas Triggers' },
     },
     {
       category: { pt: 'Frontend', en: 'Frontend' },
@@ -489,104 +500,209 @@ export const profile: Profile = {
     },
   ],
 
-  techStack: [
+  skillBranches: [
     {
-      title: 'Backend Core',
-      skills: [
-        'Node.js',
-        'TypeScript',
-        'Express.js',
-        'Elysia',
-        'Firebase',
-        'MongoDB',
-        'Clean Architecture',
+      id: 'agents',
+      title: { pt: 'Agentes & Orquestração', en: 'Agents & Orchestration' },
+      short: { pt: 'Agentes', en: 'Agents' },
+      blurb: {
+        pt: 'Modelo de linguagem resolvendo problema de negócio: com ferramenta na mão, saída previsível e limite claro do que pode fazer.',
+        en: 'Language models solving business problems: with tools in hand, predictable output and a clear boundary on what they may do.',
+      },
+      icon: 'brain',
+      clusters: [
+        {
+          label: { pt: 'Padrões de agente', en: 'Agent patterns' },
+          items: [
+            'Tool use / function calling',
+            'Planner-executor',
+            'Orquestração multi-agente',
+            'Handoff entre agentes',
+            'Guardrails',
+            'Retry e fallback',
+          ],
+        },
+        {
+          label: { pt: 'Controle de saída', en: 'Output control' },
+          items: [
+            'System prompt design',
+            'Chain-of-thought',
+            'ReAct',
+            'Structured output (JSON Schema)',
+            'Gestão de janela de contexto',
+            'Orçamento de tokens',
+          ],
+        },
+        {
+          label: { pt: 'Pipelines de extração', en: 'Extraction pipelines' },
+          items: [
+            'NLP → structured output → query tipada',
+            'Document AI + Custom Extractor',
+            'Validação com contrato Zod',
+            'Extração de campos dinâmicos de PDF',
+          ],
+        },
+        {
+          label: { pt: 'Avaliação', en: 'Evaluation' },
+          items: [
+            'Evals',
+            'LLM-as-judge',
+            'Detecção de alucinação',
+            'Tracing de chamadas',
+            'Custo por token',
+          ],
+        },
       ],
     },
     {
-      title: 'Stack Moderna',
-      skills: ['Bun', 'Redis', 'Docker', 'Zod', 'TypeBox', 'Serverless'],
-    },
-    {
-      title: 'Inteligência Artificial',
-      skills: [
-        'RAG Pipelines',
-        'Multi-agent Systems',
-        'LLM APIs (OpenAI · Claude · Gemini)',
-        'Prompt Engineering',
-        'Dialogflow CX',
-        'Document AI',
-        'MCP',
-        'Google AI Studio',
-        'TensorFlow',
+      id: 'mcp',
+      title: { pt: 'MCP & Contexto', en: 'MCP & Context' },
+      short: { pt: 'MCP', en: 'MCP' },
+      blurb: {
+        pt: 'Model Context Protocol é como eu ligo o modelo ao sistema real. Quando o servidor que eu preciso não existe, eu construo.',
+        en: 'Model Context Protocol is how I wire a model into the real system. When the server I need does not exist, I build it.',
+      },
+      icon: 'plug',
+      clusters: [
+        {
+          label: { pt: 'Construção de servidor', en: 'Server building' },
+          items: [
+            'Servidores MCP próprios',
+            'Definição de tools & schemas',
+            'Resources e prompts',
+            'Transport stdio e HTTP',
+            'Exposição segura de capacidades',
+          ],
+        },
+        {
+          label: { pt: 'No fluxo de trabalho', en: 'In the workflow' },
+          items: [
+            'LLM conectado ao sistema real',
+            'Contexto versionado',
+            'Métricas de uso por time',
+            'Tracking centralizado de agentes',
+          ],
+        },
       ],
     },
     {
-      title: 'Infra & DevOps',
-      skills: [
-        'GitHub Actions',
-        'GCP',
-        'Cloudflare',
-        'Atlas Triggers',
-        'CI/CD Pipelines',
-        'Docker Compose',
+      id: 'rag',
+      title: { pt: 'RAG & Busca Semântica', en: 'RAG & Semantic Search' },
+      short: { pt: 'RAG', en: 'RAG' },
+      blurb: {
+        pt: 'Como um modelo encontra a informação certa antes de responder — do chunking à avaliação da resposta.',
+        en: 'How a model finds the right information before answering — from chunking to evaluating the answer.',
+      },
+      icon: 'search',
+      clusters: [
+        {
+          label: { pt: 'Aplicações entregues', en: 'Shipped applications' },
+          items: [
+            'Chatbot corporativo sobre 10k+ docs',
+            'Busca NLP com filtro inteligente',
+            'Extração de documentos (96% acurácia)',
+          ],
+          highlight: true,
+        },
+        {
+          label: { pt: 'Arquiteturas & indexação', en: 'Architectures & indexing' },
+          items: [
+            'Naive RAG → Advanced RAG → Modular RAG',
+            'Chunking (fixo, semântico, recursivo)',
+            'Embeddings',
+            'Vector store',
+            'Filtro por metadado',
+          ],
+        },
+        {
+          label: { pt: 'Estratégias de busca', en: 'Retrieval strategies' },
+          items: [
+            'Busca densa',
+            'BM25',
+            'Busca híbrida',
+            'HyDE',
+            'Query rewriting & expansion',
+            'Re-ranking',
+          ],
+        },
+        {
+          label: { pt: 'Qualidade da resposta', en: 'Answer quality' },
+          items: [
+            'Faithfulness',
+            'Context recall & precision',
+            'Compressão de contexto',
+            'Citação de fonte',
+          ],
+        },
       ],
     },
-  ],
-
-  lowCodeTools: [
     {
-      category: 'Integração Backend',
-      tools: 'n8n, Make',
-      icon: 'workflow',
-      description: {
-        pt: 'Uso de ferramentas de integração low code como n8n e Make para integrações rápidas e criação de MVPs.',
-        en: 'Using low-code integration tools like n8n and Make for fast integrations and MVP creation.',
+      id: 'backend',
+      title: { pt: 'Backend & Dados', en: 'Backend & Data' },
+      short: { pt: 'Backend', en: 'Backend' },
+      blurb: {
+        pt: 'API tipada, domínio isolado, e código que o time consegue mexer depois que eu saio.',
+        en: 'Typed APIs, isolated domain, and code the team can still work on after I leave.',
       },
+      icon: 'server',
+      clusters: [
+        {
+          label: { pt: 'Problemas resolvidos', en: 'Problems solved' },
+          items: [
+            'Refactor legado PHP → Bun/TS em 1 mês',
+            'Migração de 30k+ docs com streaming',
+            'Cache Redis: latência 10s → 2s',
+            'CLI de migração MongoDB (Pulsar)',
+            'Deploy zero-config para áreas não-técnicas (Embark)',
+          ],
+          highlight: true,
+        },
+        {
+          label: { pt: 'Stack', en: 'Stack' },
+          items: ['Node.js', 'Bun', 'TypeScript', 'MongoDB', 'Redis', 'Zod', 'Elysia'],
+        },
+        {
+          label: { pt: 'Patterns de volume', en: 'Volume patterns' },
+          items: [
+            'Node.js Streams',
+            'Backpressure',
+            'Aggregation pipeline',
+            'Processamento em lote',
+            'Migração em massa',
+            'Paginação por cursor',
+            'Cache-aside com TTL',
+          ],
+        },
+      ],
     },
     {
-      category: 'Frontend Ágil',
-      tools: 'Retool, Plasmic',
-      icon: 'layers',
-      description: {
-        pt: 'Uso de ferramentas low code front end como Retool e Plasmic para features pontuais e entregas de MVPs.',
-        en: 'Using low-code frontend tools like Retool and Plasmic for targeted features and MVP delivery.',
+      id: 'infra',
+      title: { pt: 'Infra & Automação', en: 'Infra & Automation' },
+      short: { pt: 'Infra', en: 'Infra' },
+      blurb: {
+        pt: 'Pipeline que testa e publica sozinho, automação que tira trabalho manual do caminho.',
+        en: 'A pipeline that tests and ships on its own, and automation that takes manual work out of the way.',
       },
-    },
-    {
-      category: 'DevOps & Scripts',
-      tools: 'Windmill',
-      icon: 'zap',
-      description: {
-        pt: 'Uso de ferramentas low devops como Windmill para deploy de funcionalidades de forma ágil.',
-        en: 'Using low-code devops tools like Windmill for agile feature deployment.',
-      },
-    },
-  ],
-
-  mcpWorkflows: [
-    {
-      tool: 'Playwright via MCP',
-      icon: 'terminal',
-      description: {
-        pt: 'Execução de testes automatizados de interface em segundo plano enquanto consigo focar em outras tarefas em paralelo, garantindo um ganho de tempo significativo.',
-        en: 'Automated UI testing in the background while I focus on other tasks in parallel, ensuring significant time savings.',
-      },
-    },
-    {
-      tool: 'Notion via MCP',
-      icon: 'file',
-      description: {
-        pt: 'Geração automática de documentações técnicas estruturadas a partir do código fonte, facilitando o compartilhamento de conhecimento ágil com a equipe.',
-        en: 'Automatic generation of structured technical documentation from source code, enabling agile knowledge sharing with the team.',
-      },
-    },
-    {
-      tool: 'MongoDB via MCP',
-      icon: 'database',
-      description: {
-        pt: 'Análise de dados, inspeção de inconsistências e execução de queries complexas diretamente do ambiente de desenvolvimento sem a dificuldade de inferir o contexto para o modelo de IA.',
-        en: 'Data analysis, inconsistency inspection, and execution of complex queries directly from the development environment without the difficulty of inferring context for the AI model.',
-      },
+      icon: 'cloud',
+      clusters: [
+        {
+          label: { pt: 'Cloud & deploy', en: 'Cloud & deploy' },
+          items: ['GCP', 'Cloud Run', 'Cloudflare Workers & Pages', 'GitHub Actions', 'Docker'],
+        },
+        {
+          label: { pt: 'Automação', en: 'Automation' },
+          items: ['n8n', 'Windmill', 'Webhooks', 'Atlas Triggers'],
+        },
+        {
+          label: { pt: 'Open source', en: 'Open source' },
+          items: [
+            'Agentistics (analytics para AI coding)',
+            'DuckFlux (orquestração multi-agente)',
+            'Embark (CI/CD zero-config)',
+          ],
+          highlight: true,
+        },
+      ],
     },
   ],
 
@@ -643,6 +759,7 @@ export const buildProjectItems = (l: Locale) =>
     title: pick(p.title, l),
     category: pick(p.category, l),
     description: pick(p.description, l),
+    impact: p.impact ? pick(p.impact, l) : undefined,
   }));
 
 export const buildEducationItems = (l: Locale) =>
@@ -656,8 +773,16 @@ export const buildEducationItems = (l: Locale) =>
     status: pick(e.status, l),
   }));
 
-export const buildLowCodeDescriptions = (l: Locale) =>
-  profile.lowCodeTools.map((t) => pick(t.description, l));
-
-export const buildMcpDescriptions = (l: Locale) =>
-  profile.mcpWorkflows.map((m) => pick(m.description, l));
+export const buildSkillBranches = (l: Locale) =>
+  profile.skillBranches.map((b) => ({
+    id: b.id,
+    title: pick(b.title, l),
+    short: pick(b.short, l),
+    blurb: pick(b.blurb, l),
+    icon: b.icon,
+    clusters: b.clusters.map((c) => ({
+      label: pick(c.label, l),
+      items: c.items,
+      highlight: !!c.highlight,
+    })),
+  }));

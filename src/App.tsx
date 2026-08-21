@@ -5,22 +5,23 @@ import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import WhoIAm from './components/WhoIAm';
 import TechStack from './components/TechStack';
-import LowCode from './components/LowCode';
-import McpSection from './components/McpSection';
 import Projects from './components/Projects';
 import Education from './components/Education';
 import Career from './components/Career';
-import VibeProjects from './components/VibeProjects';
+import OpenSourceProjects from './components/OpenSourceProjects';
 import About from './components/About';
+import Contact from './components/Contact';
 import Footer from './components/Footer';
 import NeuralBackground from './components/NeuralBackground';
 import AmbientBackground from './components/AmbientBackground';
 import AgentDock from './components/AgentDock';
-import LearningSection from './components/LearningSection';
-import VibeProjectsPage from './components/VibeProjectsPage';
+import OpenSourcePage from './components/OpenSourcePage';
+import ArticlesPage from './components/ArticlesPage';
+import Articles from './components/Articles';
 // ===== TRACK A — Command Palette (⌘K) =====
 import CommandPalette from './components/cmdk/CommandPalette';
 import { useCommandPalette } from './hooks/useCommandPalette';
+import { onSetSiteTheme } from './agent/themeControls';
 
 // ===== TRACK B — View Transitions API =====
 // This TS DOM lib already types `document.startViewTransition`, but it is not
@@ -28,6 +29,15 @@ import { useCommandPalette } from './hooks/useCommandPalette';
 // A minimal local shape keeps us decoupled if the lib ever lacks it (no `any`).
 interface StartViewTransitionCapable {
   startViewTransition?: (callback: () => void) => unknown;
+}
+
+type Page = 'home' | 'open-source' | 'articles';
+
+function routeFor(hash: string): Page {
+  // `#/vibe-projects` is the legacy alias for the open-source page.
+  if (hash === '#/open-source' || hash === '#/vibe-projects') return 'open-source';
+  if (hash === '#/articles') return 'articles';
+  return 'home';
 }
 
 function App() {
@@ -39,16 +49,19 @@ function App() {
     return true;
   });
 
-  const [currentPage, setCurrentPage] = useState(() => {
-    return window.location.hash === '#/vibe-projects' ? 'vibe-projects' : 'home';
-  });
+  const [currentPage, setCurrentPage] = useState(() => routeFor(window.location.hash));
 
   // ===== TRACK A — Command Palette open/close state (⌘K / Ctrl+K) =====
   const palette = useCommandPalette();
 
   useEffect(() => {
     const handleHash = () => {
-      const nextPage = window.location.hash === '#/vibe-projects' ? 'vibe-projects' : 'home';
+      // Old links pointed at #/vibe-projects; keep them working.
+      if (window.location.hash === '#/vibe-projects') {
+        window.location.replace('#/open-source');
+        return;
+      }
+      const nextPage = routeFor(window.location.hash);
       // ===== TRACK B — cross-fade the page swap via the View Transitions API =====
       const commit = () => {
         setCurrentPage(nextPage);
@@ -68,6 +81,9 @@ function App() {
     window.addEventListener('hashchange', handleHash);
     return () => window.removeEventListener('hashchange', handleHash);
   }, []);
+
+  // The agent asks for a theme; App stays the only writer of the `dark` class.
+  useEffect(() => onSetSiteTheme((theme) => setIsDarkMode(theme === 'dark')), []);
 
   useEffect(() => {
     if (isDarkMode) {
@@ -94,10 +110,10 @@ function App() {
 
           {/* ===== TRACK B — page-root carries the view-transition-name for the cross-fade ===== */}
           <div style={{ viewTransitionName: 'page-root' } as React.CSSProperties}>
-            {currentPage === 'vibe-projects' ? (
+            {currentPage !== 'home' ? (
               <>
                 <main>
-                  <VibeProjectsPage />
+                  {currentPage === 'open-source' ? <OpenSourcePage /> : <ArticlesPage />}
                 </main>
                 <Footer />
               </>
@@ -107,14 +123,13 @@ function App() {
                   <Hero />
                   <WhoIAm />
                   <TechStack />
-                  <LowCode />
-                  <McpSection />
                   <Projects />
                   <Career />
                   <Education />
-                  <LearningSection />
-                  <VibeProjects />
+                  <Articles />
+                  <OpenSourceProjects />
                   <About />
+                  <Contact />
                 </main>
                 <Footer />
               </>

@@ -131,19 +131,28 @@ const intEnv = (raw: string | undefined, fallback: number): number => {
   return Number.isFinite(n) && n > 0 ? n : fallback;
 };
 
-/** Whitelisted, navigable section ids — also the tool/citation enum. */
+/**
+ * Whitelisted, navigable section ids — also the tool/citation enum.
+ *
+ * MUST stay in sync with `src/agent/sections.ts`. Pages Functions are bundled
+ * separately from the app and cannot import from `src/`, so this is a
+ * deliberate duplicate rather than a shared module.
+ */
 const SECTIONS = [
   'profile',
   'about',
   'stack',
-  'lowcode',
-  'mcp',
   'projects',
   'career',
   'education',
-  'learning',
+  'articles',
+  'open-source',
   'ai-usage',
+  'contact',
 ] as const;
+
+/** Standalone pages the agent may open. Mirrors PAGE_ROUTES in sections.ts. */
+const PAGES = ['home', 'articles', 'open-source'] as const;
 
 /**
  * Tool schema mapping 1:1 to the client's AgentAction. The browser executes
@@ -155,11 +164,16 @@ const TOOLS = [
     function: {
       name: 'navigate_to_section',
       description:
-        'Scroll the visitor to a section of the portfolio when they ask to see/show it.',
+        'Scroll the visitor to a section of the portfolio when they ask to see or be shown something that lives there. Call it at most once per answer, and only when the visitor actually asked to go somewhere.',
       parameters: {
         type: 'object',
         properties: {
-          section: { type: 'string', enum: [...SECTIONS] },
+          section: {
+            type: 'string',
+            enum: [...SECTIONS],
+            description:
+              'profile = hero/intro. about = who he is, his positioning. stack = the technical arsenal (agents, MCP, RAG, backend & data, infra & automation, and his PDD/SDD methodologies). projects = delivered work with outcomes. career = job history. education = degrees. articles = his written pieces. open-source = Agentistics, PDD, Embark, learning. ai-usage = his philosophy on working with AI. contact = email, LinkedIn, GitHub, CV download.',
+          },
         },
         required: ['section'],
       },
@@ -175,6 +189,51 @@ const TOOLS = [
         properties: {
           language: { type: 'string', enum: ['pt', 'en'] },
         },
+      },
+    },
+  },
+  {
+    type: 'function',
+    function: {
+      name: 'open_page',
+      description:
+        'Open one of the standalone pages of the site (the full articles list, the full open-source project list, or back to the home page).',
+      parameters: {
+        type: 'object',
+        properties: {
+          page: { type: 'string', enum: [...PAGES] },
+        },
+        required: ['page'],
+      },
+    },
+  },
+  {
+    type: 'function',
+    function: {
+      name: 'set_theme',
+      description:
+        'Switch the site between dark and light appearance. Use it when the visitor asks for dark mode, light mode, or says the page is hard to read.',
+      parameters: {
+        type: 'object',
+        properties: {
+          theme: { type: 'string', enum: ['dark', 'light'] },
+        },
+        required: ['theme'],
+      },
+    },
+  },
+  {
+    type: 'function',
+    function: {
+      name: 'set_language',
+      description:
+        'Switch the whole site between Portuguese and English. Use it when the visitor writes in the other language or asks to change it.',
+      parameters: {
+        type: 'object',
+        properties: {
+          language: { type: 'string', enum: ['pt', 'en'] },
+        },
+        required: ['language'],
       },
     },
   },
@@ -320,7 +379,13 @@ async function handleChat(context: {
     return json({ error: 'bad_request' }, 400);
   }
 
-  const query = (body.query ?? '').toString().trim().slice(0, MAX_QUERY_CHARS);
+  const rawQuery = (body.query ?? '').toString().trim();
+  // Truncating meant the model answered half a question and the visitor never
+  // knew why the reply missed the point. Refuse, and let the client say so.
+  if (rawQuery.length > MAX_QUERY_CHARS) {
+    return json({ error: 'query_too_long', limit: MAX_QUERY_CHARS }, 413);
+  }
+  const query = rawQuery;
   const jobText = (body.jobText ?? '').toString().slice(0, MAX_JOB_CHARS);
   const locale = body.locale === 'pt' || body.locale === 'en' ? body.locale : undefined;
   if (!query) return json({ error: 'empty_query' }, 400);

@@ -10,8 +10,8 @@ const NeuralBackground: React.FC = () => {
 		if (!ctx) return;
 
 		// Configuration
-		const PARTICLE_COUNT = 80; // Reduced slightly to make room for words
-		const KEYWORD_COUNT = 15;
+		const PARTICLE_COUNT = 64; // Reduced slightly to make room for words
+		const KEYWORD_COUNT = 7;
 		const CONNECTION_DISTANCE = 110;
 		const BASE_SPEED = 0.5;
 		const SCROLL_SPEED_MULTIPLIER = 2.0;
@@ -115,9 +115,32 @@ const NeuralBackground: React.FC = () => {
 		window.addEventListener("resize", resize);
 		resize();
 
+		/**
+		 * The field is an accent for the hero, not a texture for the whole page.
+		 * Past the fold it decays to a faint floor so headings and card copy
+		 * never compete with drifting keywords.
+		 */
+		const FADE_FLOOR = 0.16;
+		/** Sub-pages (#/articles, #/open-source) open straight into content. */
+		const onSubPage = () =>
+			window.location.hash.startsWith("#/") && window.location.hash !== "#/";
+
+		const applyDepthFade = () => {
+			if (onSubPage()) {
+				canvas.style.opacity = String(FADE_FLOOR);
+				return;
+			}
+			const fadeOver = window.innerHeight * 1.1;
+			const t = Math.min(1, window.scrollY / fadeOver);
+			canvas.style.opacity = String(1 - (1 - FADE_FLOOR) * t);
+		};
+
 		const handleScroll = () => {
 			targetScrollY = window.scrollY;
+			applyDepthFade();
 		};
+		window.addEventListener("hashchange", applyDepthFade);
+		applyDepthFade();
 		window.addEventListener("scroll", handleScroll);
 
 		const handleMouseMove = (e: MouseEvent) => {
@@ -141,11 +164,11 @@ const NeuralBackground: React.FC = () => {
 			// Light Mode: Darker Grey for particles (Slate-700), Darker Brand Green for lines
 			// Dark Mode: White for particles, Bright Brand Green for lines
 			const dotColor = isDark
-				? "rgba(255, 255, 255, 0.8)"
-				: "rgba(51, 65, 85, 0.8)";
+				? "rgba(255, 255, 255, 0.62)"
+				: "rgba(51, 65, 85, 0.5)";
 			const wordColor = isDark
-				? "rgba(45, 212, 191, 0.6)"
-				: "rgba(15, 118, 110, 0.6)"; // Brand Teal for words
+				? "rgba(45, 212, 191, 0.4)"
+				: "rgba(15, 118, 110, 0.34)"; // Brand Teal for words
 			const lineColorBase = isDark ? "45, 212, 191" : "15, 118, 110"; // RGB components for line
 
 			// Calculate speed
@@ -215,7 +238,7 @@ const NeuralBackground: React.FC = () => {
 					const dist = Math.sqrt(dx * dx + dy * dy);
 
 					if (dist < CONNECTION_DISTANCE) {
-						const opacity = (1 - dist / CONNECTION_DISTANCE) * 0.4; // Base opacity
+						const opacity = (1 - dist / CONNECTION_DISTANCE) * 0.26; // Base opacity
 						ctx.beginPath();
 						ctx.strokeStyle = `rgba(${lineColorBase}, ${opacity})`;
 						ctx.lineWidth = 1;
@@ -233,6 +256,7 @@ const NeuralBackground: React.FC = () => {
 
 		return () => {
 			window.removeEventListener("resize", resize);
+			window.removeEventListener("hashchange", applyDepthFade);
 			window.removeEventListener("scroll", handleScroll);
 			window.removeEventListener("mousemove", handleMouseMove);
 			cancelAnimationFrame(requestID);
@@ -243,6 +267,7 @@ const NeuralBackground: React.FC = () => {
 		<canvas
 			ref={canvasRef}
 			className="fixed inset-0 z-0 w-full h-full pointer-events-none"
+			style={{ transition: "opacity 120ms linear" }}
 		/>
 	);
 };

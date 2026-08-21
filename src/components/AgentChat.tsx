@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { Send, Wrench, ArrowDown, Check } from 'lucide-react';
+import { Send, Wrench, ArrowDown, Check, ThumbsUp, ThumbsDown } from 'lucide-react';
 import { useI18n } from '../i18n';
 import type { useAgentChat } from '../agent/useAgentChat';
 import AiOrb from './ui/AiOrb';
@@ -30,9 +30,16 @@ const TypingDots: React.FC = () => (
  * height. Markdown answers, free scrolling while streaming + a "jump to latest"
  * button. Behaviour lives in `useAgentChat`.
  */
+/**
+ * Mirrors MAX_QUERY_CHARS in `functions/api/chat.ts`, which now rejects rather
+ * than truncates. Capping here means the visitor never composes a question the
+ * server will refuse.
+ */
+const MAX_INPUT_CHARS = 1200;
+
 const AgentChat: React.FC<AgentChatProps> = ({ chat, suggestions, contextNote }) => {
   const { t } = useI18n();
-  const { booted, messages, input, setInput, busy, send, scrollToSection } = chat;
+  const { booted, messages, input, setInput, busy, send, scrollToSection, rate } = chat;
   const scrollRef = useRef<HTMLDivElement>(null);
   const autoFollow = useRef(true);
   const lastTop = useRef(0);
@@ -196,6 +203,43 @@ const AgentChat: React.FC<AgentChatProps> = ({ chat, suggestions, contextNote })
                           : t.agent.sourceLocal}
                       </div>
                     )}
+
+                    {/* The verdict is what turns the log into a measurement:
+                        the transcript says what was asked, only this says
+                        whether the answer was any good. */}
+                    {m.logId && !m.streaming && (
+                      <div className="mt-0.5 flex items-center gap-1">
+                        {m.rating ? (
+                          <span className="text-[10px] text-slate-400 dark:text-slate-500">
+                            {t.agent.feedbackThanks}
+                          </span>
+                        ) : (
+                          <>
+                            <span className="text-[10px] text-slate-400 dark:text-slate-500">
+                              {t.agent.feedbackAsk}
+                            </span>
+                            <button
+                              type="button"
+                              onClick={() => rate(m.id, m.logId!, 1)}
+                              aria-label={t.agent.feedbackYes}
+                              title={t.agent.feedbackYes}
+                              className="rounded p-1 text-slate-400 transition-colors hover:bg-slate-100 hover:text-emerald-600 dark:hover:bg-slate-800 dark:hover:text-emerald-400"
+                            >
+                              <ThumbsUp size={12} />
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => rate(m.id, m.logId!, -1)}
+                              aria-label={t.agent.feedbackNo}
+                              title={t.agent.feedbackNo}
+                              className="rounded p-1 text-slate-400 transition-colors hover:bg-slate-100 hover:text-rose-600 dark:hover:bg-slate-800 dark:hover:text-rose-400"
+                            >
+                              <ThumbsDown size={12} />
+                            </button>
+                          </>
+                        )}
+                      </div>
+                    )}
                 </div>
               ),
             )}
@@ -246,7 +290,8 @@ const AgentChat: React.FC<AgentChatProps> = ({ chat, suggestions, contextNote })
         >
           <input
             value={input}
-            onChange={(e) => setInput(e.target.value)}
+            onChange={(e) => setInput(e.target.value.slice(0, MAX_INPUT_CHARS))}
+            maxLength={MAX_INPUT_CHARS}
             placeholder={t.agent.placeholder}
             aria-label={t.agent.placeholder}
             disabled={!booted}
@@ -261,9 +306,20 @@ const AgentChat: React.FC<AgentChatProps> = ({ chat, suggestions, contextNote })
             <Send size={15} />
           </button>
         </form>
-        <p className="mt-2 text-center text-[10px] text-slate-400 dark:text-slate-500">
-          {t.agent.disclaimer}
-        </p>
+        <div className="mt-2 flex items-center justify-center gap-2 text-[10px] text-slate-400 dark:text-slate-500">
+          <span>{t.agent.disclaimer}</span>
+          {input.length > MAX_INPUT_CHARS * 0.8 && (
+            <span
+              className={
+                input.length >= MAX_INPUT_CHARS
+                  ? 'font-mono font-semibold text-amber-600 dark:text-amber-400'
+                  : 'font-mono'
+              }
+            >
+              {input.length}/{MAX_INPUT_CHARS}
+            </span>
+          )}
+        </div>
       </div>
     </div>
   );

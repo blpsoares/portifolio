@@ -2,24 +2,13 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useI18n } from '../i18n';
 import { useCvDownload } from '../hooks/useCvDownload';
 import { matchIntent, type AgentAction } from './engine';
+import { SECTIONS, PAGE_ROUTES } from './sections';
+import { setSiteTheme } from './themeControls';
 import { cannedReply } from './canned';
 import { setAgentState } from './bus';
-import { streamAiReply, AiUnavailable, type AiToolCall } from './chatClient';
+import { streamAiReply, AiUnavailable, getSessionId, type AiToolCall } from './chatClient';
+import { logTurn, rateTurn } from './chatLog';
 import { getLocalEngine, getLocalTier } from './localEngine';
-
-/** Whitelisted section ids the agent may navigate to. */
-const SECTIONS = new Set([
-  'profile',
-  'about',
-  'stack',
-  'lowcode',
-  'mcp',
-  'projects',
-  'career',
-  'education',
-  'learning',
-  'ai-usage',
-]);
 
 /** Small awaitable delay used to pace the "agent" output. */
 const sleep = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
@@ -37,6 +26,10 @@ export interface ChatMessage {
   source?: 'ai' | 'webllm' | 'local';
   /** the exact model id that answered (ai only) */
   model?: string;
+  /** Row id in the conversation log; present once the turn has been recorded. */
+  logId?: string;
+  /** Verdict the visitor gave on this answer. */
+  rating?: 1 | -1;
 }
 
 /**
@@ -47,7 +40,7 @@ export interface ChatMessage {
  */
 export function useAgentChat(options: { autoBoot?: boolean } = {}) {
   const { autoBoot = true } = options;
-  const { t, locale } = useI18n();
+  const { t, locale, setLocale } = useI18n();
   const { downloadCv } = useCvDownload();
 
   const [bootLines, setBootLines] = useState<string[]>([]);
@@ -96,10 +89,21 @@ export function useAgentChat(options: { autoBoot?: boolean } = {}) {
   }, []);
 
   const runAction = useCallback(
-    (action: AgentAction) => {
+    (action: AgentAction): boolean => {
       switch (action.type) {
         case 'scroll': {
+          // A section on the home page cannot be scrolled to from a sub-page;
+          // go home first and let the hash listener land us there.
+          if (window.location.hash.startsWith('#/') && window.location.hash !== '#/') {
+            window.location.hash = '';
+          }
           const el = document.getElementById(action.target);
+          if (!el) {
+            // The section was renamed or removed. Report the miss instead of
+            // showing a tool chip that says it worked.
+            console.warn('[bra.ia] unknown section', action.target);
+            return false;
+          }
           if (el) {
             el.scrollIntoView({ behavior: 'smooth' });
             el.classList.add('agent-highlight');
@@ -117,16 +121,93 @@ export function useAgentChat(options: { autoBoot?: boolean } = {}) {
         case 'open_url':
           window.open(action.url, '_blank', 'noopener');
           break;
-        default:
+        case 'open_page': {
+          const route = PAGE_ROUTES[action.page];
+          if (!route) return false;
+          window.location.hash = route === '#/' ? '' : route;
           break;
+        }
+        case 'set_theme':
+          setSiteTheme(action.theme);
+          break;
+        case 'set_language':
+          setLocale(action.locale);
+          break;
+        default:
+          return false;
       }
+      return true;
     },
-    [downloadCv],
+    [downloadCv, setLocale],
   );
 
+  /**
+   * Latest state of the turn in flight.
+   *
+   * The log needs the finished message, but `messages` is state and reading it
+   * straight after a patch gives the stale value. Mirroring the patched message
+   * into a ref is idempotent, so a StrictMode double-render is harmless.
+   */
+  const turnRef = useRef<{ id: number; msg: ChatMessage | null }>({ id: -1, msg: null });
+
   const patch = useCallback((id: number, fn: (m: ChatMessage) => ChatMessage) => {
-    setMessages((prev) => prev.map((m) => (m.id === id ? fn(m) : m)));
+    setMessages((prev) =>
+      prev.map((m) => {
+        if (m.id !== id) return m;
+        const next = fn(m);
+        if (turnRef.current.id === id) turnRef.current.msg = next;
+        return next;
+      }),
+    );
   }, []);
+
+  /** Best-effort read of the section the visitor is looking at right now. */
+  const currentSection = (): string | undefined => {
+    if (typeof document === 'undefined') return undefined;
+    const mid = window.innerHeight / 2;
+    const hit = Array.from(document.querySelectorAll<HTMLElement>('[data-section]')).find((el) => {
+      const r = el.getBoundingClientRect();
+      return r.top <= mid && r.bottom >= mid;
+    });
+    return hit?.dataset.section;
+  };
+
+  /**
+   * Records the finished turn, whichever brain answered it. Fire-and-forget:
+   * the id comes back later and only unlocks the 👍/👎 control.
+   */
+  const finishTurn = useCallback(
+    (agentId: number, question: string, startedAt: number, fallbackReason?: string) => {
+      const msg = turnRef.current.msg;
+      if (!msg || !msg.text.trim()) return;
+      const source = msg.source === 'ai' ? 'cloud' : msg.source === 'webllm' ? 'webllm' : 'local';
+      void logTurn({
+        sessionId: getSessionId(),
+        locale,
+        source,
+        model: msg.model,
+        question,
+        answer: msg.text,
+        toolName: msg.tool?.name,
+        toolArg: msg.tool?.arg,
+        latencyMs: Date.now() - startedAt,
+        fallbackReason,
+        section: currentSection(),
+      }).then((logId) => {
+        if (logId && aliveRef.current) patch(agentId, (m) => ({ ...m, logId }));
+      });
+    },
+    [locale, patch],
+  );
+
+  /** Sends the visitor's verdict on an answer and reflects it in the bubble. */
+  const rate = useCallback(
+    (messageId: number, logId: string, rating: 1 | -1) => {
+      patch(messageId, (m) => ({ ...m, rating }));
+      void rateTurn(logId, getSessionId(), rating);
+    },
+    [patch],
+  );
 
   const send = useCallback(
     async (raw: string) => {
@@ -143,6 +224,8 @@ export function useAgentChat(options: { autoBoot?: boolean } = {}) {
       if (!aliveRef.current) return;
 
       const agentId = nextId();
+      const startedAt = Date.now();
+      turnRef.current = { id: agentId, msg: null };
       setMessages((prev) => [
         ...prev,
         { id: agentId, role: 'agent', text: '', reasoning: [], streaming: true },
@@ -158,8 +241,14 @@ export function useAgentChat(options: { autoBoot?: boolean } = {}) {
           patch(agentId, (m) => ({ ...m, tool: { name: tool.name, arg: tool.arg } }));
           await sleep(420);
           if (!aliveRef.current) return;
-          runAction(canned.tool.action);
-          patch(agentId, (m) => (m.tool ? { ...m, tool: { ...m.tool, done: true } } : m));
+          const ok = runAction(canned.tool.action);
+          patch(agentId, (m) =>
+            ok
+              ? m.tool
+                ? { ...m, tool: { ...m.tool, done: true } }
+                : m
+              : { ...m, tool: undefined },
+          );
         }
         await sleep(160);
         const cwords = canned.answer.split(' ');
@@ -168,7 +257,8 @@ export function useAgentChat(options: { autoBoot?: boolean } = {}) {
           if (!aliveRef.current) return;
           patch(agentId, (m) => ({ ...m, text: cwords.slice(0, i + 1).join(' ') }));
         }
-        patch(agentId, (m) => ({ ...m, streaming: false }));
+        patch(agentId, (m) => ({ ...m, streaming: false, source: 'local' }));
+        finishTurn(agentId, query, startedAt, 'canned');
         setAgentState('idle');
         if (aliveRef.current) setBusy(false);
         return;
@@ -195,8 +285,14 @@ export function useAgentChat(options: { autoBoot?: boolean } = {}) {
           patch(agentId, (m) => ({ ...m, tool: { name: tool.name, arg: tool.arg } }));
           await sleep(400);
           if (!aliveRef.current) return;
-          runAction(det.tool.action);
-          patch(agentId, (m) => (m.tool ? { ...m, tool: { ...m.tool, done: true } } : m));
+          const ok = runAction(det.tool.action);
+          patch(agentId, (m) =>
+            ok
+              ? m.tool
+                ? { ...m, tool: { ...m.tool, done: true } }
+                : m
+              : { ...m, tool: undefined },
+          );
         }
         const words = det.answer.split(' ');
         for (let i = 0; i < words.length; i++) {
@@ -210,14 +306,22 @@ export function useAgentChat(options: { autoBoot?: boolean } = {}) {
       // Did an LLM drive the page itself? Decides whether the rule-based
       // detector needs to step in afterwards.
       let modelActed = false;
+      /** Why the cloud brain declined, when it did — recorded with the turn. */
+      let cloudFailure: string | undefined;
 
       /** Run a whitelisted action emitted by either LLM. */
       const applyAction = (resolved: { name: string; arg: string; action: AgentAction } | null) => {
         if (!resolved || !aliveRef.current || modelActed) return;
         modelActed = true;
         patch(agentId, (m) => ({ ...m, tool: { name: resolved.name, arg: resolved.arg } }));
-        runAction(resolved.action);
-        patch(agentId, (m) => (m.tool ? { ...m, tool: { ...m.tool, done: true } } : m));
+        const ok = runAction(resolved.action);
+        patch(agentId, (m) =>
+          ok
+            ? m.tool
+              ? { ...m, tool: { ...m.tool, done: true } }
+              : m
+            : { ...m, tool: undefined },
+        );
       };
 
       /** Side effects the LLM asked for in prose but never emitted as an action. */
@@ -312,12 +416,15 @@ export function useAgentChat(options: { autoBoot?: boolean } = {}) {
             streaming: false,
             source: 'ai',
           }));
+          finishTurn(agentId, query, startedAt);
           setAgentState('idle');
           if (aliveRef.current) setBusy(false);
           return;
         } catch (cloudErr) {
           // No key, quota gone, rate limited, offline, or the endpoint is down.
           // Silently hand over: the visitor should never see a downgrade notice.
+          cloudFailure =
+            cloudErr instanceof AiUnavailable ? cloudErr.reason || 'unavailable' : 'error';
           if (!(cloudErr instanceof AiUnavailable)) console.error('cloud agent error', cloudErr);
           if (!aliveRef.current) return;
           patch(agentId, (m) => ({ ...m, text: '', reasoning: [placeholder], tool: undefined }));
@@ -327,6 +434,7 @@ export function useAgentChat(options: { autoBoot?: boolean } = {}) {
         // ---- Brain 2: the in-browser model ----
         if (!localReady) throw new Error('local_not_ready');
         await answerLocally();
+        finishTurn(agentId, query, startedAt, cloudFailure);
         setAgentState('idle');
         if (aliveRef.current) setBusy(false);
         return;
@@ -336,11 +444,12 @@ export function useAgentChat(options: { autoBoot?: boolean } = {}) {
         if (!aliveRef.current) return;
         patch(agentId, (m) => ({ ...m, text: '', reasoning: [], tool: undefined }));
         await answerDeterministically();
+        finishTurn(agentId, query, startedAt, cloudFailure ?? 'local_engine');
         setAgentState('idle');
         if (aliveRef.current) setBusy(false);
       }
     },
-    [busy, locale, t, runAction, patch],
+    [busy, locale, t, runAction, patch, finishTurn],
   );
 
   // Used by clickable grounding citations ([[section:<id>]]) rendered inside
@@ -390,6 +499,7 @@ export function useAgentChat(options: { autoBoot?: boolean } = {}) {
     send,
     greet,
     scrollToSection,
+    rate,
     hasStarted: messages.length > 0,
   };
 }

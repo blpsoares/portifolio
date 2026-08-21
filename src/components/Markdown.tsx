@@ -7,8 +7,6 @@ const CITE_SECTIONS = new Set([
   'profile',
   'about',
   'stack',
-  'lowcode',
-  'mcp',
   'projects',
   'career',
   'education',
