@@ -128,7 +128,6 @@ export interface SkillBranch {
   title: I18nText;
   /** Short label that has to fit inside a node of the graph. */
   short: I18nText;
-  blurb: I18nText;
   /** Icon name resolved to a lucide-react component in the component. */
   icon: 'brain' | 'plug' | 'search' | 'server' | 'cloud';
   clusters: SkillCluster[];
@@ -505,10 +504,6 @@ export const profile: Profile = {
       id: 'agents',
       title: { pt: 'Agentes & Orquestração', en: 'Agents & Orchestration' },
       short: { pt: 'Agentes', en: 'Agents' },
-      blurb: {
-        pt: 'Modelo de linguagem resolvendo problema de negócio: com ferramenta na mão, saída previsível e limite claro do que pode fazer.',
-        en: 'Language models solving business problems: with tools in hand, predictable output and a clear boundary on what they may do.',
-      },
       icon: 'brain',
       clusters: [
         {
@@ -558,10 +553,6 @@ export const profile: Profile = {
       id: 'mcp',
       title: { pt: 'MCP & Contexto', en: 'MCP & Context' },
       short: { pt: 'MCP', en: 'MCP' },
-      blurb: {
-        pt: 'Model Context Protocol é como eu ligo o modelo ao sistema real. Quando o servidor que eu preciso não existe, eu construo.',
-        en: 'Model Context Protocol is how I wire a model into the real system. When the server I need does not exist, I build it.',
-      },
       icon: 'plug',
       clusters: [
         {
@@ -589,10 +580,6 @@ export const profile: Profile = {
       id: 'rag',
       title: { pt: 'RAG & Busca Semântica', en: 'RAG & Semantic Search' },
       short: { pt: 'RAG', en: 'RAG' },
-      blurb: {
-        pt: 'Como um modelo encontra a informação certa antes de responder — do chunking à avaliação da resposta.',
-        en: 'How a model finds the right information before answering — from chunking to evaluating the answer.',
-      },
       icon: 'search',
       clusters: [
         {
@@ -640,10 +627,6 @@ export const profile: Profile = {
       id: 'backend',
       title: { pt: 'Backend & Dados', en: 'Backend & Data' },
       short: { pt: 'Backend', en: 'Backend' },
-      blurb: {
-        pt: 'API tipada, domínio isolado, e código que o time consegue mexer depois que eu saio.',
-        en: 'Typed APIs, isolated domain, and code the team can still work on after I leave.',
-      },
       icon: 'server',
       clusters: [
         {
@@ -679,10 +662,6 @@ export const profile: Profile = {
       id: 'infra',
       title: { pt: 'Infra & Automação', en: 'Infra & Automation' },
       short: { pt: 'Infra', en: 'Infra' },
-      blurb: {
-        pt: 'Pipeline que testa e publica sozinho, automação que tira trabalho manual do caminho.',
-        en: 'A pipeline that tests and ships on its own, and automation that takes manual work out of the way.',
-      },
       icon: 'cloud',
       clusters: [
         {
@@ -692,15 +671,6 @@ export const profile: Profile = {
         {
           label: { pt: 'Automação', en: 'Automation' },
           items: ['n8n', 'Windmill', 'Webhooks', 'Atlas Triggers'],
-        },
-        {
-          label: { pt: 'Open source', en: 'Open source' },
-          items: [
-            'Agentistics (analytics para AI coding)',
-            'DuckFlux (orquestração multi-agente)',
-            'Embark (CI/CD zero-config)',
-          ],
-          highlight: true,
         },
       ],
     },
@@ -778,7 +748,6 @@ export const buildSkillBranches = (l: Locale) =>
     id: b.id,
     title: pick(b.title, l),
     short: pick(b.short, l),
-    blurb: pick(b.blurb, l),
     icon: b.icon,
     clusters: b.clusters.map((c) => ({
       label: pick(c.label, l),

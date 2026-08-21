@@ -99,8 +99,12 @@ const intents: Intent[] = [
   {
     id: 'projects',
     kw: [
-      'projeto', 'projetos', 'mostre', 'mostrar', 'portfolio de projetos', 'cases',
-      'project', 'projects', 'show me', 'show projects', 'work',
+      'projeto', 'projetos', 'mostre', 'mostrar', 'mostra', 'portfolio', 'portfolio de projetos',
+      'case', 'cases', 'relevante', 'relevantes', 'importante', 'destaque', 'destaques',
+      'entregou', 'entregas', 'entregue', 'realizou', 'construiu', 'fez', 'ja fez',
+      'principais', 'resultados', 'sucesso', 'melhor trabalho', 'o que ele fez',
+      'project', 'projects', 'show me', 'show projects', 'work', 'built', 'delivered',
+      'shipped', 'achievements', 'highlights', 'relevant', 'impact', 'accomplished',
     ],
     reply: (t, locale) => ({
       reasoning: [
@@ -138,8 +142,11 @@ const intents: Intent[] = [
   {
     id: 'career',
     kw: [
-      'carreira', 'trajetoria', 'experiencia', 'historico', 'onde trabalhou', 'empresas',
-      'career', 'experience', 'history', 'companies', 'worked', 'background',
+      'carreira', 'trajetoria', 'experiencia', 'experiencias', 'historico', 'empresas',
+      'trabalhou', 'trabalha', 'trabalhando', 'anos de experiencia', 'quantos anos',
+      'cargo', 'cargos', 'emprego', 'empregos', 'profissional', 'resume', 'resuma',
+      'career', 'experience', 'history', 'companies', 'worked', 'works', 'background',
+      'years of experience', 'summarize',
     ],
     reply: (t, locale) => ({
       reasoning: [
@@ -173,8 +180,10 @@ const intents: Intent[] = [
   {
     id: 'skills',
     kw: [
-      'skill', 'skills', 'habilidade', 'habilidades', 'stack', 'tecnologia', 'tecnologias',
-      'ferramentas', 'tech', 'technologies', 'tools', 'languages', 'linguagens',
+      'skill', 'skills', 'habilidade', 'habilidades', 'stack', 'stacks', 'tecnologia',
+      'tecnologias', 'ferramentas', 'domina', 'sabe', 'conhece', 'manja', 'usa',
+      'arsenal', 'kubernetes', 'docker', 'typescript', 'node', 'bun', 'react',
+      'tech', 'technologies', 'tools', 'languages', 'linguagens', 'knows', 'proficient',
     ],
     reply: (t, locale) => ({
       reasoning: [
@@ -193,7 +202,8 @@ const intents: Intent[] = [
     id: 'education',
     kw: [
       'formacao', 'educacao', 'faculdade', 'pos', 'pos-graduacao', 'graduacao', 'estudou',
-      'education', 'degree', 'university', 'college', 'studied', 'academic',
+      'estudando', 'estuda', 'estudo', 'curso', 'cursando', 'diploma', 'universidade',
+      'education', 'degree', 'university', 'college', 'studied', 'studying', 'academic',
     ],
     reply: (t, locale) => ({
       reasoning: [L(locale, 'consultando registros acadêmicos', 'querying academic records')],
@@ -247,15 +257,16 @@ const intents: Intent[] = [
   {
     id: 'contact',
     kw: [
-      'contato', 'falar', 'email', 'e-mail', 'linkedin', 'github', 'chamar', 'contratar agora',
-      'contact', 'reach', 'get in touch', 'hire now', 'connect',
+      'contato', 'falar', 'falo', 'email', 'e-mail', 'linkedin', 'github', 'chamar',
+      'contratar agora', 'conversar', 'entrar em contato', 'como falo',
+      'contact', 'reach', 'get in touch', 'hire now', 'connect', 'talk to',
     ],
     reply: (t, locale) => ({
       reasoning: [
         L(locale, 'recuperando canais de contato', 'retrieving contact channels'),
         L(locale, 'abrindo LinkedIn', 'opening LinkedIn'),
       ],
-      tool: { name: 'open_url', arg: 'linkedin.com/in/blpsoares', action: { type: 'open_url', url: 'https://linkedin.com/in/blpsoares' } },
+      tool: { name: 'scroll_to_section', arg: 'contact', action: { type: 'scroll', target: 'contact' } },
       answer: L(
         locale,
         `Pode falar direto: ${t.cv.email} · ${t.cv.phone}. LinkedIn: ${t.cv.linkedin} · GitHub: ${t.cv.github}. Abri o LinkedIn dele numa nova aba.`,
@@ -314,7 +325,7 @@ const containsWord = (haystack: string, needle: string): boolean => {
  * confidently — and scroll the page — on evidence that meant nothing. Roughly
  * one solid keyword (or two short ones) is the floor for acting.
  */
-const MIN_CONFIDENCE = 5;
+const MIN_CONFIDENCE = 4;
 
 export function matchIntent(query: string, t: Translations, locale: Locale): AgentReply {
   const q = norm(query);

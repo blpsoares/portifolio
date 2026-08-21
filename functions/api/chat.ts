@@ -57,19 +57,24 @@ interface ChatBody {
 }
 
 /**
- * Ordered list of free models. OpenRouter routes through them with automatic
- * fallback: if one is down / busy / rate-limited it tries the next. Only when
- * ALL fail does the request error and the frontend drops to the local
- * deterministic agent. Resolution order: KV `MODELS:active` (auto-rotated by
- * the cron Worker) → env OPENROUTER_MODELS → this built-in list. NOTE:
- * OpenRouter caps the fallback list at 3 models, so only the first 3 are used.
- * Free model ids rotate — keep fresh from
- * https://openrouter.ai/models?max_price=0
+ * Ordered list of free model candidates, tried one at a time until one streams.
+ *
+ * These ids rot fast: a model that lists as free in the catalog can still
+ * answer 404 "unavailable for free" or 429 "rate-limited upstream" at inference
+ * time, and which ones do changes through the day. The durable fix is the cron
+ * Worker in `worker-cron/`, which rotates this list into KV — these values are
+ * only the floor for when KV is empty or unbound.
+ *
+ * Resolution order: KV `MODELS:active` → env OPENROUTER_MODELS → this list.
+ * Refresh from https://openrouter.ai/models?max_price=0
  */
 const DEFAULT_MODELS = [
-  'openai/gpt-oss-20b:free',
-  'inclusionai/ling-3.0-flash:free',
-  'google/gemma-4-26b-a4b-it:free',
+  'google/gemma-4-31b-it:free',
+  'nvidia/nemotron-3-nano-30b-a3b:free',
+  'cohere/north-mini-code:free',
+  // OpenRouter's own free router: it picks whatever is actually up right now,
+  // so it is the candidate least likely to rot when the ids above go stale.
+  'openrouter/free',
 ];
 
 const envModels = (env: Env): string[] => {
@@ -431,67 +436,83 @@ async function handleChat(context: {
   const modelList = await resolveModels(env);
   const category = inferCategory(query, !!jobText);
 
-  // A slow or queued model must degrade, not kill the Worker. Without this the
-  // request hangs until Cloudflare gives up and returns its own opaque 502,
-  // which is exactly what a 550B free model on a busy queue produced.
-  const abort = new AbortController();
-  const timer = setTimeout(() => abort.abort(), UPSTREAM_TIMEOUT_MS);
+  /**
+   * Try each candidate in turn until one actually streams.
+   *
+   * OpenRouter's own `models` fallback array does not cover this: a free model
+   * that answers 429 "temporarily rate-limited upstream" comes straight back as
+   * the response instead of rolling over to the next candidate. Since free-tier
+   * availability flaps minute to minute, a single bad draw was taking the whole
+   * cloud brain down and dropping every visitor onto the rule engine — which is
+   * the "Local · determinístico" badge showing up on questions that deserved a
+   * real answer.
+   */
+  const attempt = async (
+    model: string,
+  ): Promise<{ res: Response } | { failure: string; status: number }> => {
+    // A slow or queued model must degrade, not kill the Worker. Without this
+    // the request hangs until Cloudflare returns its own opaque 502.
+    const abort = new AbortController();
+    const timer = setTimeout(() => abort.abort(), UPSTREAM_TIMEOUT_MS);
+    try {
+      const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+        signal: abort.signal,
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${env.OPENROUTER_API_KEY}`,
+          'Content-Type': 'application/json',
+          'HTTP-Referer': 'https://blpsoares.dev',
+          'X-Title': 'blpsoares.dev portfolio assistant',
+        },
+        body: JSON.stringify({
+          model,
+          stream: true,
+          temperature: 0.4,
+          max_tokens: MAX_TOKENS,
+          // Let the MODEL decide and emit tool calls; the browser executes them.
+          tools: TOOLS,
+          tool_choice: 'auto',
+          messages,
+        }),
+      });
+      clearTimeout(timer);
+      if (res.ok && res.body) return { res };
+      const detail = await res.text().catch(() => '');
+      console.error('OpenRouter rejected', model, res.status, detail.slice(0, 300));
+      return { failure: res.status === 429 ? 'quota' : 'upstream', status: res.status };
+    } catch (err) {
+      clearTimeout(timer);
+      const timedOut = (err as Error)?.name === 'AbortError';
+      return { failure: timedOut ? 'timeout' : 'network', status: 0 };
+    }
+  };
 
-  let upstream: Response;
-  try {
-    upstream = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-      signal: abort.signal,
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${env.OPENROUTER_API_KEY}`,
-        'Content-Type': 'application/json',
-        'HTTP-Referer': 'https://blpsoares.dev',
-        'X-Title': 'blpsoares.dev portfolio assistant',
-      },
-      body: JSON.stringify({
-        // Multi-model fallback: OpenRouter tries each in order until one
-        // responds. Providing `model` (primary) + `models` (full list) is the
-        // most compatible form across API versions.
-        model: modelList[0],
-        // OpenRouter caps the fallback array at 3 models.
-        models: modelList.slice(0, 3),
-        stream: true,
-        temperature: 0.4,
-        max_tokens: MAX_TOKENS,
-        // Let the MODEL decide and emit tool calls; the browser executes them.
-        tools: TOOLS,
-        tool_choice: 'auto',
-        // Ask reasoning-capable models to stream their thoughts. Models that
-        // don't support it ignore the field; the client shows nothing fake.
-        reasoning: { effort: 'low' },
-        messages,
-      }),
-    });
-  } catch (err) {
-    clearTimeout(timer);
-    const timedOut = (err as Error)?.name === 'AbortError';
-    recordTelemetry(category, 'none', locale ?? 'auto', timedOut ? 'timeout' : 'network');
-    return json({ fallback: true, reason: timedOut ? 'timeout' : 'network' }, 502);
+  let upstream: Response | null = null;
+  let answering = '';
+  let lastFailure = 'upstream';
+  let lastStatus = 502;
+
+  for (const model of modelList) {
+    const out = await attempt(model);
+    if ('res' in out) {
+      upstream = out.res;
+      answering = model;
+      break;
+    }
+    lastFailure = out.failure;
+    lastStatus = out.status || 502;
   }
-  clearTimeout(timer);
 
-  // Free quota exhausted / rate-limited upstream / any error → fallback.
-  if (!upstream.ok || !upstream.body) {
-    const detail = await upstream.text().catch(() => '');
-    console.error('OpenRouter error', upstream.status, detail.slice(0, 600));
-    const reason = upstream.status === 429 ? 'quota' : 'upstream';
-    recordTelemetry(category, 'none', locale ?? 'auto', reason);
+  if (!upstream) {
+    recordTelemetry(category, 'none', locale ?? 'auto', lastFailure);
     return json(
-      { fallback: true, reason, status: upstream.status, detail: detail.slice(0, 400) },
-      upstream.status === 429 ? 429 : 502,
+      { fallback: true, reason: lastFailure, status: lastStatus },
+      lastStatus === 429 ? 429 : 502,
     );
   }
 
-  // A successful stream is one datapoint. We don't know the exact answering
-  // model here without inspecting the stream, so report the primary candidate.
   // Latency captured is time-to-headers (close enough; never logs PII).
-  const telemetry = () =>
-    recordTelemetry(category, modelList[0] ?? 'unknown', locale ?? 'auto', null);
+  const telemetry = () => recordTelemetry(category, answering, locale ?? 'auto', null);
   if (context.waitUntil) context.waitUntil(Promise.resolve().then(telemetry));
   else telemetry();
 

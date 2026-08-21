@@ -166,10 +166,6 @@ const TechStack: React.FC = () => {
                       </h3>
                     </div>
 
-                    <p className="mb-7 text-sm leading-relaxed text-slate-600 dark:text-slate-400">
-                      {active.blurb}
-                    </p>
-
                     {renderClusters(active.clusters)}
                   </GlowCard>
                 </motion.div>
@@ -239,9 +235,6 @@ const TechStack: React.FC = () => {
                 >
                   <div className="overflow-hidden">
                     <div className="border-t border-slate-200/70 px-5 pb-6 pt-5 dark:border-white/10">
-                      <p className="mb-6 text-sm leading-relaxed text-slate-600 dark:text-slate-400">
-                        {branch.blurb}
-                      </p>
                       {renderClusters(branch.clusters)}
                     </div>
                   </div>
