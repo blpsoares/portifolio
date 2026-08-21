@@ -20,7 +20,6 @@ const en = {
     aiUsage: "How I work with AI",
   },
   hero: {
-    available: "Available for new opportunities",
     thesis1: "AI is not magic.",
     thesis2: "It's engineering.",
     // Condensed from the philosophy in the "AI & Automation" section: in the
@@ -34,8 +33,6 @@ const en = {
     online: "online",
     badge: "local · 0 tokens · $0.00",
     placeholder: "Ask me anything about Bryan…",
-    hint: "← talk to the AI",
-    thinking: "reasoning",
     toolRunning: "executing…",
     toolDone: "done",
     feedbackAsk: "Helpful?",
@@ -115,7 +112,6 @@ const en = {
         } as Record<string, string>,
       },
     },
-    unavailable: "The assistant is unavailable right now, please try again shortly.",
     // Localized labels for clickable grounding citations ([[section:<id>]]).
     // Keys are the whitelisted section ids; the chip text is prefixed with "↳".
     citationLabels: {
@@ -202,7 +198,6 @@ const en = {
       "Tools I built and maintain in the open, from first commit to deploy. All of them are live \u2014 click any preview to visit.",
     viewAll: "View all",
     visitSite: "Visit site",
-    viewSource: "View source",
     backHome: "Back home",
     pageTitle: "All open source projects",
     pageSubtitle:
@@ -243,7 +238,6 @@ const en = {
     tagline: "AI Engineer & Sr Software Developer. Scalable systems, AI pipelines and agents in production.",
     quickLinks: "Quick Links",
     connect: "Connect",
-    builtWith: "Built with",
   },
   cmdk: {
     title: "Command Palette",
