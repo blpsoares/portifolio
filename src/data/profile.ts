@@ -393,8 +393,8 @@ export const profile: Profile = {
         en: 'Agentistics: Local Analytics Dashboard for AI Coding Assistants',
       },
       description: {
-        pt: 'Construí um dashboard de analytics local-first que parseia sessões ~/.claude/ para exibir uso de tokens, custos (USD/BRL), métricas de agentes, heatmaps de atividade e breakdown por modelo. Inclui CLI com modo TUI, export OpenTelemetry e geração de relatórios PDF. Zero cloud, zero telemetria.',
-        en: 'Built a local-first analytics dashboard that parses ~/.claude/ sessions to surface token usage, costs (USD/BRL), agent metrics, activity heatmaps, and per-model breakdown. Includes a CLI with TUI mode, OpenTelemetry export, and PDF report generation. Zero cloud, zero telemetry.',
+        pt: 'Construí um dashboard de analytics local-first que parseia sessões ~/.claude/ para exibir uso de tokens, custos (USD/BRL), métricas de agentes, heatmaps de atividade e breakdown por modelo. Inclui CLI com modo TUI, export OpenTelemetry opt-in para o seu próprio collector e geração de relatórios PDF. Os dados nunca saem da sua máquina: zero cloud, zero telemetria.',
+        en: 'Built a local-first analytics dashboard that parses ~/.claude/ sessions to surface token usage, costs (USD/BRL), agent metrics, activity heatmaps, and per-model breakdown. Includes a CLI with TUI mode, opt-in OpenTelemetry export to your own collector, and PDF report generation. Data never leaves your machine: zero cloud, zero telemetry.',
       },
       stack: 'TypeScript · Bun · React · Vite · Three.js · OpenTelemetry',
     },
